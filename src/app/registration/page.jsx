@@ -64,6 +64,7 @@ export default function RegisterPage() {
       phone: form.phone,
       password: form.password,
       name: form.name,
+      role: "user"
     }
 
     localStorage.setItem("registeredUser", JSON.stringify(userData))

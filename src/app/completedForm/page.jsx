@@ -4,11 +4,11 @@ import { useEffect, useRef, useState } from "react"
 import PageOne from "../../components/PageOne"
 import PageTwo from "../../components/PageTwo"
 import PageThree from "../../components/PageThree"
-import html2canvas from "html2canvas"
-import jsPDF from "jspdf"
+import toast, { Toaster } from "react-hot-toast"
 
 export default function CompletedForm() {
   const [formData, setFormData] = useState(null)
+  const [isGenerating, setIsGenerating] = useState(false)
   const contentRef = useRef(null)
 
   useEffect(() => {
@@ -19,13 +19,16 @@ export default function CompletedForm() {
   }, [])
 
   const generatePDF = async () => {
+    setIsGenerating(true)
+    const html2canvas = (await import("html2canvas")).default
+    const jsPDF = (await import("jspdf")).default
     const input = contentRef.current
     const pages = input.querySelectorAll('.pdf-page')
     const pdf = new jsPDF('p', 'mm', 'a4')
 
     for (let i = 0; i < pages.length; i++) {
       const canvas = await html2canvas(pages[i], {
-        scale: 3, // High resolution
+        scale: 3,
         useCORS: true
       })
       const imgData = canvas.toDataURL('image/png')
@@ -38,6 +41,8 @@ export default function CompletedForm() {
     }
 
     pdf.save("RTI-Application.pdf")
+    setIsGenerating(false)
+    toast.success("PDF সফলভাবে তৈরি হয়েছে!")
   }
 
   const printForm = () => {
@@ -48,32 +53,54 @@ export default function CompletedForm() {
 
   return (
     <div className="max-w-4xl mx-auto py-10 space-y-6 font-serif">
-      {/* স্ক্রিনে শুধুমাত্র হেডার */}
+      <Toaster />
       <h1 className="text-2xl font-bold text-center mb-6 print:hidden">
         আপনার পূর্ণাঙ্গ আবেদন ফর্ম
       </h1>
 
-      {/* ফর্ম কন্টেন্ট */}
       <div ref={contentRef} className="space-y-10">
-        <div className="pdf-page bg-white p-10 text-[18px] leading-relaxed">
+        <div className="pdf-page bg-white p-28 text-[18px] leading-relaxed">
           <PageOne data={formData} showButton={false} />
         </div>
-        <div className="pdf-page bg-white p-10 text-[18px] leading-relaxed">
+        <div className="pdf-page bg-white p-28 text-[18px] leading-relaxed">
           <PageTwo data={formData} showButton={false} />
         </div>
-        <div className="pdf-page bg-white p-10 text-[18px] leading-relaxed">
+        <div className="pdf-page bg-white p-28 text-[18px] leading-relaxed">
           <PageThree data={formData} showButton={false} />
         </div>
       </div>
 
-      {/* শুধু স্ক্রিনে দেখাবে */}
       <div className="flex justify-center gap-4 mt-6 print:hidden">
         <button
           onClick={generatePDF}
-          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+          className="relative px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2 disabled:opacity-60"
+          disabled={isGenerating}
         >
-          ডাউনলোড PDF
+          {isGenerating && (
+            <svg
+              className="animate-spin h-5 w-5 text-white"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+              />
+            </svg>
+          )}
+          {isGenerating ? "PDF তৈরি হচ্ছে..." : "ডাউনলোড PDF"}
         </button>
+
         <button
           onClick={printForm}
           className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"

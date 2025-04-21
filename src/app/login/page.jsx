@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { FiLock } from "react-icons/fi"
@@ -21,13 +21,28 @@ export default function LoginPage() {
   const handleSubmit = (e) => {
     e.preventDefault()
 
+    const isAdmin =
+      (form.identifier === "admin@rti.com" || form.identifier === "01700000000") &&
+      form.password === "Admin@123"
+
     const storedUser = JSON.parse(localStorage.getItem("registeredUser"))
-    if (
+    const isGeneralUser =
       storedUser &&
       (storedUser.email === form.identifier || storedUser.phone === form.identifier) &&
       storedUser.password === form.password
-    ) {
-      toast.success("সফলভাবে লগইন হয়েছে")
+
+    if (isAdmin) {
+      // লোকাল স্টোরেজে admin তথ্য সংরক্ষণ
+      localStorage.setItem(
+        "admin",
+        JSON.stringify({ name: "admin", role: "admin" })
+      )
+      toast.success("অ্যাডমিন হিসেবে লগইন সফল")
+      setTimeout(() => {
+        router.push("/admin-dashboard")
+      }, 1500)
+    } else if (isGeneralUser) {
+      toast.success("সাধারণ ইউজার হিসেবে লগইন সফল")
       setTimeout(() => {
         router.push("/apply")
       }, 1500)

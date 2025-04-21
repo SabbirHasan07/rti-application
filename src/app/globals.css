@@ -7,18 +7,19 @@
 @media print {
   .pdf-page {
     page-break-after: always;
-    width: 210mm;
-    height: 297mm;
-    overflow: hidden;
-  }
-
-  .print\:hidden {
-    display: none !important;
+    break-after: always;
+    background-color: white !important; 
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
   body {
+    background-color: white !important;
+  }
+
+  @page {
     margin: 0;
-    padding: 0;
+    size: A4;
   }
 }
 
