@@ -1,6 +1,10 @@
 "use client"
 import { useEffect, useState } from "react"
-import ApplicationPreview from "@/components/ApplicationPreview"
+import dynamic from "next/dynamic"
+
+const ApplicationPreview = dynamic(() => import("@/components/ApplicationPreview"), {
+  ssr: false,
+})
 
 export default function PreviewPage() {
   const [formData, setFormData] = useState(null)
