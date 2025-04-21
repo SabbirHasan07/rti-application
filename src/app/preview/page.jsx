@@ -13,8 +13,8 @@ export default function PreviewPage() {
   }, [])
 
   return (
-    <div className="max-w-3xl mx-auto mt-10 p-6 bg-white rounded shadow">
-      <h1 className="text-xl font-bold mb-4">আবেদনের প্রিভিউ</h1>
+    <div className="max-w-3xl mx-auto mt-10 p-6 bg-white">
+      <h1 className=" font-bold mb-4 text-center text-sm">আবেদনের প্রিভিউ</h1>
       {formData ? (
         <ApplicationPreview data={formData} />
       ) : (

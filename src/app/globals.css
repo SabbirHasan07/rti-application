@@ -4,5 +4,22 @@
   --background: #ffffff;
   --foreground: #171717;
 }
+@media print {
+  .pdf-page {
+    page-break-after: always;
+    width: 210mm;
+    height: 297mm;
+    overflow: hidden;
+  }
+
+  .print\:hidden {
+    display: none !important;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+  }
+}
 
 

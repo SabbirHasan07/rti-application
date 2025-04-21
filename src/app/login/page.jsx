@@ -1,54 +1,87 @@
 "use client"
-import { useState } from "react"
+
+import { useState, useEffect } from "react"
 import Link from "next/link"
-import Input from "@/components/Input"
-import Button from "@/components/Button"
 import { useRouter } from "next/navigation"
+import { FiLock } from "react-icons/fi"
+import { MdPhoneAndroid } from "react-icons/md"
+import toast, { Toaster } from "react-hot-toast"
 
 export default function LoginPage() {
   const [form, setForm] = useState({
-    identifier: "", // phone or email
+    identifier: "",
     password: "",
   })
   const router = useRouter()
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log("Login Form Data:", form)
-    router.push("/apply")
-    // এখান থেকে API call করে লগইন করতে পারো
+
+    const storedUser = JSON.parse(localStorage.getItem("registeredUser"))
+    if (
+      storedUser &&
+      (storedUser.email === form.identifier || storedUser.phone === form.identifier) &&
+      storedUser.password === form.password
+    ) {
+      toast.success("সফলভাবে লগইন হয়েছে")
+      setTimeout(() => {
+        router.push("/apply")
+      }, 1500)
+    } else {
+      toast.error("ভুল মোবাইল/ইমেইল অথবা পাসওয়ার্ড")
+    }
   }
 
   return (
-    <div className="max-w-md mx-auto mt-10 bg-white p-6 rounded shadow">
-      <h1 className="text-xl font-bold mb-4">লগইন করুন</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <Input
-          name="identifier"
-          placeholder="মোবাইল নম্বর বা ইমেইল"
-          value={form.identifier}
-          onChange={handleChange}
-        />
-        <Input
-          name="password"
-          type="password"
-          placeholder="পাসওয়ার্ড"
-          value={form.password}
-          onChange={handleChange}
-        />
-        <Button type="submit">লগইন করুন</Button>
-      </form>
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-white flex items-center justify-center px-4">
+      <Toaster />
+      <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
+        <h2 className="text-2xl font-bold text-center text-[#008037] mb-6">Log in</h2>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="relative">
+            <MdPhoneAndroid className="absolute top-3.5 left-3 text-gray-400" size={20} />
+            <input
+              type="text"
+              name="identifier"
+              value={form.identifier}
+              onChange={handleChange}
+              placeholder="মোবাইল নম্বর বা ইমেইল"
+              className="w-full pl-10 pr-4 py-2.5 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#008037] transition text-sm"
+            />
+          </div>
 
-      {/* 🔗 Register Link */}
-      <p className="text-sm mt-4 text-center">
-        এখনো রেজিস্টার করেননি?{" "}
-        <Link href="/" className="text-blue-600 hover:underline">
-          রেজিস্ট্রেশন করুন
-        </Link>
-      </p>
+          <div className="relative">
+            <FiLock className="absolute top-3.5 left-3 text-gray-400" size={20} />
+            <input
+              type="password"
+              name="password"
+              value={form.password}
+              onChange={handleChange}
+              placeholder="পাসওয়ার্ড"
+              className="w-full pl-10 pr-4 py-2.5 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#008037] transition text-sm"
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-[#008037] hover:bg-[#006f2f] text-white font-semibold py-2.5 rounded-md transition text-sm"
+          >
+            লগইন করুন
+          </button>
+        </form>
+
+        <div className="mt-6 text-center text-sm">
+          এখনো রেজিস্টার করেননি?
+          <br className="md:hidden" />
+          <Link href="/registration" className="text-[#008037] font-medium hover:underline ml-1">
+            রেজিস্ট্রেশন করুন
+          </Link>
+        </div>
+      </div>
     </div>
   )
 }

@@ -3,26 +3,44 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Input from "@/components/Input"
 import Button from "@/components/Button"
+import { faUser, faAddressCard, faPhone, faEnvelope, faInfoCircle, faHome } from "@fortawesome/free-solid-svg-icons"
 
 export default function RtiFormPage() {
   const router = useRouter()
 
-  const defaultForm = {
+  const [form, setForm] = useState({
     name: "", father: "", mother: "",
     presentAddress: "", permanentAddress: "",
     office: "", infoType: "", description: "",
     method: "ছাপানো কপি",
-    email: "user@email.com",
-    phone: "01XXXXXXXXX"
-  }
+    email: "", phone: ""
+  })
 
-  const [form, setForm] = useState(defaultForm)
+  const [user, setUser] = useState(null)
 
-  // ✅ Load data from sessionStorage if exists
   useEffect(() => {
     const stored = sessionStorage.getItem("rtiForm")
+    const localUser = localStorage.getItem("registeredUser")
+
+    let defaultData = {
+      name: "", email: "", phone: ""
+    }
+
+    if (localUser) {
+      const parsedUser = JSON.parse(localUser)
+      setUser(parsedUser)
+      defaultData = {
+        name: parsedUser?.name || "",
+        email: parsedUser?.email || "",
+        phone: parsedUser?.phone || ""
+      }
+    }
+
     if (stored) {
-      setForm(JSON.parse(stored))
+      const parsedStored = JSON.parse(stored)
+      setForm({ ...defaultData, ...parsedStored })
+    } else {
+      setForm(prev => ({ ...prev, ...defaultData }))
     }
   }, [])
 
@@ -37,33 +55,61 @@ export default function RtiFormPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto mt-10 bg-white p-6 rounded shadow">
-      <h1 className="text-xl font-bold mb-4">তথ্য অধিকার আবেদন ফর্ম</h1>
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Input name="name" placeholder="আবেদনকারীর নাম" value={form.name} onChange={handleChange} />
-        <Input name="father" placeholder="পিতার নাম" value={form.father} onChange={handleChange} />
-        <Input name="mother" placeholder="মাতার নাম" value={form.mother} onChange={handleChange} />
-        <Input name="presentAddress" placeholder="বর্তমান ঠিকানা" value={form.presentAddress} onChange={handleChange} />
-        <Input name="permanentAddress" placeholder="স্থায়ী ঠিকানা" value={form.permanentAddress} onChange={handleChange} />
-        <select name="office" value={form.office} onChange={handleChange} className="w-full p-2 border rounded">
-          <option value="">-- দপ্তর নির্বাচন করুন --</option>
-          <option value="DC অফিস">DC অফিস</option>
-          <option value="DoE অফিস">DoE অফিস</option>
-        </select>
-        <Input name="infoType" placeholder="তথ্যের ধরন" value={form.infoType} onChange={handleChange} />
-        <textarea name="description" placeholder="আপনার তথ্যের বিস্তারিত বিবরণ" value={form.description} onChange={handleChange} className="col-span-2 w-full p-2 border rounded h-24"></textarea>
-        <select name="method" value={form.method} onChange={handleChange} className="w-full p-2 border rounded">
-          <option value="ছাপানো কপি">ছাপানো কপি</option>
-          <option value="ফটোকপি">ফটোকপি</option>
-          <option value="লিখিত">লিখিত</option>
-          <option value="ই-মেইল">ই-মেইল</option>
-          <option value="ফ্যাক্স">ফ্যাক্স</option>
-          <option value="CD">CD</option>
-        </select>
-        <Input name="email" value={form.email} onChange={() => {}} disabled />
-        <Input name="phone" value={form.phone} onChange={() => {}} disabled />
+    <div className="max-w-3xl mx-auto mt-10 bg-white p-8 rounded-lg shadow-lg border border-gray-200">
+      <h1 className="text-md mb-9 font-semibold text-center mb-6 ">তথ্য অধিকার আবেদন ফর্ম</h1>
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm ">
+        <Input name="name" placeholder="আবেদনকারীর নাম" value={form.name} onChange={() => {}} icon={faUser}  disabled />
+        <Input name="father" placeholder="পিতার নাম" value={form.father} onChange={handleChange} icon={faAddressCard}  />
+        <Input name="mother" placeholder="মাতার নাম" value={form.mother} onChange={handleChange} icon={faAddressCard} />
+        <Input name="presentAddress" placeholder="বর্তমান ঠিকানা" value={form.presentAddress} onChange={handleChange} icon={faHome} />
+        <Input name="permanentAddress" placeholder="স্থায়ী ঠিকানা" value={form.permanentAddress} onChange={handleChange} icon={faHome} />
+        <Input name="infoType" placeholder="কি ধরেনর তথ্য চান" value={form.infoType} onChange={handleChange} icon={faInfoCircle} />
+
         <div className="col-span-2">
-          <Button type="submit">আবেদন তৈরি করুন</Button>
+        <select
+  name="office"
+  value={form.office}
+  onChange={handleChange}
+  className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+>
+  <option value="">-- দপ্তর নির্বাচন করুন --</option>
+  <option value="জনাব শাহনূর রহমান | ও দায়িত্ব প্রাপ্ত তথ্য প্রদানকারী কর্মকর্তা | জেলা প্রশাসকের কার্যালয়, নেত্রকোণা">জনাব শাহনূর রহমান | জেলা প্রশাসকের কার্যালয়, নেত্রকোণা</option>
+  <option value="শরীফা হক | ও দায়িত্ব প্রাপ্ত তথ্য প্রদানকারী কর্মকর্তা | জেলা প্রশাসকের কার্যালয়, টাঙ্গাইল">শরীফা হক | জেলা প্রশাসকের কার্যালয়, টাঙ্গাইল</option>
+</select>
+        </div>
+
+        <div className="col-span-2">
+          <select
+            name="method"
+            value={form.method}
+            onChange={handleChange}
+            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+          >
+            <option value="যে পদ্ধতিতে তথ্য পাইেত আগ্রহী">-- যে পদ্ধতিতে তথ্য পাইেত আগ্রহী --</option>
+            <option value="ফটোকপি">ফটোকপি</option>
+            <option value="লিখিত">লিখিত</option>
+            <option value="ই-মেইল">ই-মেইল</option>
+            <option value="ফ্যাক্স">ফ্যাক্স</option>
+          </select>
+        </div>
+
+        <div className="col-span-2">
+          <textarea
+            name="description"
+            placeholder="আপনার তথ্যের বিস্তারিত বিবরণ"
+            value={form.description}
+            onChange={handleChange}
+            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 h-32 resize-none text-sm"
+          ></textarea>
+        </div>
+
+        <Input name="email" value={form.email} onChange={() => {}} disabled icon={faEnvelope} />
+        <Input name="phone" value={form.phone} onChange={() => {}} disabled icon={faPhone} />
+
+        <div className="col-span-2 text-center">
+          <Button type="submit" className="w-full p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-200 text-sm">
+            আবেদন তৈরি করুন
+          </Button>
         </div>
       </form>
     </div>
