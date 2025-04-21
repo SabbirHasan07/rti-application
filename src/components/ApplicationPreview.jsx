@@ -5,7 +5,7 @@ import PageOne from './PageOne'
 import PageTwo from './PageTwo'
 import PageThree from './PageThree'
 
-export default function ApplicationContainer({ sessionData }) {
+export default function ApplicationPreview({ sessionData }) {
   const [step, setStep] = useState(1)
 
   const nextStep = () => setStep(prev => prev + 1)

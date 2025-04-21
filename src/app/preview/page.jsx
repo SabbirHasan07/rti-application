@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react"
 import dynamic from "next/dynamic"
 
-const ApplicationPreview = dynamic(() => import("@/components/ApplicationPreview"), {
+const ApplicationPreview = dynamic(() => import("../../components/ApplicationPreview"), {
   ssr: false,
 })
 
