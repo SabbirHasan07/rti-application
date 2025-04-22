@@ -52,29 +52,47 @@ export default function RegisterPage() {
   }
 
   const handleSubmit = (e) => {
-    e.preventDefault()
-    const validationErrors = validateForm()
+    e.preventDefault();
+  
+    const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors)
-      return
+      setErrors(validationErrors);
+      return;
     }
-
+  
+    const existingUsersRaw = localStorage.getItem("registeredUsers");
+    const existingUsers = existingUsersRaw ? JSON.parse(existingUsersRaw) : [];
+  
     const userData = {
       email: form.email,
       phone: form.phone,
       password: form.password,
       name: form.name,
       role: "user"
+    };
+  
+    // Check if user already exists based on email
+    const userExists = existingUsers.some(user => user.email === userData.email);
+  
+    if (userExists) {
+      toast.error("এই ইমেইলটি ইতোমধ্যেই রেজিস্টার করা হয়েছে!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      return;
     }
-
-    localStorage.setItem("registeredUser", JSON.stringify(userData))
-
+  
+    // Add user to list and save
+    const updatedUsers = [...existingUsers, userData];
+    localStorage.setItem("registeredUsers", JSON.stringify(updatedUsers));
+    localStorage.setItem("loggedInUser", JSON.stringify(userData));
+  
     toast.success("রেজিস্ট্রেশন সফল হয়েছে!", {
       position: "top-right",
       autoClose: 500,
-      onClose: () => router.push("/login"),
-    })
-  }
+      onClose: () => router.push("/userDashboard"), // or any route after successful login
+    });
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-white flex items-center justify-center px-4">

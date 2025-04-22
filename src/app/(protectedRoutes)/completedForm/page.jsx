@@ -2,9 +2,9 @@
 
 import { useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
-import PageOne from "../../components/PageOne"
-import PageTwo from "../../components/PageTwo"
-import PageThree from "../../components/PageThree"
+import PageOne from "../../../components/PageOne"
+import PageTwo from "../../../components/PageTwo"
+import PageThree from "../../../components/PageThree"
 import toast, { Toaster } from "react-hot-toast"
 
 export default function CompletedForm() {

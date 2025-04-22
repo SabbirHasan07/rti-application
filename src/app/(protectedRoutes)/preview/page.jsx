@@ -1,6 +1,6 @@
 "use client"
+import ApplicationPreview from "@/components/ApplicationPreview"
 import { useEffect, useState } from "react"
-import ApplicationPreview from "../../components/ApplicationPreview"
 
 export default function preview() {
   const [formData, setFormData] = useState(null)

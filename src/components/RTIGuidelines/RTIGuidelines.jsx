@@ -67,7 +67,7 @@ const RTIGuidelines = () => {
   };
 
   const handleGenerateClick = () => {
-    router.push('/registration')
+    router.push('/login')
   };
 
   return (

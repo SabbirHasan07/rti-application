@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Bar, Doughnut } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
@@ -20,6 +20,7 @@ const adminDashboard = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
     const router = useRouter();
+    const [allApplications, setAllApplications] = useState([]);
 
     const rtiData = [
         {
@@ -168,11 +169,20 @@ const adminDashboard = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const paginatedData = rtiData.slice(startIndex, startIndex + itemsPerPage);
 
+    useEffect(() => {
+        const allApplicationsRaw = localStorage.getItem('applications');
+        const allApplicationsData = allApplicationsRaw ? JSON.parse(allApplicationsRaw) : [];
+        setAllApplications(allApplicationsData)
+    }, [])
+
     return (
         <div className="max-w-7xl mx-auto p-6 font-sans text-[#212529] relative">
             <div className="absolute top-6 right-6">
                 <button
-                    onClick={() => router.push('/login')}
+                    onClick={() => {
+                        localStorage.removeItem('loggedInUser')
+                        router.push('/login')
+                    }}
                     className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
                 >
                     লগআউট
@@ -184,12 +194,12 @@ const adminDashboard = () => {
             <div className="bg-white shadow-md rounded-2xl p-4 mb-6">
                 <h2 className="text-xl font-semibold mb-4 text-[#008037]">আবেদনকারীর তালিকা</h2>
                 <div className="space-y-3 max-h-[350px] overflow-y-auto">
-                    {paginatedData.map((item) => (
-                        <div key={item.id} className="border p-3 rounded-lg flex justify-between">
+                    {allApplications.map((item, index) => (
+                        <div key={index} className="border p-3 rounded-lg flex justify-between">
                             <div>
-                                <p><strong>অ্যাপ্লিকেশন আইডি: </strong> {item.application_id}</p>
+                                <p><strong>অ্যাপ্লিকেশন আইডি: </strong> {index + 1}</p>
                                 <p><strong>নাম:</strong> {item.name}</p>
-                                <p><strong>তারিখ ও সময়: </strong> {item.submittedAt}</p>
+                                <p><strong>তারিখ ও সময়: </strong> {new Date(item.createdAt).toLocaleString()}</p>
                             </div>
                             <button
                                 onClick={() => setSelected(item)}
@@ -248,7 +258,7 @@ const adminDashboard = () => {
                             <li><strong>আবেদন নম্বর:</strong> {selected?.application_id}</li>
                             <li><strong>আবেদন নম্বর:</strong> {selected?.name}</li>
                             <li><strong>স্ট্যাটাস:</strong> {selected.status}</li>
-                            <li><strong>তারিখ ও সময়:</strong> {selected.submittedAt}</li>
+                            <li><strong>তারিখ ও সময়:</strong> {new Date(selected.createdAt).toLocaleString()}</li>
                             <li><strong>আপিল করেছেন?</strong> {selected.appealed ? 'হ্যাঁ' : 'না'}</li>
                             <li><strong>ফিডব্যাক:</strong> {selected.feedback}</li>
                             <li><strong>তথ্য কমিশনের সময়কাল:</strong> {selected.timeTaken}</li>
@@ -257,7 +267,12 @@ const adminDashboard = () => {
                             <button className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
                                 আবেদন ডিলিট করুন
                             </button>
-                            <button className="bg-[#008037] text-white px-4 py-2 rounded hover:bg-[#006f2f]">
+                            <button disabled={selected.status === 'সম্পন্ন'} onClick={() => {
+                                const newArr = allApplications.map(app => app.application_id === selected.application_id ? { ...app, status: 'সম্পন্ন' } : app)
+                                localStorage.setItem('applications', JSON.stringify(newArr))
+                                const newApp = newArr.find(app => app.application_id === selected.application_id)
+                                setSelected(newApp)
+                            }} className="bg-[#008037] text-white px-4 py-2 rounded hover:bg-[#006f2f]">
                                 অনুমোদন করুন
                             </button>
 

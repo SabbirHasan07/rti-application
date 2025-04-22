@@ -22,40 +22,45 @@ export default function LoginPage() {
   const togglePassword = () => setShowPassword(!showPassword)
 
   const handleSubmit = (e) => {
-    e.preventDefault()
-
+    e.preventDefault();
+  
     const isAdmin =
       (form.identifier === "admin@rti.com" || form.identifier === "01700000000") &&
-      form.password === "Admin@123"
-
-    const storedUser = JSON.parse(localStorage.getItem("registeredUser"))
-    const isGeneralUser =
-      storedUser &&
-      (storedUser.email === form.identifier || storedUser.phone === form.identifier) &&
-      storedUser.password === form.password
-
+      form.password === "Admin@123";
+  
+    // Fetch all registered users from localStorage
+    const storedUsers = JSON.parse(localStorage.getItem("registeredUsers")) || [];
+  
+    // Try to find a matching general user
+    const matchedUser = storedUsers.find(
+      (user) =>
+        (user.email === form.identifier || user.phone === form.identifier) &&
+        user.password === form.password
+    );
+  
     if (isAdmin) {
       localStorage.setItem(
         "admin",
         JSON.stringify({ name: "admin", role: "admin" })
-      )
-      toast.success("অ্যাডমিন হিসেবে লগইন সফল")
+      );
+      localStorage.setItem("loggedInUser", JSON.stringify({ name: "admin", role: "admin" }));
+  
+      toast.success("অ্যাডমিন হিসেবে লগইন সফল");
       setTimeout(() => {
-        router.push("/adminDashboard")
-      }, 1500)
-    } else if (isGeneralUser) {
-      localStorage.setItem(
-        "user",
-        JSON.stringify({ name: storedUser.name, role: "user" })
-      )
-      toast.success("সাধারণ ইউজার হিসেবে লগইন সফল")
+        router.push("/adminDashboard");
+      }, 1500);
+    } else if (matchedUser) {
+      localStorage.setItem("loggedInUser", JSON.stringify({ ...matchedUser , role: "user" }));
+  
+      toast.success("সাধারণ ইউজার হিসেবে লগইন সফল");
       setTimeout(() => {
-        router.push("/userDashboard")
-      }, 1500)
+        router.push("/userDashboard");
+      }, 1500);
     } else {
-      toast.error("ভুল মোবাইল/ইমেইল অথবা পাসওয়ার্ড")
+      toast.error("ভুল মোবাইল/ইমেইল অথবা পাসওয়ার্ড");
     }
-  }
+  };
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-white flex items-center justify-center px-4">

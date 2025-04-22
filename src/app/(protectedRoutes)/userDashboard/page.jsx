@@ -9,24 +9,34 @@ const UserDashboard = () => {
     const [application, setApplication] = useState(null);
     const [localUser, setLocalUser] = useState(null);
     const [showDetails, setShowDetails] = useState(false);
+    const [applicationsByUser, setApplicationsByUser] = useState([]);
+    const [selectedApplication, setSelectedApplication] = useState(null);
     const router = useRouter();
 
     useEffect(() => {
         const storedApplication = sessionStorage.getItem('rtiForm');
-        const storedUser = localStorage.getItem('registeredUser');
+        const storedUserRaw = localStorage.getItem('loggedInUser');
+        const storedUser = JSON.parse(storedUserRaw)
+        const allApplicationsRaw = localStorage.getItem('applications');
 
         if (storedApplication) {
             setApplication(JSON.parse(storedApplication));
         }
 
         if (storedUser) {
-            setLocalUser(JSON.parse(storedUser));
+            setLocalUser(storedUser);
+            // Filter applications created by this user
+            const allApplications = allApplicationsRaw ? JSON.parse(allApplicationsRaw) : [];
+            console.log(storedUser.email)
+            const userApplications = allApplications.filter(app => app.createdBy === storedUser.email);
+
+            setApplicationsByUser(userApplications);
         }
     }, []);
 
     const handleLogout = () => {
         sessionStorage.clear();
-        localStorage.clear();
+        localStorage.removeItem("loggedInUser");
         setApplication(null);
         setLocalUser(null);
 
@@ -55,7 +65,7 @@ const UserDashboard = () => {
                 স্বাগতম, {localUser?.name || 'ইউজার'}!
             </p>
 
-            {!application ? (
+            {applicationsByUser.length === 0 ? (
                 <div className="text-center py-20">
                     <p className="text-gray-500 text-xl mb-6">আপনার কোন আবেদন নেই</p>
                     <Link href="/apply">
@@ -66,29 +76,45 @@ const UserDashboard = () => {
                 </div>
             ) : (
                 <div className="bg-white shadow-md rounded-2xl p-6 space-y-4 w-full max-w-2xl">
-                    <div className="flex justify-between items-center">
-                        <div className="space-y-2 mb-4 p-6">
-                            <div className="flex gap-4">
-                                <span className="w-11 font-semibold">নাম:</span>
-                                <span>{application.name}</span>
-                            </div>
-                            <div className="flex gap-4">
-                                <span className="w-11 font-semibold">বিষয়:</span>
-                                <span>{application.infoType}</span>
-                            </div>
-                            <div className="flex gap-4">
-                                <span className="w-11 font-semibold">তারিখ:</span>
-                                <span>২২ এপ্রিল ২০২৫</span>
-                            </div>
-                        </div>
+                    <div className='flex flex-col gap-2'>
+                        {applicationsByUser.map((app, index) => {
+                            return <div key={index} className="flex justify-between items-center">
+                                <div className="space-y-2 mb-4 p-6">
+                                    <div className="flex gap-4">
+                                        <span className="w-11 font-semibold">নাম:</span>
+                                        <span>{app.name}</span>
+                                    </div>
+                                    <div className="flex gap-4">
+                                        <span className="w-11 font-semibold">বিষয়:</span>
+                                        <span>{app.infoType}</span>
+                                    </div>
+                                    <div className="flex gap-4">
+                                        <span className="w-11 font-semibold">তারিখ:</span>
+                                        <span>{new Date(app.createdAt).toLocaleString()}</span>
+                                    </div>
+                                </div>
 
 
-                        <button
-                            onClick={() => setShowDetails(true)}
-                            className="bg-[#008037] text-white px-4 py-2 rounded hover:bg-[#006f2f]"
-                        >
-                            বিস্তারিত দেখুন
-                        </button>
+                                <div className='flex flex-col gap-2'>
+                                    <button
+                                        onClick={() => {
+                                            setSelectedApplication(app)
+                                            setShowDetails(true)
+                                        }}
+                                        className="bg-[#008037] text-white px-4 py-2 rounded hover:bg-[#006f2f]"
+                                    >
+                                        বিস্তারিত দেখুন
+                                    </button>
+                                    <button
+                                        className={app.status === "পেন্ডিং" ? "bg-gray-300 text-gray-600 px-4 py-2 rounded cursor-not-allowed" : "bg-[#008037] text-white px-4 py-2 rounded hover:bg-[#006f2f]"}
+                                        disabled={app.status === "পেন্ডিং"}
+                                        onClick={() => { console.log('update') }}
+                                    >
+                                        আপডেট করুন
+                                    </button>
+                                </div>
+                            </div>
+                        })}
                     </div>
                     <div className="flex gap-4 justify-center">
                         <Link href="/apply">
@@ -96,17 +122,11 @@ const UserDashboard = () => {
                                 আবেদন করুন
                             </button>
                         </Link>
-                        <button
-                            className="bg-gray-300 text-gray-600 px-4 py-2 rounded cursor-not-allowed"
-                            disabled
-                        >
-                            আপডেট করুন
-                        </button>
                     </div>
                 </div>
             )}
 
-            {showDetails && (
+            {showDetails && selectedApplication && (
                 <div className="fixed inset-0 bg-gray-300 bg-opacity-95 flex items-center justify-center z-50">
                     <div className="bg-white p-8 rounded-xl max-w-2xl w-full relative shadow-lg">
                         <button
@@ -120,19 +140,19 @@ const UserDashboard = () => {
                         </h2>
                         <div className="grid grid-cols-2 gap-y-2 text-sm">
                             <div className="font-semibold">নাম :</div>
-                            <div>{application.name}</div>
+                            <div>{selectedApplication.name}</div>
 
                             <div className="font-semibold">বিষয় :</div>
-                            <div>{application?.infoType}</div>
+                            <div>{selectedApplication?.infoType}</div>
 
                             <div className="font-semibold">তথ্য প্রদানকারী কর্তৃপক্ষ :</div>
-                            <div>{application?.office}</div>
+                            <div>{selectedApplication?.office}</div>
 
                             <div className="font-semibold">তারিখ :</div>
-                            <div>২২ এপ্রিল ২০২৫</div>
+                            <div>{new Date(selectedApplication.createdAt).toLocaleString()}</div>
 
                             <div className="font-semibold">স্ট্যাটাস :</div>
-                            <div>pending</div>
+                            <div>{selectedApplication?.status}</div>
                         </div>
                     </div>
                 </div>
