@@ -27,26 +27,27 @@ export default function CompletedForm() {
     const input = contentRef.current
     const pages = input.querySelectorAll('.pdf-page')
     const pdf = new jsPDF('p', 'mm', 'a4')
-
+  
     for (let i = 0; i < pages.length; i++) {
       const canvas = await html2canvas(pages[i], {
-        scale: 3,
+        scale: 1.5, // আগের 3 এর জায়গায় কম
         useCORS: true
       })
-      const imgData = canvas.toDataURL('image/png')
+      const imgData = canvas.toDataURL('image/jpeg', 0.7) // jpeg + কম কোয়ালিটি
       const imgProps = pdf.getImageProperties(imgData)
       const pdfWidth = pdf.internal.pageSize.getWidth()
       const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width
-
+  
       if (i !== 0) pdf.addPage()
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight)
+      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight, '', 'FAST') // compression
     }
-
+  
     pdf.save("RTI-Application.pdf")
     setIsGenerating(false)
     toast.success("PDF সফলভাবে তৈরি হয়েছে!")
-    router.push('/userDashboard')  // Redirect after generating PDF
+    router.push('/userDashboard')
   }
+  
 
   const printForm = () => {
     window.print()
