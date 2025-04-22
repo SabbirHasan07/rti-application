@@ -32,8 +32,8 @@ const adminDashboard = () => {
             submittedAt: '২০২৫-০৪-২০',
             status: 'পেন্ডিং',
             appealed: false,
-            feedback: 'তথ্য পেয়েছেন',
-            timeTaken: '১৫ দিন',
+            feedback: '',
+            timeTaken: '',
         },
         {
             id: 2,
