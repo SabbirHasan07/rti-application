@@ -39,7 +39,7 @@ export default function LoginPage() {
       )
       toast.success("অ্যাডমিন হিসেবে লগইন সফল")
       setTimeout(() => {
-        router.push("/admin-dashboard")
+        router.push("/adminDashboard")
       }, 1500)
     } else if (isGeneralUser) {
       toast.success("সাধারণ ইউজার হিসেবে লগইন সফল")
