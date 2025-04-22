@@ -71,7 +71,7 @@ export default function RegisterPage() {
 
     toast.success("রেজিস্ট্রেশন সফল হয়েছে!", {
       position: "top-right",
-      autoClose: 2000,
+      autoClose: 500,
       onClose: () => router.push("/login"),
     })
   }

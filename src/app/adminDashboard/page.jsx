@@ -11,6 +11,7 @@ import {
     Tooltip,
     Legend,
 } from 'chart.js';
+import { useRouter } from 'next/navigation';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Tooltip, Legend);
 
@@ -18,6 +19,7 @@ const adminDashboard = () => {
     const [selected, setSelected] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
+    const router = useRouter();
 
     const rtiData = [
         {
@@ -167,7 +169,15 @@ const adminDashboard = () => {
     const paginatedData = rtiData.slice(startIndex, startIndex + itemsPerPage);
 
     return (
-        <div className="max-w-7xl mx-auto p-6 font-sans text-[#212529]">
+        <div className="max-w-7xl mx-auto p-6 font-sans text-[#212529] relative">
+            <div className="absolute top-6 right-6">
+                <button
+                    onClick={() => router.push('/login')}
+                    className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+                >
+                    লগআউট
+                </button>
+            </div>
             <h1 className="text-3xl font-bold text-center text-[#008037] mb-8 border-b pb-4">অ্যাডমিন ড্যাশবোর্ড</h1>
 
             {/* আবেদনকারীর তালিকা */}

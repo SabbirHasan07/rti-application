@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from "react"
+import { useRouter } from "next/navigation"
 import PageOne from "../../components/PageOne"
 import PageTwo from "../../components/PageTwo"
 import PageThree from "../../components/PageThree"
@@ -10,6 +11,7 @@ export default function CompletedForm() {
   const [formData, setFormData] = useState(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const contentRef = useRef(null)
+  const router = useRouter()  // useRouter hook
 
   useEffect(() => {
     const data = sessionStorage.getItem("rtiForm")
@@ -43,10 +45,12 @@ export default function CompletedForm() {
     pdf.save("RTI-Application.pdf")
     setIsGenerating(false)
     toast.success("PDF সফলভাবে তৈরি হয়েছে!")
+    router.push('/userDashboard')  // Redirect after generating PDF
   }
 
   const printForm = () => {
     window.print()
+    router.push('/userDashboard')  // Redirect after printing
   }
 
   if (!formData) return <p className="text-center">লোড হচ্ছে...</p>

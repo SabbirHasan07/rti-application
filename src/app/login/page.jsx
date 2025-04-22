@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { FiLock } from "react-icons/fi"
+import { FiLock, FiEye, FiEyeOff } from "react-icons/fi"
 import { MdPhoneAndroid } from "react-icons/md"
 import toast, { Toaster } from "react-hot-toast"
 
@@ -12,11 +12,14 @@ export default function LoginPage() {
     identifier: "",
     password: "",
   })
+  const [showPassword, setShowPassword] = useState(false)
   const router = useRouter()
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
+
+  const togglePassword = () => setShowPassword(!showPassword)
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -32,7 +35,6 @@ export default function LoginPage() {
       storedUser.password === form.password
 
     if (isAdmin) {
-      // লোকাল স্টোরেজে admin তথ্য সংরক্ষণ
       localStorage.setItem(
         "admin",
         JSON.stringify({ name: "admin", role: "admin" })
@@ -42,9 +44,13 @@ export default function LoginPage() {
         router.push("/adminDashboard")
       }, 1500)
     } else if (isGeneralUser) {
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ name: storedUser.name, role: "user" })
+      )
       toast.success("সাধারণ ইউজার হিসেবে লগইন সফল")
       setTimeout(() => {
-        router.push("/apply")
+        router.push("/userDashboard")
       }, 1500)
     } else {
       toast.error("ভুল মোবাইল/ইমেইল অথবা পাসওয়ার্ড")
@@ -72,13 +78,19 @@ export default function LoginPage() {
           <div className="relative">
             <FiLock className="absolute top-3.5 left-3 text-gray-400" size={20} />
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               name="password"
               value={form.password}
               onChange={handleChange}
               placeholder="পাসওয়ার্ড"
-              className="w-full pl-10 pr-4 py-2.5 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#008037] transition text-sm"
+              className="w-full pl-10 pr-10 py-2.5 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#008037] transition text-sm"
             />
+            <span
+              className="absolute top-3.5 right-3 text-gray-500 cursor-pointer"
+              onClick={togglePassword}
+            >
+              {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+            </span>
           </div>
 
           <button
