@@ -1,5 +1,4 @@
-"use client"
-
+'use client'
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
@@ -7,7 +6,6 @@ import { toast, ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import { FiUser, FiLock, FiMail, FiEye, FiEyeOff } from "react-icons/fi"
 import { MdPhoneAndroid } from "react-icons/md"
-import { FaIdCard } from "react-icons/fa"
 
 const convertToBangla = (input) => {
   const englishToBanglaMap = {
@@ -29,10 +27,9 @@ export default function RegisterPage() {
   const router = useRouter()
 
   const [form, setForm] = useState({
-    name: "",
+    fullName: "",
     phone: "",
     email: "",
-    nid: "",
     password: "",
     confirmPassword: "",
   })
@@ -40,40 +37,29 @@ export default function RegisterPage() {
   const [errors, setErrors] = useState({})
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [loading, setLoading] = useState(false) 
 
   const handleChange = (e) => {
     const { name, value } = e.target
 
-    // Allow only Bangla characters in the name field
-    if (name === 'name') {
-      const banglaRegex = /^[\u0980-\u09FF\s]*$/; // Matches Bangla characters and spaces
+    if (name === 'fullName') {
+      const banglaRegex = /^[\u0980-\u09FF\s]*$/; 
       if (!banglaRegex.test(value)) {
-        return; // Do not update if the input contains non-Bangla characters
+        return; 
       }
     }
 
-    // Handle phone number (11 digits)
     if (name === 'phone') {
-      const phoneValue = value.replace(/[^\d]/g, '') // Remove any non-numeric characters
+      const phoneValue = value.replace(/[^\d]/g, '') 
       if (phoneValue.length <= 11) {
         setForm({ ...form, [name]: phoneValue })
       }
     }
 
-    // Handle NID (13 digits)
-    if (name === 'nid') {
-      const nidValue = value.replace(/[^\d]/g, '') // Remove any non-numeric characters
-      if (nidValue.length <= 13) {
-        setForm({ ...form, [name]: nidValue })
-      }
-    }
-
-    // Convert phone and nid fields to Bangla
-    if (name === 'phone' || name === 'nid') {
+    if (name === 'phone') {
       const banglaValue = convertToBangla(value)
       setForm({ ...form, [name]: banglaValue })
     } else {
-      // For name and password fields, just update the value
       setForm({ ...form, [name]: value })
     }
 
@@ -83,11 +69,10 @@ export default function RegisterPage() {
   const validateForm = () => {
     const newErrors = {}
 
-    if (!form.name) newErrors.name = "নাম অবশ্যই দিতে হবে"
+    if (!form.fullName) newErrors.fullName = "নাম অবশ্যই দিতে হবে"
     if (!form.phone) newErrors.phone = "মোবাইল নম্বর আবশ্যক"
     else if (form.phone.length !== 11) newErrors.phone = "মোবাইল নম্বর ১১ অঙ্কের হতে হবে"
-    if (!form.nid) newErrors.nid = "NID নম্বর আবশ্যক"
-    else if (form.nid.length > 13) newErrors.nid = "NID নম্বর সর্বোচ্চ ১৩ অঙ্কের হতে হবে"
+    
     if (!form.password) newErrors.password = "পাসওয়ার্ড আবশ্যক"
     else if (
       !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(form.password)
@@ -103,48 +88,70 @@ export default function RegisterPage() {
     return newErrors
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-
+  
     const validationErrors = validateForm()
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors)
       return
     }
-
-    const existingUsersRaw = localStorage.getItem("registeredUsers")
-    const existingUsers = existingUsersRaw ? JSON.parse(existingUsersRaw) : []
-
+  
     const userData = {
+      fullName: form.fullName,
       email: form.email,
       phone: form.phone,
       password: form.password,
-      name: form.name,
-      role: "user"
     }
-
-    // Check if user already exists based on email
-    const userExists = existingUsers.some(user => user.email === userData.email)
-
-    if (userExists) {
-      toast.error("এই ইমেইলটি ইতোমধ্যেই রেজিস্টার করা হয়েছে!", {
-        position: "top-right",
+  
+    setLoading(true)
+    try {
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      })
+  
+      if (!response.ok) {
+        const errorData = await response.json()
+  
+        // Check for duplicate account error
+        if (errorData.message.includes("already exists")) {
+          toast.error('এই অ্যাকাউন্টটি ইতিমধ্যে রয়েছে। দয়া করে লগ ইন করুন।', {
+            position: "top-center",
+            autoClose: 3000,
+          })
+        } else {
+          toast.error('ত্রুটি ঘটেছে! দয়া করে আবার চেষ্টা করুন।', {
+            position: "top-center",
+            autoClose: 3000,
+          })
+        }
+        setLoading(false)
+        return
+      }
+  
+      const result = await response.json()
+      if (result.token) {
+        localStorage.setItem('token', result.token)
+        toast.success("রেজিস্ট্রেশন সফল হয়েছে!", {
+          position: "top-center",
+          autoClose: 500,
+          onClose: () => router.push("/userDashboard"),
+        })
+      }
+    } catch (error) {
+      toast.error('এই অ্যাকাউন্টটি ইতিমধ্যে রয়েছে বা রেজিস্ট্রেশন করতে গিয়ে একটি ত্রুটি ঘটেছে ', {
+        position: "top-center",
         autoClose: 3000,
       })
-      return
+    } finally {
+      setLoading(false)
     }
-
-    // Add user to list and save
-    const updatedUsers = [...existingUsers, userData]
-    localStorage.setItem("registeredUsers", JSON.stringify(updatedUsers))
-    localStorage.setItem("loggedInUser", JSON.stringify(userData))
-
-    toast.success("রেজিস্ট্রেশন সফল হয়েছে!", {
-      position: "top-right",
-      autoClose: 500,
-      onClose: () => router.push("/userDashboard"), // or any route after successful login
-    })
   }
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-white flex items-center justify-center px-4">
@@ -152,20 +159,20 @@ export default function RegisterPage() {
       <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
         <h2 className="text-2xl font-bold text-center text-[#008037] mb-6">রেজিস্ট্রেশন করুন</h2>
         <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Name */}
+          {/* Full Name */}
           <div className="relative">
             <FiUser className="absolute top-3.5 left-3 text-gray-400" size={20} />
             <input
               type="text"
-              name="name"
-              value={form.name}
+              name="fullName"
+              value={form.fullName}
               onChange={handleChange}
               placeholder="বাংলা নাম"
               className={`w-full pl-10 pr-4 py-2.5 rounded-md border ${
-                errors.name ? "border-red-500" : "border-gray-300"
+                errors.fullName ? "border-red-500" : "border-gray-300"
               } focus:outline-none focus:ring-2 focus:ring-[#008037] text-sm`}
             />
-            {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+            {errors.fullName && <p className="text-red-500 text-xs mt-1">{errors.fullName}</p>}
           </div>
 
           {/* Phone */}
@@ -195,22 +202,6 @@ export default function RegisterPage() {
               placeholder="ইমেইল (ঐচ্ছিক)"
               className="w-full pl-10 pr-4 py-2.5 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#008037] text-sm"
             />
-          </div>
-
-          {/* NID */}
-          <div className="relative">
-            <FaIdCard className="absolute top-3.5 left-3 text-gray-400" size={18} />
-            <input
-              type="text"
-              name="nid"
-              value={form.nid}
-              onChange={handleChange}
-              placeholder="NID নম্বর"
-              className={`w-full pl-10 pr-4 py-2.5 rounded-md border ${
-                errors.nid ? "border-red-500" : "border-gray-300"
-              } focus:outline-none focus:ring-2 focus:ring-[#008037] text-sm`}
-            />
-            {errors.nid && <p className="text-red-500 text-xs mt-1">{errors.nid}</p>}
           </div>
 
           {/* Password */}
@@ -254,25 +245,28 @@ export default function RegisterPage() {
             >
               {showConfirmPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
             </div>
-            {errors.confirmPassword && (
-              <p className="text-red-500 text-xs mt-1">{errors.confirmPassword}</p>
-            )}
+            {errors.confirmPassword && <p className="text-red-500 text-xs mt-1">{errors.confirmPassword}</p>}
           </div>
 
           <button
             type="submit"
-            className="w-full bg-[#008037] hover:bg-[#006f2f] text-white font-semibold py-2.5 rounded-md transition text-sm"
+            className="w-full py-2.5 bg-[#008037] text-white rounded-md hover:bg-green-700 transition duration-200"
+            disabled={loading} 
           >
-            রেজিস্ট্রেশন করুন
+            {loading ? (
+              <div className="flex justify-center">
+                <div className="w-6 h-6 border-4 border-t-4 border-t-white border-gray-200 rounded-full animate-spin" />
+              </div>
+            ) : (
+              "রেজিস্টার করুন"
+            )}
           </button>
-        </form>
 
-        <div className="mt-6 text-center text-sm">
-          আগে থেকেই অ্যাকাউন্ট আছে?
-          <Link href="/login" className="text-[#008037] font-medium hover:underline ml-1">
-            লগইন করুন
-          </Link>
-        </div>
+          <p className="text-center text-sm text-gray-600">
+            আপনার কি অ্যাকাউন্ট আছে?{" "}
+            <Link href="/auth/login" className="text-[#008037]">লগ ইন করুন</Link>
+          </p>
+        </form>
       </div>
     </div>
   )

@@ -1,5 +1,3 @@
-// tools/hash.js
-import bcrypt from 'bcryptjs';
+const bcrypt = require('bcryptjs');
 
-const password = 'your_admin_password';
-bcrypt.hash(password, 10).then(console.log);
+const hashedPassword = await bcrypt.hash('yourpassword', 10); // Replace 'yourpassword' with the actual password

@@ -21,46 +21,45 @@ export default function LoginPage() {
 
   const togglePassword = () => setShowPassword(!showPassword)
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-  
-    const isAdmin =
-      (form.identifier === "admin@rti.com" || form.identifier === "01700000000") &&
-      form.password === "Admin@123";
-  
-    // Fetch all registered users from localStorage
-    const storedUsers = JSON.parse(localStorage.getItem("registeredUsers")) || [];
-  
-    // Try to find a matching general user
-    const matchedUser = storedUsers.find(
-      (user) =>
-        (user.email === form.identifier || user.phone === form.identifier) &&
-        user.password === form.password
-    );
-  
-    if (isAdmin) {
-      localStorage.setItem(
-        "admin",
-        JSON.stringify({ name: "admin", role: "admin" })
-      );
-      localStorage.setItem("loggedInUser", JSON.stringify({ name: "admin", role: "admin" }));
-  
-      toast.success("অ্যাডমিন হিসেবে লগইন সফল");
-      setTimeout(() => {
-        router.push("/adminDashboard");
-      }, 1500);
-    } else if (matchedUser) {
-      localStorage.setItem("loggedInUser", JSON.stringify({ ...matchedUser , role: "user" }));
-  
-      toast.success("সাধারণ ইউজার হিসেবে লগইন সফল");
-      setTimeout(() => {
-        router.push("/userDashboard");
-      }, 1500);
-    } else {
-      toast.error("ভুল মোবাইল/ইমেইল অথবা পাসওয়ার্ড");
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+
+    try {
+      // Send the login request to the backend API
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          identifier: form.identifier,
+          password: form.password,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        // If the login is successful, store the token and user data
+        localStorage.setItem("authToken", data.token)
+        localStorage.setItem("loggedInUser", JSON.stringify(data.user))
+
+        toast.success("লগইন সফল")
+        setTimeout(() => {
+          // Redirect based on user role
+          if (data.user.role === "admin") {
+            router.push("/adminDashboard")
+          } else {
+            router.push("/userDashboard")
+          }
+        }, 1500)
+      } else {
+        toast.error(data.message || "লগইন ব্যর্থ")
+      }
+    } catch (error) {
+      toast.error("কিছু ত্রুটি ঘটেছে")
     }
-  };
-  
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-white flex items-center justify-center px-4">
