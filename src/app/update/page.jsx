@@ -14,7 +14,7 @@ export default function FeedbackForm() {
     setResponse(value);
     setError('');
     setAppealEnabled(false);
-    setDetails(''); // reset details if changing response
+    setDetails('');
     if (value === 'না') {
       setShowAppeal(true);
     } else {
@@ -34,7 +34,6 @@ export default function FeedbackForm() {
   };
 
   const handleSaveFeedback = () => {
-    // Validation
     if (!response) {
       setError('অনুগ্রহ করে উত্তর পাওয়ার তথ্য নির্বাচন করুন।');
       return;
@@ -44,7 +43,6 @@ export default function FeedbackForm() {
       return;
     }
 
-    // If validation passed
     setError('');
     setAppealEnabled(true);
     // You can add data saving logic here
@@ -102,9 +100,14 @@ export default function FeedbackForm() {
 
           {showAppeal && (
             <button
+              onClick={() => {
+                if (appealEnabled) {
+                  router.push('/AppealForm');
+                }
+              }}
               disabled={!appealEnabled}
               className={`${
-                appealEnabled ? 'bg-gray-700 hover:bg-gray-900 ' : 'bg-red-300 cursor-not-allowed'
+                appealEnabled ? 'bg-gray-700 hover:bg-gray-900' : 'bg-red-300 cursor-not-allowed'
               } text-white font-bold px-6 py-2 rounded shadow`}
             >
               আপিলের জন্য আবেদন করুন
