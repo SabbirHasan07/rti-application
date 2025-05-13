@@ -29,10 +29,11 @@ export async function POST(req) {
 
     return NextResponse.json({
       token,
+      id: user.id,
       fullName: user.fullName,
       email: user.email,
       phone: user.phone,
-      role: user.role,
+      role: user.role
     });
   } catch (error) {
     return NextResponse.json({ error: 'User exists or error' }, { status: 400 });

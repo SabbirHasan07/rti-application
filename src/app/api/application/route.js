@@ -1,0 +1,63 @@
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
+
+// POST handler for creating a new application
+export async function POST(req) {
+  const body = await req.json();
+
+  try {
+    const application = await prisma.application.create({
+      data: {
+        userId: body.userId,
+        data: body.data,
+      },
+    });
+
+    return Response.json(application);
+  } catch (error) {
+    console.error(error);
+    return new Response(JSON.stringify({ error: 'Create failed' }), { status: 500 });
+  }
+}
+
+// GET handler for fetching applications with user details included
+export async function GET() {
+  try {
+    const applications = await prisma.application.findMany({
+      include: {
+        user: true, // Include user details along with each application
+      },
+    });
+
+    return new Response(JSON.stringify(applications), { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return new Response(JSON.stringify({ error: 'Fetch failed' }), { status: 500 });
+  }
+}
+
+// DELETE handler for deleting an application
+export async function DELETE(req) {
+  const { id } = req.query; // Get the application ID from the request's query parameters
+
+  try {
+    // Check if the application exists before deleting
+    const application = await prisma.application.findUnique({
+      where: { id: parseInt(id, 10) },
+    });
+
+    if (!application) {
+      return new Response(JSON.stringify({ error: 'Application not found' }), { status: 404 });
+    }
+
+    // Delete the application
+    await prisma.application.delete({
+      where: { id: parseInt(id, 10) },
+    });
+
+    return new Response(JSON.stringify({ message: 'Application deleted successfully' }), { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return new Response(JSON.stringify({ error: 'Delete failed' }), { status: 500 });
+  }
+}

@@ -8,7 +8,7 @@ export default function ProtectedLayout({ children }) {
     const router = useRouter();
     
       useEffect(() => {
-        const user = localStorage.getItem("loggedInUser");
+        const user = localStorage.getItem("token");
     
         if (!user) {
           router.push("/login");

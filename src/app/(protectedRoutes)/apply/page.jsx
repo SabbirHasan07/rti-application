@@ -1,150 +1,290 @@
-"use client"
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import Input from "@/components/Input"
-import Button from "@/components/Button"
-import { faUser, faAddressCard, faPhone, faEnvelope, faInfoCircle, faHome } from "@fortawesome/free-solid-svg-icons"
+'use client';
 
-export default function RtiFormPage() {
-  const router = useRouter()
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { FiMail, FiPhone, FiUser, FiMapPin, FiCheckCircle } from 'react-icons/fi';
+import useApi from '../../../hooks/officeApi';
+
+export default function RtiForm() {
+  const router = useRouter();
+  const { offices, loading, error, fetchOffices } = useApi();
 
   const [form, setForm] = useState({
-    name: "", father: "", mother: "",
-    presentAddress: "", permanentAddress: "",
-    office: "", infoType: "", description: "",
-    method: "ছাপানো কপি",
-    email: "", phone: ""
-  })
+    name: '',
+    father: '',
+    mother: '',
+    presentAddress: '',
+    permanentAddress: '',
+    office: '',
+    officer: '',
+    infoType: '',
+    description: '',
+    method: [],
+    email: '',
+    phone: '',
+  });
 
-  const [user, setUser] = useState(null)
+  const [officers, setOfficers] = useState([]);
 
-  useEffect(() => {
-    const stored = sessionStorage.getItem("rtiForm")
-    const localUser = localStorage.getItem("loggedInUser")
-
-    let defaultData = {
-      name: "", email: "", phone: ""
-    }
-
-    if (localUser) {
-      const parsedUser = JSON.parse(localUser)
-      setUser(parsedUser)
-      defaultData = {
-        name: parsedUser?.name || "",
-        email: parsedUser?.email || "",
-        phone: parsedUser?.phone || ""
-      }
-    }
-
-    if (stored) {
-      const parsedStored = JSON.parse(stored)
-      setForm({ ...defaultData, ...parsedStored })
-    } else {
-      setForm(prev => ({ ...prev, ...defaultData }))
-    }
-  }, [])
+  const methodOptions = ['ফটোকপি', 'লিখিত', 'ই-মেইল', 'ফ্যাক্স'];
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value })
-  }
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+
+    if (name === 'office') {
+      const filteredOfficers = offices.filter((o) => o.officeType === value);
+      setOfficers(filteredOfficers);
+      setForm((prev) => ({ ...prev, officer: '' }));
+    }
+  };
+
+  const handleMethodCheckbox = (value) => {
+    setForm((prev) => {
+      const methods = prev.method.includes(value)
+        ? prev.method.filter((m) => m !== value)
+        : [...prev.method, value];
+      return { ...prev, method: methods };
+    });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const loggedInUserRaw = localStorage.getItem("loggedInUser");
-    const loggedInUser = loggedInUserRaw ? JSON.parse(loggedInUserRaw) : null;
-
-    if (!loggedInUser) {
-      toast.error("লগইন করতে হবে আবেদন জমা দেওয়ার জন্য");
-      router.push("/login");
+    const allRaw = localStorage.getItem('applications');
+    const allApplications = allRaw ? JSON.parse(allRaw) : [];
+    if (form.method.length === 0) {
+      alert('কমপক্ষে একটি তথ্য প্রাপ্তির পদ্ধতি নির্বাচন করুন।');
       return;
     }
 
-    const allApplicationsRaw = localStorage.getItem('applications');
-    const allApplicationsData = allApplicationsRaw ? JSON.parse(allApplicationsRaw) : [];
+    // Officer full info
+    const selectedOfficer = officers.find((o) => o.name === form.officer);
+    const officerInfo = selectedOfficer
+      ? {
+        name: selectedOfficer.name,
+        designation: selectedOfficer.designation,
+        district: selectedOfficer.district,
+      }
+      : null;
 
-    const formWithUser = {
+    const newApp = {
       ...form,
-      application_id: allApplicationsData.length + 1,
-      createdBy: loggedInUser.email,
-      createdAt: new Date().toISOString(), // Optional: timestamp
+      officerInfo,
+      application_id: allApplications.length + 1,
+      createdAt: new Date().toISOString(),
       appealed: false,
       feedback: 'পরীক্ষাধীন',
       timeTaken: '২৮ দিন',
       status: 'পেন্ডিং',
     };
 
-    // Save to sessionStorage for preview
-    sessionStorage.setItem("rtiForm", JSON.stringify(formWithUser));
+    localStorage.setItem('applications', JSON.stringify([...allApplications, newApp]));
+    sessionStorage.setItem('rtiForm', JSON.stringify(newApp));
 
-    // Save to applications array in localStorage
-    const existingAppsRaw = localStorage.getItem("applications");
-    const existingApps = existingAppsRaw ? JSON.parse(existingAppsRaw) : [];
-
-    const updatedApps = [...existingApps, formWithUser];
-    localStorage.setItem("applications", JSON.stringify(updatedApps));
-
-    router.push("/preview");
+    router.push('/preview');
   };
 
+  useEffect(() => {
+    const saved = sessionStorage.getItem('rtiForm');
+    const name = localStorage.getItem('name') || '';
+    const email = localStorage.getItem('email') || '';
+    const phone = localStorage.getItem('phone') || '';
+
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      setForm((prev) => ({ ...prev, ...parsed }));
+    } else {
+      setForm((prev) => ({ ...prev, name, email, phone }));
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchOffices();
+  }, [fetchOffices]);
+
   return (
-    <div className="max-w-3xl mx-auto mt-10 bg-white p-8 rounded-lg shadow-lg border border-gray-200">
-      <h1 className="text-md mb-9 font-semibold text-center mb-6 ">তথ্য অধিকার আবেদন ফর্ম</h1>
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm ">
-        <Input name="name" placeholder="আবেদনকারীর নাম" value={form.name} onChange={() => { }} icon={faUser} disabled />
-        <Input name="father" placeholder="পিতার নাম" value={form.father} onChange={handleChange} icon={faAddressCard} />
-        <Input name="mother" placeholder="মাতার নাম" value={form.mother} onChange={handleChange} icon={faAddressCard} />
-        <Input name="presentAddress" placeholder="বর্তমান ঠিকানা" value={form.presentAddress} onChange={handleChange} icon={faHome} />
-        <Input name="permanentAddress" placeholder="স্থায়ী ঠিকানা" value={form.permanentAddress} onChange={handleChange} icon={faHome} />
-        <Input name="infoType" placeholder="কি ধরেনর তথ্য চান" value={form.infoType} onChange={handleChange} icon={faInfoCircle} />
+    <div className="bg-green-[300px]">
+      <div className="max-w-3xl mx-auto p-10 md:p-24 shadow">
+        <h1 className="text-xl text-green-700 font-bold text-center mb-6">তথ্য অধিকার আবেদন ফর্ম</h1>
 
-        <div className="col-span-2">
-          <select
-            name="office"
-            value={form.office}
-            onChange={handleChange}
-            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-          >
-            <option value="">-- দপ্তর নির্বাচন করুন --</option>
-            <option value="শাহনূর রহমান | দায়িত্ব প্রাপ্ত তথ্য প্রদানকারী কর্মকর্তা | জেলা প্রশাসকের কার্যালয়, নেত্রকোণা">জনাব শাহনূর রহমান | জেলা প্রশাসকের কার্যালয়, নেত্রকোণা</option>
-            <option value="শরীফা হক | দায়িত্ব প্রাপ্ত তথ্য প্রদানকারী কর্মকর্তা | জেলা প্রশাসকের কার্যালয়, টাঙ্গাইল">শরীফা হক | জেলা প্রশাসকের কার্যালয়, টাঙ্গাইল</option>
-          </select>
-        </div>
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+          <div className="flex items-center border p-2 rounded text-green-700">
+            <FiUser className="mr-2" />
+            <input
+              name="name"
+              value={form.name}
+              readOnly
+              className="flex-1 focus:outline-none focus:border-transparent"
+              placeholder="নাম"
+              required
+            />
+          </div>
 
-        <div className="col-span-2">
-          <select
-            name="method"
-            value={form.method}
-            onChange={handleChange}
-            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-          >
-            <option value="যে পদ্ধতিতে তথ্য পাইেত আগ্রহী">-- যে পদ্ধতিতে তথ্য পাইেত আগ্রহী --</option>
-            <option value="ফটোকপি">ফটোকপি</option>
-            <option value="লিখিত">লিখিত</option>
-            <option value="ই-মেইল">ই-মেইল</option>
-            <option value="ফ্যাক্স">ফ্যাক্স</option>
-          </select>
-        </div>
+          <div className="flex items-center border p-2 rounded text-green-700">
+            <FiUser className="mr-2" />
+            <input
+              name="father"
+              value={form.father}
+              onChange={handleChange}
+              className="flex-1 focus:outline-none focus:border-transparent"
+              placeholder="পিতার নাম"
+              required
+            />
+          </div>
 
-        <div className="col-span-2">
-          <textarea
-            name="description"
-            placeholder="আপনার তথ্যের বিস্তারিত বিবরণ"
-            value={form.description}
-            onChange={handleChange}
-            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 h-32 resize-none text-sm"
-          ></textarea>
-        </div>
+          <div className="flex items-center border p-2 rounded text-green-700">
+            <FiUser className="mr-2" />
+            <input
+              name="mother"
+              value={form.mother}
+              onChange={handleChange}
+              className="flex-1 focus:outline-none focus:border-transparent"
+              placeholder="মাতার নাম"
+              required
+            />
+          </div>
 
-        <Input name="email" value={form.email} onChange={() => { }} disabled icon={faEnvelope} />
-        <Input name="phone" value={form.phone} onChange={() => { }} disabled icon={faPhone} />
+          <div className="flex items-center border p-2 rounded text-green-700">
+            <FiMapPin className="mr-2" />
+            <input
+              name="presentAddress"
+              value={form.presentAddress}
+              onChange={handleChange}
+              className="flex-1 focus:outline-none focus:border-transparent"
+              placeholder="বর্তমান ঠিকানা"
+              required
+            />
+          </div>
 
-        <div className="col-span-2 text-center">
-          <Button type="submit" className="w-full p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-200 text-sm">
-            আবেদন তৈরি করুন
-          </Button>
-        </div>
-      </form>
+          <div className="flex items-center border p-2 rounded text-green-700">
+            <FiMapPin className="mr-2" />
+            <input
+              name="permanentAddress"
+              value={form.permanentAddress}
+              onChange={handleChange}
+              className="flex-1 focus:outline-none focus:border-transparent"
+              placeholder="স্থায়ী ঠিকানা"
+              required
+            />
+          </div>
+
+          <div className="flex items-center border p-2 rounded text-green-700">
+            <FiMail className="mr-2" />
+            <input
+              name="infoType"
+              value={form.infoType}
+              onChange={handleChange}
+              className="flex-1 focus:outline-none focus:border-transparent"
+              placeholder="কি ধরনের তথ্য চান"
+            />
+          </div>
+
+          <div className="col-span-2">
+            <label className="text-green-700">দপ্তর নির্বাচন করুন:</label>
+            <select
+              name="office"
+              value={form.office}
+              onChange={handleChange}
+              className="w-full p-2 border rounded text-green-700"
+            >
+              <option value="">-- নির্বাচন করুন --</option>
+              {loading ? (
+                <option>লোড হচ্ছে...</option>
+              ) : error ? (
+                <option>{error}</option>
+              ) : (
+                [...new Set(offices.map((o) => o.officeType))].map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))
+              )}
+            </select>
+          </div>
+
+          {officers.length > 0 && (
+            <div className="col-span-2">
+              <label className="text-green-700">অফিসার নির্বাচন করুন:</label>
+              <select
+                name="officer"
+                value={form.officer}
+                onChange={handleChange}
+                className="w-full p-2 border rounded text-green-700"
+              >
+                <option value="">-- একজন নির্বাচন করুন --</option>
+                {officers.map((officer) => (
+                  <option key={officer.id} value={officer.name}>
+                    {officer.name} ({officer.designation}, {officer.district})
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          <div className="col-span-2">
+            <label className="text-green-700 mb-2 block">আপনি কোন কোন পদ্ধতিতে তথ্য পেতে চান?</label>
+            <div className="flex flex-wrap gap-4">
+              {methodOptions.map((method) => (
+                <label key={method} className="text-green-700 flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={form.method.includes(method)}
+                    onChange={() => handleMethodCheckbox(method)}
+                    className="mr-1"
+                      
+                  />
+                  <FiCheckCircle className="mr-1" />
+                  {method}
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <div className="col-span-2">
+            <textarea
+              name="description"
+              value={form.description}
+              onChange={handleChange}
+              className="w-full p-3 border rounded text-green-700 focus:outline-none focus:border-transparent"
+              placeholder="তথ্যের বিস্তারিত বর্ণনা লিখুন"
+              required
+            />
+          </div>
+
+          <div className="flex items-center border p-2 rounded text-green-700">
+            <FiMail className="mr-2" />
+            <input
+              name="email"
+              value={form.email}
+              readOnly
+              className="flex-1 focus:outline-none focus:border-transparent"
+              placeholder="ই-মেইল"
+              
+            />
+          </div>
+
+          <div className="flex items-center border p-2 rounded text-green-700">
+            <FiPhone className="mr-2" />
+            <input
+              name="phone"
+              value={form.phone}
+              readOnly
+              className="flex-1 focus:outline-none focus:border-transparent"
+              placeholder="ফোন নম্বর"
+            />
+          </div>
+
+          <div className="col-span-2">
+            <button
+              type="submit"
+              className="w-full bg-green-600 text-white py-3 rounded hover:bg-green-700 transition"
+            >
+              আবেদন জমা দিন
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
-  )
+  );
 }

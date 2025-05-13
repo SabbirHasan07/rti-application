@@ -14,7 +14,7 @@ export default function PageOne({ onNext, showButton = true }) {
 
   if (!data) return <p className="text-center mt-10">লোড হচ্ছে...</p>
 
-  const officeParts = data?.office?.split('|') || []
+  
 
   return (
     <div>
@@ -23,11 +23,8 @@ export default function PageOne({ onNext, showButton = true }) {
 
         <div className="my-9">
           <p className="font-bold text-base">বরাবর</p>
-          {officeParts.map((line, index) => (
-            <div key={index} className='text-base mt-2'>
-              <p className={index === 0 ? 'font-bold' : ''}>{line.trim()}</p>
-            </div>
-          ))}
+          <p className='font-bold mt-2'>{data?.officerInfo?.name}</p>
+          <p>{data?.officerInfo?.designation}, <span></span>{data?.officerInfo?.district}</p>
 
         </div>
 
@@ -41,7 +38,7 @@ export default function PageOne({ onNext, showButton = true }) {
         </div>
 
         <div>
-          <p className="my-6 text-base">জনাব,</p>
+          <p className="my-3 text-base">জনাব,</p>
           <p className="text-base">
             শুভেচ্ছা ! তথ্য অধিকার আইন, ২০০৯-এর ধারা ৮(৩) অনুযায়ী নিম্ন স্বাক্ষরকারী
             <span className="font-bold"> {data?.infoType} </span>
@@ -56,8 +53,8 @@ export default function PageOne({ onNext, showButton = true }) {
         </div>
 
         <div>
-          <p className="my-6 text-base">বিনীত,</p>
-          <p className="my-6 font-semibold text-base">{data?.name}</p>
+          <p className="my-3 text-base">বিনীত,</p>
+          <p className="my-3 font-semibold text-base">{data?.name}</p>
         </div>
 
       </div>

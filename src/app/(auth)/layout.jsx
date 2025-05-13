@@ -7,10 +7,11 @@ export default function AuthLayout({ children }) {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        const userRaw = localStorage.getItem("loggedInUser");
-        const user = JSON.parse(userRaw)
-        if (user) {
-            if(user.role === 'admin'){
+        const userRaw = localStorage.getItem("role");
+       
+        
+        if (userRaw) {
+            if(userRaw.role === 'ADMIN'){
                 router.push("/adminDashboard");
             }else{
                 router.push("/userDashboard");

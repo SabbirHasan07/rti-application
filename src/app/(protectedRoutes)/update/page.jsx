@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 export default function FeedbackForm() {
   const [response, setResponse] = useState('');
   const [details, setDetails] = useState('');
+  const [wantToAppeal, setWantToAppeal] = useState('');
   const [showAppeal, setShowAppeal] = useState(false);
   const [appealEnabled, setAppealEnabled] = useState(false);
   const [error, setError] = useState('');
@@ -15,6 +16,7 @@ export default function FeedbackForm() {
     setError('');
     setAppealEnabled(false);
     setDetails('');
+    setWantToAppeal('');
     if (value === 'না') {
       setShowAppeal(true);
     } else {
@@ -26,6 +28,7 @@ export default function FeedbackForm() {
     setDetails(value);
     setError('');
     setAppealEnabled(false);
+    setWantToAppeal('');
     if (value === 'আংশিক তথ্য' || value === 'কোন তথ্য দেয় নি') {
       setShowAppeal(true);
     } else {
@@ -45,7 +48,13 @@ export default function FeedbackForm() {
 
     setError('');
     setAppealEnabled(true);
-    // You can add data saving logic here
+
+    // Show all data in console
+    console.log('Feedback Data:', {
+      response,
+      details,
+      wantToAppeal,
+    });
   };
 
   return (
@@ -90,24 +99,41 @@ export default function FeedbackForm() {
           </div>
         )}
 
+        {showAppeal && (
+          <div>
+            <label className="block mb-2 font-semibold">আপনি কি আপিল করতে চান?</label>
+            <select
+              className="w-full border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-[#008037]"
+              value={wantToAppeal}
+              onChange={(e) => setWantToAppeal(e.target.value)}
+            >
+              <option value="">-- নির্বাচন করুন --</option>
+              <option value="হ্যাঁ">হ্যাঁ</option>
+              <option value="না">না</option>
+            </select>
+          </div>
+        )}
+
         <div className="flex flex-wrap gap-4 justify-center mt-4">
           <button
             onClick={handleSaveFeedback}
             className="bg-[#008037] hover:bg-[#006f2f] text-white font-bold px-6 py-2 rounded shadow"
           >
-            সংরক্ষণ করুন এবং চালিয়ে যান
+            সংরক্ষণ করুন
           </button>
 
           {showAppeal && (
             <button
               onClick={() => {
-                if (appealEnabled) {
+                if (appealEnabled && wantToAppeal === 'হ্যাঁ') {
                   router.push('/AppealForm');
                 }
               }}
-              disabled={!appealEnabled}
+              disabled={!appealEnabled || wantToAppeal !== 'হ্যাঁ'}
               className={`${
-                appealEnabled ? 'bg-gray-700 hover:bg-gray-900' : 'bg-red-300 cursor-not-allowed'
+                appealEnabled && wantToAppeal === 'হ্যাঁ'
+                  ? 'bg-gray-700 hover:bg-gray-900'
+                  : 'bg-red-300 cursor-not-allowed'
               } text-white font-bold px-6 py-2 rounded shadow`}
             >
               আপিলের জন্য আবেদন করুন

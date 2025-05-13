@@ -27,13 +27,13 @@ export default function PageTwo({ onNext, showButton = true }) {
 
                     {/* আবেদনকারীর তথ্য */}
                     <div className="mb-4 text-base space-y-2">
-                        <div className="flex"><span className="w-64">১। আবেদনকারীর নাম</span><span>: {formData.name}</span></div>
-                        <div className="flex"><span className="w-64">পিতার নাম</span><span>: {formData.father}</span></div>
-                        <div className="flex"><span className="w-64">মাতার নাম</span><span>: {formData.mother}</span></div>
-                        <div className="flex"><span className="w-64">বর্তমান ঠিকানা</span><span>: {formData.presentAddress}</span></div>
-                        <div className="flex"><span className="w-64">স্থায়ী ঠিকানা</span><span>: {formData.permanentAddress}</span></div>
-                        <div className="flex"><span className="w-64">ফ্যাক্স, ই-মেইল, টেলিফোন</span><span>: {formData.email}</span></div>
-                        <div className="flex"><span className="w-64">মোবাইল</span><span>: {formData.phone}</span></div>
+                        <div className="flex"><span className="w-72">১। আবেদনকারীর নাম</span><span>: {formData.name}</span></div>
+                        <div className="flex"><span className="w-72">পিতার নাম</span><span>: {formData.father}</span></div>
+                        <div className="flex"><span className="w-72">মাতার নাম</span><span>: {formData.mother}</span></div>
+                        <div className="flex"><span className="w-72">বর্তমান ঠিকানা</span><span>: {formData.presentAddress}</span></div>
+                        <div className="flex"><span className="w-72">স্থায়ী ঠিকানা</span><span>: {formData.permanentAddress}</span></div>
+                        <div className="flex"><span className="w-72">ফ্যাক্স, ই-মেইল, টেলিফোন</span><span>: {formData.email}</span></div>
+                        <div className="flex"><span className="w-72">মোবাইল</span><span>: {formData.phone}</span></div>
                     </div>
 
                     {/* তথ্যের বিবরণ */}
@@ -46,13 +46,13 @@ export default function PageTwo({ onNext, showButton = true }) {
 
                     {/* তথ্য পাওয়ার মাধ্যম */}
                     <div className="mb-4 text-base">
-                        <div className="flex"><span className="w-64">৩।  কোন পদ্ধতিতে তথ্য পাইতে আগ্রহী</span><span>: {formData?.method}</span></div>
+                        <div className="flex"> <span className="w-72">৩।  কোন পদ্ধতিতে তথ্য পাইতে আগ্রহী</span><span>: {formData?.method?.join(' / ')}</span></div>
                     </div>
 
                     {/* তথ্য গ্রহণকারীর ঠিকানা */}
                     <div className="mb-4 text-base space-y-2">
-                        <div className="flex"><span className="w-64">৪। তথ্য গ্রহণকারীর নাম ও ঠিকানা</span><span>: {formData.name}</span></div>
-                        <div className="flex"><span className="w-64"></span><span>: {formData.presentAddress}</span></div>
+                        <div className="flex"><span className="w-72">৪। তথ্য গ্রহণকারীর নাম ও ঠিকানা</span><span>: {formData.name}</span></div>
+                        <div className="flex"><span className="w-72"></span><span>: {formData.presentAddress}</span></div>
                     </div>
                 </div>
 

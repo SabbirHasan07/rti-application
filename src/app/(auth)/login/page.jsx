@@ -9,7 +9,7 @@ import toast, { Toaster } from "react-hot-toast"
 
 export default function LoginPage() {
   const [form, setForm] = useState({
-    identifier: "",
+    phone: "",
     password: "",
   })
   const [showPassword, setShowPassword] = useState(false)
@@ -25,34 +25,35 @@ export default function LoginPage() {
     e.preventDefault()
 
     try {
-      // Send the login request to the backend API
       const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          identifier: form.identifier,
+          phone: form.phone,
           password: form.password,
         }),
       })
 
       const data = await response.json()
+      console.log(data)
 
       if (response.ok) {
-        // If the login is successful, store the token and user data
-        localStorage.setItem("authToken", data.token)
-        localStorage.setItem("loggedInUser", JSON.stringify(data.user))
-
+        localStorage.setItem("token", data.token)
+        localStorage.setItem("userId", data.id)
+        localStorage.setItem("name", data.fullName)
+        localStorage.setItem("email", data.email)
+        localStorage.setItem("phone", data.phone)
+        localStorage.setItem("role", data.role)
         toast.success("লগইন সফল")
-        setTimeout(() => {
-          // Redirect based on user role
-          if (data.user.role === "admin") {
+       
+          if (data.role === "ADMIN") {
             router.push("/adminDashboard")
           } else {
             router.push("/userDashboard")
           }
-        }, 1500)
+        
       } else {
         toast.error(data.message || "লগইন ব্যর্থ")
       }
@@ -71,10 +72,10 @@ export default function LoginPage() {
             <MdPhoneAndroid className="absolute top-3.5 left-3 text-gray-400" size={20} />
             <input
               type="text"
-              name="identifier"
-              value={form.identifier}
+              name="phone"
+              value={form.phone}
               onChange={handleChange}
-              placeholder="মোবাইল নম্বর বা ইমেইল"
+              placeholder="মোবাইল নম্বর"
               className="w-full pl-10 pr-4 py-2.5 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#008037] transition text-sm"
             />
           </div>

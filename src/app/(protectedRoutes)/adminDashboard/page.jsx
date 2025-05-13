@@ -4,11 +4,11 @@ import { useEffect, useState, useRef } from 'react';
 import { Bar, Doughnut } from 'react-chartjs-2';
 import { useRouter } from 'next/navigation';
 import { FaBell, FaWpforms, FaDatabase } from 'react-icons/fa';
-import { ApplicationList } from '../../components/AdminDashboard/ApplicationList';
-import { Pagination } from '../../components/AdminDashboard/Pagination';
-import { NotificationModal } from '../../components/AdminDashboard/NotificationModal';
-import { ApplicantDetailModal } from '../../components/AdminDashboard/ApplicantDetailModal';
-import { ChartCard } from '../../components/AdminDashboard/ChartCard';
+import { ApplicationList } from '../../../components/AdminDashboard/ApplicationList';
+import { Pagination } from '../../../components/AdminDashboard/Pagination';
+import { NotificationModal } from '../../../components/AdminDashboard/NotificationModal';
+import { ApplicantDetailModal } from '../../../components/AdminDashboard/ApplicantDetailModal';
+import { ChartCard } from '../../../components/AdminDashboard/ChartCard';
 
 import {
     Chart as ChartJS,
@@ -117,7 +117,12 @@ const AdminDashboard = () => {
                 {/* Logout */}
                 <button
                     onClick={() => {
-                        localStorage.removeItem('loggedInUser');
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('name');
+                        localStorage.removeItem('phone');
+                        localStorage.removeItem('email');
+                        localStorage.removeItem('userId');
+                        localStorage.removeItem('role');
                         router.push('/login');
                     }}
                     className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"

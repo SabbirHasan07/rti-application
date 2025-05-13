@@ -134,8 +134,14 @@ export default function RegisterPage() {
       }
   
       const result = await response.json()
+     console.log(result)
       if (result.token) {
         localStorage.setItem('token', result.token)
+        localStorage.setItem('userId', result.id)
+        localStorage.setItem('name', result.fullName)
+        localStorage.setItem('email', result.email)
+        localStorage.setItem('phone', result.phone)
+        localStorage.setItem('role', result.role)
         toast.success("রেজিস্ট্রেশন সফল হয়েছে!", {
           position: "top-center",
           autoClose: 500,

@@ -11,7 +11,7 @@ export default function CompletedForm() {
   const [formData, setFormData] = useState(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const contentRef = useRef(null)
-  const router = useRouter()  // useRouter hook
+  const router = useRouter()
 
   useEffect(() => {
     const data = sessionStorage.getItem("rtiForm")
@@ -20,6 +20,34 @@ export default function CompletedForm() {
     }
   }, [])
 
+  // Save data to database
+  const saveToDatabase = async () => {
+    try {
+      const userId = localStorage.getItem("userId")
+      if (!userId) {
+        toast.error("ব্যবহারকারীর তথ্য পাওয়া যায়নি।")
+        return
+      }
+
+      const res = await fetch("/api/application", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          data: formData,
+          userId,
+        }),
+      })
+
+      if (!res.ok) throw new Error("সার্ভারে সংরক্ষণ ব্যর্থ হয়েছে।")
+      toast.success("আবেদনটি সংরক্ষণ করা হয়েছে।")
+    } catch (err) {
+      toast.error("ডেটা সংরক্ষণে সমস্যা হয়েছে।")
+      console.error(err)
+    }
+  }
+
   const generatePDF = async () => {
     setIsGenerating(true)
     const html2canvas = (await import("html2canvas")).default
@@ -27,31 +55,32 @@ export default function CompletedForm() {
     const input = contentRef.current
     const pages = input.querySelectorAll('.pdf-page')
     const pdf = new jsPDF('p', 'mm', 'a4')
-  
+
     for (let i = 0; i < pages.length; i++) {
       const canvas = await html2canvas(pages[i], {
-        scale: 1.5, // আগের 3 এর জায়গায় কম
+        scale: 1.5,
         useCORS: true
       })
-      const imgData = canvas.toDataURL('image/jpeg', 0.7) // jpeg + কম কোয়ালিটি
+      const imgData = canvas.toDataURL('image/jpeg', 0.7)
       const imgProps = pdf.getImageProperties(imgData)
       const pdfWidth = pdf.internal.pageSize.getWidth()
       const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width
-  
+
       if (i !== 0) pdf.addPage()
-      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight, '', 'FAST') // compression
+      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight, '', 'FAST')
     }
-  
+
     pdf.save("RTI-Application.pdf")
     setIsGenerating(false)
     toast.success("PDF সফলভাবে তৈরি হয়েছে!")
+    await saveToDatabase()  // Save data after PDF generation
     router.push('/userDashboard')
   }
-  
 
-  const printForm = () => {
+  const printForm = async () => {
     window.print()
-    router.push('/userDashboard')  // Redirect after printing
+    await saveToDatabase()  // Save data after printing
+    router.push('/userDashboard')
   }
 
   if (!formData) return <p className="text-center">লোড হচ্ছে...</p>
@@ -62,18 +91,6 @@ export default function CompletedForm() {
       <h1 className="text-2xl font-bold text-center mb-6 print:hidden">
         আপনার পূর্ণাঙ্গ আবেদন ফর্ম
       </h1>
-
-      <div ref={contentRef} className="space-y-10">
-        <div className="pdf-page bg-white p-28 text-[18px] leading-relaxed">
-          <PageOne data={formData} showButton={false} />
-        </div>
-        <div className="pdf-page bg-white p-28 text-[18px] leading-relaxed">
-          <PageTwo data={formData} showButton={false} />
-        </div>
-        <div className="pdf-page bg-white p-28 text-[18px] leading-relaxed">
-          <PageThree data={formData} showButton={false} />
-        </div>
-      </div>
 
       <div className="flex justify-center gap-4 mt-6 print:hidden">
         <button
@@ -112,6 +129,18 @@ export default function CompletedForm() {
         >
           প্রিন্ট করুন
         </button>
+      </div>
+
+      <div ref={contentRef} className="space-y-10">
+        <div className="pdf-page bg-white px-28 text-[18px] leading-relaxed">
+          <PageOne data={formData} showButton={false} />
+        </div>
+        <div className="pdf-page bg-white p-28 text-[18px] leading-relaxed">
+          <PageTwo data={formData} showButton={false} />
+        </div>
+        <div className="pdf-page bg-white p-28 text-[18px] leading-relaxed">
+          <PageThree data={formData} showButton={false} />
+        </div>
       </div>
     </div>
   )
