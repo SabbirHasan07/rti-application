@@ -54,7 +54,7 @@ const UserDashboard = () => {
             router.push('/login');
         }, 500);
     };
-    console.log(userApplications)
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-green-50 to-white px-4 py-10 font-sans">
             <ToastContainer position="top-center" />
@@ -77,49 +77,58 @@ const UserDashboard = () => {
                     </div>
                 ) : userApplications.length > 0 ? (
                     <div className="grid gap-6">
-                        {userApplications.map((application) => (
-                            <div
-                                key={application.id}
-                                className="border border-gray-200 rounded-lg shadow-sm p-6 transition hover:shadow-md bg-gray-50"
-                            >
-                                <div className="space-y-2 py-4">
-                                    <div className="mt-4 text-right">
-                                        <button
-                                            onClick={() => router.push("/update")}
-                                            className="bg-[#008037] text-white px-4 py-2 rounded hover:bg-[#006f2f] transition"
-                                        >
-                                            আপডেট করুন
-                                        </button>
-                                    </div>
+                        {userApplications.map((application) => {
+                            const createdAt = new Date(application.createdAt);
+                            const now = new Date();
+                            const diffInMs = now.getTime() - createdAt.getTime();
+                            const diffInMinutes = diffInMs / (1000 * 60);
+                            const canUpdate = diffInMinutes >= 3;
 
-                                    <div className="flex gap-24 text-gray-600">
-                                        <span>আবেদনকারীর নাম</span>
-                                        <span>: {application.data.name}</span>
+                            return (
+                                <div
+                                    key={application.id}
+                                    className="border border-gray-200 rounded-lg shadow-sm p-6 transition hover:shadow-md bg-gray-50"
+                                >
+                                    <div className="space-y-2 py-4">
+                                        <div className="mt-4 text-right">
+                                            <button
+                                                onClick={() => router.push("/update")}
+                                                className={`px-4 py-2 rounded transition ${
+                                                    canUpdate
+                                                        ? 'bg-[#008037] text-white hover:bg-[#006f2f]'
+                                                        : 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                                                }`}
+                                                disabled={!canUpdate}
+                                            >
+                                                {canUpdate ? 'আপডেট করুন' : '৩ মিনিট পরে আপডেট করুন'}
+                                            </button>
+                                        </div>
+
+                                        <div className="flex gap-24 text-gray-600">
+                                            <span>আবেদনকারীর নাম</span>
+                                            <span>: {application.data.name}</span>
+                                        </div>
+                                        <div className="flex gap-48 text-gray-600">
+                                            <span>বিষয়</span>
+                                            <span>: {application.data.infoType}</span>
+                                        </div>
+                                        <div className="flex gap-30 text-gray-600">
+                                            <span>অফিসারের নাম</span>
+                                            <span>: {application.data.officer}</span>
+                                        </div>
+                                        <div className="flex gap-45 text-gray-600">
+                                            <span>অফিস</span>
+                                            <span>: {application.data.office || 'প্রযোজ্য নয়'}</span>
+                                        </div>
+                                        <div className="flex gap-41 text-gray-600">
+                                            <span>প্রতিক্রিয়া</span>
+                                            <span>: {application.data.feedback || 'এখনো প্রতিক্রিয়া নেই'}</span>
+                                        </div>
                                     </div>
-                                    <div className="flex gap-48 text-gray-600">
-                                        <span>বিষয়</span>
-                                        <span>: {application.data.infoType}</span>
-                                    </div>
-                                    <div className="flex gap-30 text-gray-600">
-                                        <span>অফিসারের নাম</span>
-                                        <span>: {application.data.officer}</span>
-                                    </div>
-                                    <div className="flex gap-45 text-gray-600">
-                                        <span>অফিস</span>
-                                        <span>: {application.data.office || 'প্রযোজ্য নয়'}</span>
-                                    </div>
-                                    <div className="flex gap-41 text-gray-600">
-                                        <span>প্রতিক্রিয়া</span>
-                                        <span>: {application.data.feedback || 'এখনো প্রতিক্রিয়া নেই'}</span>
-                                    </div>
-                                    
                                 </div>
-
-
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
-
                 ) : (
                     <div className="text-center py-20">
                         <p className="text-gray-500 text-xl mb-6">আপনার কোন আবেদন নেই</p>
@@ -136,7 +145,5 @@ const UserDashboard = () => {
         </div>
     );
 };
-
-// comment
 
 export default UserDashboard;

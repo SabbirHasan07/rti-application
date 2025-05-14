@@ -39,22 +39,24 @@ model Feedback {
 }
 
 model Appeal {
-  id     String @id @default(cuid())
-  user   User   @relation(fields: [userId], references: [id])
-  userId String
+  id            String   @id @default(cuid())
+  user          User     @relation(fields: [userId], references: [id])
+  userId        String
 
   applicantName String
   address       String
   phone         String
   referenceNo   String
-  officerName   String
   appealOfficer String
   responseDate  DateTime
+  subject       String?   
   details       String?
   reason        String
+  informationGivenOfficer    String?
 
-  createdAt DateTime @default(now())
+  createdAt     DateTime @default(now())
 }
+
 
 model Office {
   id          String   @id @default(cuid())

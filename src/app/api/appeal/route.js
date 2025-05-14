@@ -13,11 +13,12 @@ export async function POST(req) {
       address,
       phone,
       referenceNo,
-      officerName,
       appealOfficer,
       responseDate,
+      subject, // ✅ নতুন ফিল্ড
       details,
       reason,
+      informationGivenOfficer
     } = body;
 
     const appeal = await prisma.appeal.create({
@@ -27,11 +28,12 @@ export async function POST(req) {
         address,
         phone,
         referenceNo,
-        officerName,
         appealOfficer,
-        responseDate: new Date(responseDate), // Ensure Date object
+        responseDate: new Date(responseDate),
+        subject, // ✅ সেট করলাম
         details,
         reason,
+        informationGivenOfficer
       },
     });
 
@@ -44,6 +46,7 @@ export async function POST(req) {
     );
   }
 }
+
 
 // GET: Get appeals by userId from query param ?userId=xxx
 export async function GET(req) {
@@ -66,6 +69,35 @@ export async function GET(req) {
     return NextResponse.json({ success: true, appeals });
   } catch (error) {
     console.error("Error fetching appeals:", error);
+    return NextResponse.json(
+      { success: false, message: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}
+
+// DELETE: Delete an appeal by ID (from query param ?id=xxx)
+export async function DELETE(req) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json(
+        { success: false, message: "Missing appeal ID" },
+        { status: 400 }
+      );
+    }
+
+    await prisma.appeal.delete({
+      where: { id },
+    });
+
+    return NextResponse.json(
+      { success: true, message: "Appeal deleted successfully" }
+    );
+  } catch (error) {
+    console.error("Error deleting appeal:", error);
     return NextResponse.json(
       { success: false, message: "Internal Server Error" },
       { status: 500 }

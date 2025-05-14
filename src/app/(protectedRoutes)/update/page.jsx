@@ -9,7 +9,10 @@ export default function FeedbackForm() {
   const [showAppeal, setShowAppeal] = useState(false);
   const [appealEnabled, setAppealEnabled] = useState(false);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  const userId = typeof window !== 'undefined' ? localStorage.getItem('userId') : null;
 
   const handleResponseChange = (value) => {
     setResponse(value);
@@ -29,14 +32,14 @@ export default function FeedbackForm() {
     setError('');
     setAppealEnabled(false);
     setWantToAppeal('');
-    if (value === 'আংশিক তথ্য' || value === 'কোন তথ্য দেয় নি') {
+    if (value === 'আংশিক তথ্য' || value === 'তথ্য প্রদান না করা') {
       setShowAppeal(true);
     } else {
       setShowAppeal(false);
     }
   };
 
-  const handleSaveFeedback = () => {
+  const handleSaveFeedback = async () => {
     if (!response) {
       setError('অনুগ্রহ করে উত্তর পাওয়ার তথ্য নির্বাচন করুন।');
       return;
@@ -46,15 +49,40 @@ export default function FeedbackForm() {
       return;
     }
 
-    setError('');
-    setAppealEnabled(true);
+    if (!userId) {
+      setError('ইউজার আইডি পাওয়া যায়নি। লগইন করুন।');
+      return;
+    }
 
-    // Show all data in console
-    console.log('Feedback Data:', {
-      response,
-      details,
-      wantToAppeal,
-    });
+    setError('');
+    setLoading(true);
+
+    try {
+      const res = await fetch('/api/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId,
+          response,
+          infoType: response === 'হ্যা' ? details : null,
+          wantToAppeal,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || 'কিছু ভুল হয়েছে');
+      } else {
+        setAppealEnabled(true);
+        alert('ফিডব্যাক সফলভাবে জমা হয়েছে');
+      }
+    } catch (err) {
+      console.error(err);
+      setError('সার্ভার ত্রুটি');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -94,7 +122,7 @@ export default function FeedbackForm() {
               <option value="">-- নির্বাচন করুন --</option>
               <option value="আংশিক তথ্য">আংশিক তথ্য</option>
               <option value="সম্পূর্ণ তথ্য">সম্পূর্ণ তথ্য</option>
-              <option value="কোন তথ্য দেয় নি">কোন তথ্য দেয় নি</option>
+              <option value="তথ্য প্রদান না করা">তথ্য প্রদান না করা</option>
             </select>
           </div>
         )}
@@ -117,9 +145,10 @@ export default function FeedbackForm() {
         <div className="flex flex-wrap gap-4 justify-center mt-4">
           <button
             onClick={handleSaveFeedback}
+            disabled={loading}
             className="bg-[#008037] hover:bg-[#006f2f] text-white font-bold px-6 py-2 rounded shadow"
           >
-            সংরক্ষণ করুন
+            {loading ? 'লোড হচ্ছে...' : 'সংরক্ষণ করুন'}
           </button>
 
           {showAppeal && (

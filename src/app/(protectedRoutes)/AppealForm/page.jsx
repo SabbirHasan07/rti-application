@@ -1,65 +1,173 @@
-import React from "react";
+'use client';
+import { useRouter } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
 
 export default function AppealForm() {
+  const [formData, setFormData] = useState({
+    applicantName: '',
+    address: '',
+    phone: '',
+    referenceNo: '',
+    officerName: '',
+    appealOfficer: '',
+    responseDate: '',
+    subject: '',
+    details: '',
+    reason: '',
+    informationGivenOfficer: '', // ✅ নতুন ফিল্ড
+  });
+
+  const [placeholders, setPlaceholders] = useState({});
+  const [loading, setLoading] = useState(false);
+  const userId = typeof window !== 'undefined' ? localStorage.getItem('userId') : null;
+  const router = useRouter();
+
+  useEffect(() => {
+    if (userId) {
+      fetch(`/api/appeal?userId=${userId}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.success && data.appeals.length > 0) {
+            const latestAppeal = data.appeals[0];
+            setPlaceholders(latestAppeal);
+          }
+        })
+        .catch(err => console.error('Error fetching appeal:', err));
+    }
+  }, [userId]);
+
+  const handleChange = e => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async e => {
+    e.preventDefault();
+    if (!userId) return alert('User ID পাওয়া যায়নি!');
+
+    setLoading(true);
+    try {
+      const res = await fetch('/api/appeal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...formData, userId }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert('আপীল সফলভাবে জমা হয়েছে!');
+        setFormData({
+          applicantName: '',
+          address: '',
+          phone: '',
+          referenceNo: '',
+          officerName: '',
+          appealOfficer: '',
+          responseDate: '',
+          subject: '',
+          details: '',
+          reason: '',
+          informationGivenOfficer: '', // ✅ reset
+        });
+        router.push("/reviewAppeal");
+      } else {
+        alert(data.message || 'সার্ভার সমস্যা হয়েছে');
+      }
+    } catch (error) {
+      console.error('Error submitting appeal:', error);
+      alert('সার্ভার সমস্যা হয়েছে');
+    } finally {
+      setLoading(false);
+    }
+  };
+    function formatBanglaDate(dateString) {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    const enToBn = n => n.toString().replace(/\d/g, d => '০১২৩৪৫৬৭৮৯'[d]);
+    const day = enToBn(date.getDate());
+    const month = enToBn(date.getMonth() + 1);
+    const year = enToBn(date.getFullYear());
+    return `${day}/${month}/${year}`;
+  }
+
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-xl shadow-md mt-10">
-      <h1 className="text-2xl font-bold mb-6 text-center text-blue-700">আপীল আবেদন ফর্ম</h1>
+      <h1 className="text-2xl font-bold mb-2 text-center text-blue-700">আপীল আবেদন ফর্ম</h1>
+      <h2 className="text-center text-blue-700 mb-6">(আবেদনের জন্য শুধুমাত্র বাংলা ব্যবহার করুন)</h2>
 
-      <form className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Input label="আপীলকারীর নাম" name="applicantName" value={formData.applicantName} onChange={handleChange} placeholder={placeholders.applicantName} />
+        <Input label="ঠিকানা" name="address" value={formData.address} onChange={handleChange} placeholder={placeholders.address} />
+        <Input label="মোবাইল নম্বর" name="phone" type="tel" value={formData.phone} onChange={handleChange} placeholder={placeholders.phone} />
+        <Input label="স্মারক নং" name="referenceNo" value={formData.referenceNo} onChange={handleChange} placeholder={placeholders.referenceNo} />
+        <Input label="আপিল কর্মকর্তার নাম" name="appealOfficer" value={formData.appealOfficer} onChange={handleChange} placeholder={placeholders.appealOfficer} />
+        <Input label="তথ্য প্রদানকারী কর্মকর্তা" name="informationGivenOfficer" value={formData.informationGivenOfficer} onChange={handleChange} placeholder={placeholders.informationGivenOfficer} />
+        <Input label="আপীলের বিষয়বস্তু" name="subject" value={formData.subject} onChange={handleChange} placeholder={placeholders.subject} />
+
         <div className="flex flex-col">
-          <label className="mb-1 font-medium text-gray-700">আপীলকারীর নাম</label>
-          <input type="text" placeholder="নাম লিখুন" className="p-2 border border-blue-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        </div>
-        <div className="flex flex-col">
-          <label className="mb-1 font-medium text-gray-700">ঠিকানা</label>
-          <input type="text" placeholder="ঠিকানা লিখুন" className="p-2 border border-blue-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        </div>
-        <div className="flex flex-col">
-          <label className="mb-1 font-medium text-gray-700">মোবাইল নম্বর</label>
-          <input type="tel" placeholder="মোবাইল নম্বর লিখুন" className="p-2 border border-blue-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        </div>
-        <div className="flex flex-col">
-          <label className="mb-1 font-medium text-gray-700">স্মারক নং</label>
-          <input type="text" placeholder="স্মারক নং লিখুন" className="p-2 border border-blue-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        </div>
-        <div className="flex flex-col">
-          <label className="mb-1 font-medium text-gray-700">তথ্য প্রদানকারী কর্মকর্তার নাম</label>
-          <input type="text" placeholder="তথ্য প্রদানকারী কর্মকর্তার নাম লিখুন" className="p-2 border border-blue-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        </div>
-        <div className="flex flex-col">
-          <label className="mb-1 font-medium text-gray-700">আপিল কর্মকর্তার নাম</label>
-          <input type="text" placeholder="আপিল কর্মকর্তার নাম লিখুন" className="p-2 border border-blue-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        </div>
-        <div className="flex flex-col">
-          <label className="mb-1 font-medium text-gray-700">উত্তরের তারিখ</label>
-          <input type="date" className="p-2 border border-blue-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        </div>
-        <div className="flex flex-col md:col-span-2">
-          <label className="mb-1 font-medium text-gray-700">আপীলের সংক্ষিপ্ত বিবরণ</label>
-          <textarea rows="3" placeholder="আপীলের বিবরণ লিখুন" className="p-2 border border-blue-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+          <label className="mb-1 font-medium text-gray-700">উত্তরের তারিখ *</label>
+          <input
+            type="date"
+            name="responseDate"
+            value={formData.responseDate}
+            onChange={handleChange}
+            required
+            className="p-2 border border-blue-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          {/* ✅ তারিখ প্রদর্শন বাংলা ফরম্যাটে */}
+          {formData.responseDate && (
+            <span className="text-sm text-green-600 mt-1">
+              বাংলা তারিখ: {formatBanglaDate(formData.responseDate)}
+            </span>
+          )}
         </div>
 
-        
-
-        
-
-        <div className="flex flex-col md:col-span-2">
-          <label className="mb-1 font-medium text-gray-700">তথ্য প্রদানে অস্বীকৃতি জানিয়ে থাকলে তার কারণ</label>
-          <textarea rows="3" placeholder="কারণ লিখুন" className="p-2 border border-blue-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-        </div>
-
-        
-
-        
-        
-       
+        <Textarea label="আপীলের সংক্ষিপ্ত বিবরণ" name="details" value={formData.details} onChange={handleChange} placeholder={placeholders.details} />
+        <Textarea label="তথ্য প্রদানে অস্বীকৃতি জানিয়ে থাকলে তার কারণ" name="reason" value={formData.reason} onChange={handleChange} placeholder={placeholders.reason} />
 
         <div className="md:col-span-2">
-          <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">
-            জমা দিন
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition disabled:opacity-50"
+            disabled={loading}
+          >
+            {loading ? 'লোড হচ্ছে...' : 'জমা দিন'}
           </button>
         </div>
       </form>
+    </div>
+  );
+}
+
+function Input({ label, name, type = 'text', value, onChange, placeholder }) {
+  return (
+    <div className="flex flex-col">
+      <label className="mb-1 font-medium text-gray-700">{label} *</label>
+      <input
+        type={type}
+        name={name}
+        value={value}
+        onChange={onChange}
+        required
+        inputMode={type === 'tel' ? 'numeric' : 'text'}
+        placeholder={placeholder || ''}
+        className="p-2 border border-blue-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+    </div>
+  );
+}
+
+function Textarea({ label, name, value, onChange, placeholder }) {
+  return (
+    <div className="flex flex-col md:col-span-2">
+      <label className="mb-1 font-medium text-gray-700">{label} *</label>
+      <textarea
+        name={name}
+        rows="3"
+        value={value}
+        onChange={onChange}
+        required
+        placeholder={placeholder || ''}
+        className="p-2 border border-blue-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
     </div>
   );
 }
