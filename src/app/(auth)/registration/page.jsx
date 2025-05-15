@@ -270,7 +270,7 @@ export default function RegisterPage() {
 
           <p className="text-center text-sm text-gray-600">
             আপনার কি অ্যাকাউন্ট আছে?{" "}
-            <Link href="/auth/login" className="text-[#008037]">লগ ইন করুন</Link>
+            <Link href="/login" className="text-[#008037]">লগ ইন করুন</Link>
           </p>
         </form>
       </div>
