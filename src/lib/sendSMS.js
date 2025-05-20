@@ -6,9 +6,9 @@ function convertBanglaToEnglishDigits(banglaNumber) {
 }
 
 
-export async function sendSMS(phone, code) {
+export async function sendSMS(phone, code, onlyMessage) {
   const token = process.env.BD_SMS_API_TOKEN;
-  const message = `Your verification code is ${code}`;
+  const message = onlyMessage ? code : `Your verification code is ${code}`;
   const englishPhone = convertBanglaToEnglishDigits(phone);
 
   const params = new URLSearchParams();

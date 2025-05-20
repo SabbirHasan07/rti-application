@@ -50,11 +50,11 @@ export default function RtiForm() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const allRaw = localStorage.getItem('applications');
-    const allApplications = allRaw ? JSON.parse(allRaw) : [];
+    const res = await fetch('/api/application')
+    const data = await res.json();
+    const allApplications = data ? data : [];
     if (form.method.length === 0) {
       alert('কমপক্ষে একটি তথ্য প্রাপ্তির পদ্ধতি নির্বাচন করুন।');
       return;

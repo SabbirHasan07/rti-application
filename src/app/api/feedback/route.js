@@ -31,6 +31,13 @@ export async function POST(req) {
         appealId: isAppeal ? appealId : null,
       },
     });
+    await prisma.application.update({
+      where: {
+        id: applicationId
+      }, data: {
+        isNotified: true
+      }
+    })
 
     return NextResponse.json({ success: true, feedback }, { status: 201 });
   } catch (error) {

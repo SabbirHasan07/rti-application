@@ -48,8 +48,16 @@ const AdminDashboard = () => {
 
     useEffect(() => {
         fetch('/api/application').then(res => res.json()).then(data => setAllApplications(data)).catch(err => console.error(err))
-        fetch('/api/feedback').then(res => res.json()).then(data => setAllFeedbacks(data)).catch(err => console.error(err))
+        fetch('/api/feedback').then(res => res.json()).then(data => setAllFeedbacks(data?.feedbacks)).catch(err => console.error(err))
     }, []);
+
+    const handleData = async () => {
+        const res = await fetch('/api/application')
+        const data = await res.json();
+        console.log({ data })
+    }
+
+    console.log({ allApplications, allFeedbacks })
 
     const applicationData = {
         labels: ['মামলা ১', 'মামলা ২', 'মামলা ৩', 'মামলা ৪'],
@@ -63,35 +71,31 @@ const AdminDashboard = () => {
     };
 
     const feedbackData = useMemo(() => {
-        const labels = ['পুরোপুরি সন্তুষ্ট', 'সন্তুষ্ট', 'অসন্তুষ্ট', 'খুব অসন্তুষ্ট'];
+        if (allFeedbacks) {
+            const labels = ['আংশিক তথ্য', 'সম্পূর্ণ তথ্য', 'তথ্য প্রদান না করা', 'হ্যা', 'না'];
+            const type1 = allFeedbacks.filter(fb => fb.infoType === labels[0])?.length || 0
+            const type2 = allFeedbacks.filter(fb => fb.infoType === labels[1])?.length || 0
+            const type3 = allFeedbacks.filter(fb => fb.infoType === labels[2])?.length || 0
+            const type4 = allFeedbacks.filter(fb => fb.isAppeal === true)?.length || 0
+            const type5 = allFeedbacks.filter(fb => fb.isAppeal === false)?.length || 0
 
-        const datasets = [
-            {
-                label: 'ফিডব্যাক রেকর্ড',
-                data: [25, 50, 15, 10],
-                backgroundColor: ['#FF6347', '#FF8C00', '#FFD700', '#8A2BE2'],
-                borderColor: ['#FF6347', '#FF8C00', '#FFD700', '#8A2BE2'],
-                borderWidth: 1,
-            },
-        ]
-        return {
-            labels,
-            datasets,
+            const datasets = [
+                {
+                    label: 'ফিডব্যাক রেকর্ড',
+                    data: [type1, type2, type3, type4, type5],
+                    backgroundColor: ['#FF6347', '#FF8C00', '#FFD700', '#8A2BE2', '#00FF00'],
+                    borderColor: ['#FF6347', '#FF8C00', '#FFD700', '#8A2BE2', '#00FF00'],
+                    borderWidth: 1,
+                }
+            ]
+            return {
+                labels,
+                datasets,
+            }
         }
-    }, [])
+    }, [allFeedbacks])
 
-    // const feedbackData = {
-    //     labels: ['পুরোপুরি সন্তুষ্ট', 'সন্তুষ্ট', 'অসন্তুষ্ট', 'খুব অসন্তুষ্ট'],
-    //     datasets: [
-    //         {
-    //             label: 'ফিডব্যাক রেকর্ড',
-    //             data: [25, 50, 15, 10],
-    //             backgroundColor: ['#FF6347', '#FF8C00', '#FFD700', '#8A2BE2'],
-    //             borderColor: ['#FF6347', '#FF8C00', '#FFD700', '#8A2BE2'],
-    //             borderWidth: 1,
-    //         },
-    //     ],
-    // };
+    console.log({ feedbackData })
 
     const downloadChartImage = (chartRef) => {
         const chartCanvas = chartRef.current?.canvas;
@@ -144,17 +148,11 @@ const AdminDashboard = () => {
             />
 
             <div className="flex justify-between gap-4 mt-6">
-                <ChartCard title="অভিযোগ রেকর্ড" chart={<Doughnut ref={doughnutChartRef} data={applicationData} />} />
-                <ChartCard title="ফিডব্যাক রেকর্ড" chart={<Bar ref={barChartRef} data={feedbackData} />} />
+                {/* {allApplications && <ChartCard title="অভিযোগ রেকর্ড" chart={<Doughnut ref={doughnutChartRef} data={applicationData} />} />} */}
+                {allFeedbacks && <ChartCard title="ফিডব্যাক রেকর্ড" chart={<Bar ref={barChartRef} data={feedbackData} />} />}
             </div>
 
             <div className="flex justify-center p-6 mb-9 gap-4 mt-6 mx-auto">
-                <button
-                    onClick={() => downloadChartImage(doughnutChartRef)}
-                    className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-                >
-                    Download Doughnut Chart
-                </button>
                 <button
                     onClick={() => downloadChartImage(barChartRef)}
                     className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
