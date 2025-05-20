@@ -51,10 +51,6 @@ const AdminDashboard = () => {
         setAllApplications(allApplicationsData);
     }, []);
 
-    useEffect(() => {
-        fetch('/api/cron/check-apps').then(res => res.json()).then(data => console.log(data)).catch(err => console.error(err))
-    }, [])
-
     const complaintData = {
         labels: ['মামলা ১', 'মামলা ২', 'মামলা ৩', 'মামলা ৪'],
         datasets: [
