@@ -1,14 +1,16 @@
 'use client';
 
+import { useAuth } from '@/context/AuthContext';
 import React, { useEffect, useState } from 'react';
 
 export default function AppealReview() {
   const [appealData, setAppealData] = useState(null);
   const [feedbackData, setFeedbackData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const {user} = useAuth();
 
   useEffect(() => {
-    const userId = localStorage.getItem('userId');
+    const userId = user?.id;
 
     if (userId) {
       const fetchAppeal = fetch(`/api/appeal?userId=${userId}`).then(res => res.json());
@@ -25,7 +27,7 @@ export default function AppealReview() {
           setLoading(false);
         });
     } else {
-      console.warn('User ID not found in localStorage');
+      console.warn('User ID not found');
       setLoading(false);
     }
   }, []);

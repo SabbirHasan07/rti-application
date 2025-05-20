@@ -1,6 +1,7 @@
 'use client';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 
 export default function FeedbackForm() {
   const [response, setResponse] = useState('');
@@ -10,9 +11,13 @@ export default function FeedbackForm() {
   const [appealEnabled, setAppealEnabled] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
-  const userId = typeof window !== 'undefined' ? localStorage.getItem('userId') : null;
+  const router = useRouter();
+  const { user } = useAuth();
+  const searchParams = useSearchParams();
+  const applicationId = searchParams.get('applicationId');
+
+  const userId = typeof window !== 'undefined' ? user?.id : null;
 
   const handleResponseChange = (value) => {
     setResponse(value);
@@ -65,7 +70,9 @@ export default function FeedbackForm() {
           userId,
           response,
           infoType: response === 'হ্যা' ? details : null,
-          wantToAppeal,
+          applicationId,
+          appealId: null,
+          isAppeal: false,
         }),
       });
 
@@ -159,11 +166,10 @@ export default function FeedbackForm() {
                 }
               }}
               disabled={!appealEnabled || wantToAppeal !== 'হ্যাঁ'}
-              className={`${
-                appealEnabled && wantToAppeal === 'হ্যাঁ'
+              className={`${appealEnabled && wantToAppeal === 'হ্যাঁ'
                   ? 'bg-gray-700 hover:bg-gray-900'
                   : 'bg-red-300 cursor-not-allowed'
-              } text-white font-bold px-6 py-2 rounded shadow`}
+                } text-white font-bold px-6 py-2 rounded shadow`}
             >
               আপিলের জন্য আবেদন করুন
             </button>

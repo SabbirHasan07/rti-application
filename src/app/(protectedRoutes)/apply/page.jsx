@@ -4,9 +4,11 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { FiMail, FiPhone, FiUser, FiMapPin, FiCheckCircle } from 'react-icons/fi';
 import useApi from '../../../hooks/officeApi';
+import { useAuth } from '@/context/AuthContext';
 
 export default function RtiForm() {
   const router = useRouter();
+  const {user} = useAuth();
   const { offices, loading, error, fetchOffices } = useApi();
 
   const [form, setForm] = useState({
@@ -87,9 +89,9 @@ export default function RtiForm() {
 
   useEffect(() => {
     const saved = sessionStorage.getItem('rtiForm');
-    const name = localStorage.getItem('name') || '';
-    const email = localStorage.getItem('email') || '';
-    const phone = localStorage.getItem('phone') || '';
+    const name = user?.fullName || '';
+    const email = user?.email || '';
+    const phone = user?.phone || '';
 
     if (saved) {
       const parsed = JSON.parse(saved);

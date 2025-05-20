@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server';
 
 export async function POST(req) {
   const body = await req.json();
-  const { fullName, email, phone, password } = body;
+  const { fullName, email, phone, password, isPhoneNumberVerified } = body;
 
   if (!phone || !password || !fullName) {
     return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
@@ -21,6 +21,7 @@ export async function POST(req) {
         phone,
         password: hashedPassword,
         role: 'USER',
+        isPhoneNumberVerified
       },
     });
 
@@ -33,7 +34,8 @@ export async function POST(req) {
       fullName: user.fullName,
       email: user.email,
       phone: user.phone,
-      role: user.role
+      role: user.role,
+      isPhoneNumberVerified: user.isPhoneNumberVerified
     });
   } catch (error) {
     return NextResponse.json({ error: 'User exists or error' }, { status: 400 });

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 const sections = [
   {
@@ -78,12 +79,12 @@ const RTIGuidelines = () => {
 
       <div className="space-y-4">
         {sections.map((section, idx) => (
-          <div key={idx} className="border border-[#ccc] rounded-lg">
+          <div key={idx} className="border border-[#ccc] rounded-lg overflow-hidden">
             <button
               onClick={() => toggle(idx)}
-              className="w-full text-left px-5 py-4 bg-[#f5f5f5] hover:bg-[#e1f3eb] text-lg font-semibold text-[#008037] transition rounded-t-lg"
+              className="flex justify-between items-center w-full text-left px-5 py-4 bg-[#f5f5f5] hover:bg-[#e1f3eb] text-lg font-semibold text-[#008037] transition rounded-t-lg hover:cursor-pointer"
             >
-              {section.title}
+              {section.title} {openIndex === idx ? <FaChevronUp /> : <FaChevronDown />}
             </button>
             {openIndex === idx && (
               <div className="px-6 py-4 text-[16px] bg-white text-[#333] leading-relaxed transition-all duration-300 ease-in-out">

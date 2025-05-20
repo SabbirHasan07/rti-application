@@ -1,22 +1,11 @@
 'use client';
 
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-
+import AuthGuard from "@/components/AuthGuard";
 
 export default function ProtectedLayout({ children }) {
-    const router = useRouter();
-    
-      useEffect(() => {
-        const user = localStorage.getItem("token");
-    
-        if (!user) {
-          router.push("/login");
-        }
-      }, []);
   return (
-    <>
+    <AuthGuard requireAuth={true} redirectTo="/login">
       {children}
-    </>
+    </AuthGuard>
   );
 }

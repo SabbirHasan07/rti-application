@@ -1,11 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useContext, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { FiLock, FiEye, FiEyeOff } from "react-icons/fi"
 import { MdPhoneAndroid } from "react-icons/md"
 import toast, { Toaster } from "react-hot-toast"
+import { useAuth } from "@/context/AuthContext"
 
 export default function LoginPage() {
   const [form, setForm] = useState({
@@ -14,6 +15,7 @@ export default function LoginPage() {
   })
   const [showPassword, setShowPassword] = useState(false)
   const router = useRouter()
+  const {login} = useAuth();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value })
@@ -37,23 +39,9 @@ export default function LoginPage() {
       })
 
       const data = await response.json()
-      console.log(data)
 
       if (response.ok) {
-        localStorage.setItem("token", data.token)
-        localStorage.setItem("userId", data.id)
-        localStorage.setItem("name", data.fullName)
-        localStorage.setItem("email", data.email)
-        localStorage.setItem("phone", data.phone)
-        localStorage.setItem("role", data.role)
-        toast.success("লগইন সফল")
-       
-          if (data.role === "ADMIN") {
-            router.push("/adminDashboard")
-          } else {
-            router.push("/userDashboard")
-          }
-        
+        await login(data.token)
       } else {
         toast.error(data.message || "লগইন ব্যর্থ")
       }
@@ -111,6 +99,13 @@ export default function LoginPage() {
           <br className="md:hidden" />
           <Link href="/registration" className="text-[#008037] font-medium hover:underline ml-1">
             রেজিস্ট্রেশন করুন
+          </Link>
+        </div>
+        <div className="mt-2 text-center text-sm">
+          পাসওয়ার্ড ভুলে গেছেন?
+          <br className="md:hidden" />
+          <Link href="/forget-password" className="text-[#008037] font-medium hover:underline ml-1">
+            পরিবর্তন করুন
           </Link>
         </div>
       </div>
