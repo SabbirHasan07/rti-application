@@ -2,15 +2,11 @@ const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs'); // For password hashing
 
 const prisma = new PrismaClient();
-
 async function main() {
-  // Hashing admin password
-  const hashedPassword = await bcrypt.hash('Admin@BelaRti2520', 10);
-
-  // Create or update admin user
+  const hashedPassword = await bcrypt.hash('Bela@bangla1234#', 10);
   const adminUser = await prisma.user.upsert({
-    where: { email: 'admin@rti.com' }, // Checking if the admin already exists
-    update: {}, // No update action if user exists
+    where: { email: 'admin@rti.com' }, 
+    update: {}, 
     create: {
       fullName: 'Admin',
       email: 'belabanglaweb@gmail.com',

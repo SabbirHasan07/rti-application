@@ -75,13 +75,13 @@ export default function CompletedForm() {
     pdf.save("RTI-Application.pdf")
     setIsGenerating(false)
     toast.success("PDF সফলভাবে তৈরি হয়েছে!")
-    await saveToDatabase()  // Save data after PDF generation
+    await saveToDatabase()  
     router.push('/userDashboard')
   }
 
   const printForm = async () => {
     window.print()
-    await saveToDatabase()  // Save data after printing
+    await saveToDatabase()  
     router.push('/userDashboard')
   }
 

@@ -14,6 +14,5 @@ export async function POST(req) {
     return NextResponse.json({ error: 'Invalid or expired code' }, { status: 400 });
   }
 
-  // Valid code: mark user as verified
   return NextResponse.json({ message: 'Code verified' });
 }

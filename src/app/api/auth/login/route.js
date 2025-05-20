@@ -35,6 +35,7 @@ export async function POST(req) {
     fullName: user.fullName,
     email: user.email,
     phone: user.phone,
-    id: user.id
+    id: user.id,
+    isPhoneNumberVerified: user.isPhoneNumberVerified
   });
 }

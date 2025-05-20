@@ -7,6 +7,7 @@ import "react-toastify/dist/ReactToastify.css"
 import { FiUser, FiLock, FiMail, FiEye, FiEyeOff } from "react-icons/fi"
 import { MdPhoneAndroid } from "react-icons/md"
 import { useAuth } from "@/context/AuthContext"
+import axios from "axios"
 
 const convertToBangla = (input) => {
   const englishToBanglaMap = {
@@ -26,7 +27,7 @@ const convertToBangla = (input) => {
 
 export default function RegisterPage() {
   const router = useRouter()
-  const {login} = useAuth();
+  const { login } = useAuth();
 
   const [form, setForm] = useState({
     fullName: "",
@@ -39,20 +40,23 @@ export default function RegisterPage() {
   const [errors, setErrors] = useState({})
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [loading, setLoading] = useState(false) 
+  const [loading, setLoading] = useState(false)
+  const [codeSent, setCodeSent] = useState(false);
+  const [isPhoneNumberVerified, setIsPhoneNumberVerified] = useState(false);
+  const [verificationCode, setVerificationCode] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target
 
     if (name === 'fullName') {
-      const banglaRegex = /^[\u0980-\u09FF\s]*$/; 
+      const banglaRegex = /^[\u0980-\u09FF\s]*$/;
       if (!banglaRegex.test(value)) {
-        return; 
+        return;
       }
     }
 
     if (name === 'phone') {
-      const phoneValue = value.replace(/[^\d]/g, '') 
+      const phoneValue = value.replace(/[^\d]/g, '')
       if (phoneValue.length <= 11) {
         setForm({ ...form, [name]: phoneValue })
       }
@@ -74,7 +78,7 @@ export default function RegisterPage() {
     if (!form.fullName) newErrors.fullName = "নাম অবশ্যই দিতে হবে"
     if (!form.phone) newErrors.phone = "মোবাইল নম্বর আবশ্যক"
     else if (form.phone.length !== 11) newErrors.phone = "মোবাইল নম্বর ১১ অঙ্কের হতে হবে"
-    
+
     if (!form.password) newErrors.password = "পাসওয়ার্ড আবশ্যক"
     else if (
       !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(form.password)
@@ -92,20 +96,29 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-  
+
+    if (!isPhoneNumberVerified) {
+      toast.error('number is not verified!', {
+        position: "top-center",
+        autoClose: 3000,
+      })
+      return
+    }
+
     const validationErrors = validateForm()
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors)
       return
     }
-  
+
     const userData = {
       fullName: form.fullName,
       email: form.email,
       phone: form.phone,
       password: form.password,
+      isPhoneNumberVerified,
     }
-  
+
     setLoading(true)
     try {
       const response = await fetch('/api/auth/register', {
@@ -115,10 +128,10 @@ export default function RegisterPage() {
         },
         body: JSON.stringify(userData),
       })
-  
+
       if (!response.ok) {
         const errorData = await response.json()
-  
+
         // Check for duplicate account error
         if (errorData.message.includes("already exists")) {
           toast.error('এই অ্যাকাউন্টটি ইতিমধ্যে রয়েছে। দয়া করে লগ ইন করুন।', {
@@ -134,7 +147,7 @@ export default function RegisterPage() {
         setLoading(false)
         return
       }
-  
+
       const result = await response.json()
       if (result.token) {
         await login(result.token)
@@ -153,7 +166,40 @@ export default function RegisterPage() {
       setLoading(false)
     }
   }
-  
+
+  const handleSendCode = async (phone) => {
+    try {
+      await axios.post('/api/auth/phone-number-verification/send-code', { phone });
+      setCodeSent(true);
+    } catch (err) {
+      toast.error(err.response?.data?.error || 'something went wrong!', {
+        position: "top-center",
+        autoClose: 3000,
+      })
+    }
+  }
+
+  const handleVerifyCode = async () => {
+    try {
+      await axios.post('/api/auth/phone-number-verification/verify-code', { phone: form.phone, code: verificationCode });
+      setIsPhoneNumberVerified(true);
+    } catch (err) {
+      if (err.response?.data?.error?.toLowerCase() === 'invalid code') {
+        toast.error(err.response?.data?.error || 'something went wrong!', {
+          position: "top-center",
+          autoClose: 3000,
+        })
+        return;
+      }
+      toast.error(err.response?.data?.error || 'something went wrong!', {
+        position: "top-center",
+        autoClose: 3000,
+      })
+      setVerificationCode('')
+      setCodeSent(false)
+    }
+  }
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-white flex items-center justify-center px-4">
@@ -170,9 +216,8 @@ export default function RegisterPage() {
               value={form.fullName}
               onChange={handleChange}
               placeholder="বাংলা নাম"
-              className={`w-full pl-10 pr-4 py-2.5 rounded-md border ${
-                errors.fullName ? "border-red-500" : "border-gray-300"
-              } focus:outline-none focus:ring-2 focus:ring-[#008037] text-sm`}
+              className={`w-full pl-10 pr-4 py-2.5 rounded-md border ${errors.fullName ? "border-red-500" : "border-gray-300"
+                } focus:outline-none focus:ring-2 focus:ring-[#008037] text-sm`}
             />
             {errors.fullName && <p className="text-red-500 text-xs mt-1">{errors.fullName}</p>}
           </div>
@@ -186,12 +231,31 @@ export default function RegisterPage() {
               value={form.phone}
               onChange={handleChange}
               placeholder="মোবাইল নম্বর"
-              className={`w-full pl-10 pr-4 py-2.5 rounded-md border ${
-                errors.phone ? "border-red-500" : "border-gray-300"
-              } focus:outline-none focus:ring-2 focus:ring-[#008037] text-sm`}
+              className={`w-full pl-10 pr-4 py-2.5 rounded-md border ${errors.phone ? "border-red-500" : "border-gray-300"
+                } focus:outline-none focus:ring-2 focus:ring-[#008037] text-sm`}
             />
             {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
           </div>
+
+          {
+            form.phone.length === 11 && !codeSent && !isPhoneNumberVerified && <>
+              <button onClick={() => handleSendCode(form.phone)} type="button" className="w-full py-2.5 bg-[#008037] text-white rounded-md hover:bg-green-700 transition duration-200 disabled:bg-gray-700">
+                Send code
+              </button>
+            </>
+          }
+
+          {codeSent && !isPhoneNumberVerified && <div className="flex flex-1 gap-4">
+            <input
+              type="text"
+              value={verificationCode}
+              onChange={(e) => setVerificationCode(e.target.value)}
+              className="w-full pl-10 pr-4 py-2.5 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#008037] text-sm"
+            />
+            <button disabled={verificationCode?.length !== 6} onClick={handleVerifyCode} type="button" className="w-full py-2.5 bg-[#008037] text-white rounded-md hover:bg-green-700 transition duration-200">
+              Verify code
+            </button>
+          </div>}
 
           {/* Email */}
           <div className="relative">
@@ -215,9 +279,8 @@ export default function RegisterPage() {
               value={form.password}
               onChange={handleChange}
               placeholder="পাসওয়ার্ড"
-              className={`w-full pl-10 pr-10 py-2.5 rounded-md border ${
-                errors.password ? "border-red-500" : "border-gray-300"
-              } focus:outline-none focus:ring-2 focus:ring-[#008037] text-sm`}
+              className={`w-full pl-10 pr-10 py-2.5 rounded-md border ${errors.password ? "border-red-500" : "border-gray-300"
+                } focus:outline-none focus:ring-2 focus:ring-[#008037] text-sm`}
             />
             <div
               className="absolute top-3.5 right-3 text-gray-500 cursor-pointer"
@@ -237,9 +300,8 @@ export default function RegisterPage() {
               value={form.confirmPassword}
               onChange={handleChange}
               placeholder="পাসওয়ার্ড কনফার্ম করুন"
-              className={`w-full pl-10 pr-10 py-2.5 rounded-md border ${
-                errors.confirmPassword ? "border-red-500" : "border-gray-300"
-              } focus:outline-none focus:ring-2 focus:ring-[#008037] text-sm`}
+              className={`w-full pl-10 pr-10 py-2.5 rounded-md border ${errors.confirmPassword ? "border-red-500" : "border-gray-300"
+                } focus:outline-none focus:ring-2 focus:ring-[#008037] text-sm`}
             />
             <div
               className="absolute top-3.5 right-3 text-gray-500 cursor-pointer"
@@ -253,7 +315,7 @@ export default function RegisterPage() {
           <button
             type="submit"
             className="w-full py-2.5 bg-[#008037] text-white rounded-md hover:bg-green-700 transition duration-200"
-            disabled={loading} 
+            disabled={loading}
           >
             {loading ? (
               <div className="flex justify-center">

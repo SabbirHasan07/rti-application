@@ -10,6 +10,7 @@ export async function POST(req) {
       data: {
         userId: body.userId,
         data: body.data,
+        isNotified: false
       },
     });
 

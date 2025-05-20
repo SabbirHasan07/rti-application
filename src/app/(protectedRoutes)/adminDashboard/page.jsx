@@ -90,25 +90,6 @@ const AdminDashboard = () => {
         <div className="max-w-7xl mx-auto p-6 font-sans text-[#212529] relative">
             {/* Header Buttons */}
             <div className="absolute top-6 right-6 flex items-center gap-4">
-                {/* Notification */}
-                <button
-                    onClick={() => setNotificationVisible(!notificationVisible)}
-                    className="bg-gray-100 text-[#008037] p-2 rounded-full hover:bg-gray-200"
-                    title="Notifications"
-                >
-                    <FaBell size={20} />
-                </button>
-
-                {/* Form Update */}
-                <button
-                    onClick={() => router.push('/form-update')}
-                    className="bg-gray-100 text-blue-600 p-2 rounded-full hover:bg-gray-200"
-                    title="Form Update"
-                >
-                    <FaWpforms size={20} />
-                </button>
-
-                {/* Database Update */}
                 <button
                     onClick={() => router.push('/database-update')}
                     className="bg-gray-100 text-indigo-600 p-2 rounded-full hover:bg-gray-200"

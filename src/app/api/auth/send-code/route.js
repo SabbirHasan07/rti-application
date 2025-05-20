@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { sendSMS } from '@/lib/sendSMS';
 
 export async function POST(req) {
   const { phone } = await req.json();
@@ -24,8 +25,14 @@ export async function POST(req) {
     },
   });
 
-  // 🚨 Mock sending SMS
-  console.log(`🔐 Reset code for ${phone}: ${code}`);
+  const result = await sendSMS(phone, code);
+
+  if (!result.success) {
+    return NextResponse.json(
+      { error: 'Failed to send SMS', details: result.error || result.data },
+      { status: 500 }
+    );
+  }
 
   return NextResponse.json({ message: 'Verification code sent.' });
 }
