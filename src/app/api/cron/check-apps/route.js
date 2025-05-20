@@ -1,7 +1,8 @@
-// app/api/cron/check-apps/route.js
 import { NextResponse } from 'next/server';
-import prisma from '@/lib/prisma'; // your Prisma client
-import sendSMS from '@/lib/sendSMS'; // Green Web BD wrapper
+
+import sendSMS from '@/lib/sendSMS';
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
 
 export async function GET() {
   const tenMinutesAgo = new Date(Date.now() - 2 * 60 * 1000);

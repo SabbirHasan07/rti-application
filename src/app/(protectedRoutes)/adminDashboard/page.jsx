@@ -43,13 +43,17 @@ const AdminDashboard = () => {
     const doughnutChartRef = useRef(null);
     const barChartRef = useRef(null);
 
-    const {logout} = useAuth();
+    const { logout } = useAuth();
 
     useEffect(() => {
         const allApplicationsRaw = localStorage.getItem('applications');
         const allApplicationsData = allApplicationsRaw ? JSON.parse(allApplicationsRaw) : [];
         setAllApplications(allApplicationsData);
     }, []);
+
+    useEffect(() => {
+        fetch('/api/cron/check-apps').then(res => res.json()).then(data => console.log(data)).catch(err => console.error(err))
+    }, [])
 
     const complaintData = {
         labels: ['মামলা ১', 'মামলা ২', 'মামলা ৩', 'মামলা ৪'],
