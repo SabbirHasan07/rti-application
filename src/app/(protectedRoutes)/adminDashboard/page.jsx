@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import { Bar, Doughnut } from 'react-chartjs-2';
 import { useRouter } from 'next/navigation';
 import { FaBell, FaWpforms, FaDatabase } from 'react-icons/fa';
@@ -38,6 +38,7 @@ const AdminDashboard = () => {
     const itemsPerPage = 5;
     const router = useRouter();
     const [allApplications, setAllApplications] = useState([]);
+    const [allFeedbacks, setAllFeedbacks] = useState([]);
     const [notificationVisible, setNotificationVisible] = useState(false);
 
     const doughnutChartRef = useRef(null);
@@ -46,12 +47,11 @@ const AdminDashboard = () => {
     const { logout } = useAuth();
 
     useEffect(() => {
-        const allApplicationsRaw = localStorage.getItem('applications');
-        const allApplicationsData = allApplicationsRaw ? JSON.parse(allApplicationsRaw) : [];
-        setAllApplications(allApplicationsData);
+        fetch('/api/application').then(res => res.json()).then(data => setAllApplications(data)).catch(err => console.error(err))
+        fetch('/api/feedback').then(res => res.json()).then(data => setAllFeedbacks(data)).catch(err => console.error(err))
     }, []);
 
-    const complaintData = {
+    const applicationData = {
         labels: ['মামলা ১', 'মামলা ২', 'মামলা ৩', 'মামলা ৪'],
         datasets: [
             {
@@ -62,9 +62,10 @@ const AdminDashboard = () => {
         ],
     };
 
-    const feedbackData = {
-        labels: ['পুরোপুরি সন্তুষ্ট', 'সন্তুষ্ট', 'অসন্তুষ্ট', 'খুব অসন্তুষ্ট'],
-        datasets: [
+    const feedbackData = useMemo(() => {
+        const labels = ['পুরোপুরি সন্তুষ্ট', 'সন্তুষ্ট', 'অসন্তুষ্ট', 'খুব অসন্তুষ্ট'];
+
+        const datasets = [
             {
                 label: 'ফিডব্যাক রেকর্ড',
                 data: [25, 50, 15, 10],
@@ -72,8 +73,25 @@ const AdminDashboard = () => {
                 borderColor: ['#FF6347', '#FF8C00', '#FFD700', '#8A2BE2'],
                 borderWidth: 1,
             },
-        ],
-    };
+        ]
+        return {
+            labels,
+            datasets,
+        }
+    }, [])
+
+    // const feedbackData = {
+    //     labels: ['পুরোপুরি সন্তুষ্ট', 'সন্তুষ্ট', 'অসন্তুষ্ট', 'খুব অসন্তুষ্ট'],
+    //     datasets: [
+    //         {
+    //             label: 'ফিডব্যাক রেকর্ড',
+    //             data: [25, 50, 15, 10],
+    //             backgroundColor: ['#FF6347', '#FF8C00', '#FFD700', '#8A2BE2'],
+    //             borderColor: ['#FF6347', '#FF8C00', '#FFD700', '#8A2BE2'],
+    //             borderWidth: 1,
+    //         },
+    //     ],
+    // };
 
     const downloadChartImage = (chartRef) => {
         const chartCanvas = chartRef.current?.canvas;
@@ -126,7 +144,7 @@ const AdminDashboard = () => {
             />
 
             <div className="flex justify-between gap-4 mt-6">
-                <ChartCard title="অভিযোগ রেকর্ড" chart={<Doughnut ref={doughnutChartRef} data={complaintData} />} />
+                <ChartCard title="অভিযোগ রেকর্ড" chart={<Doughnut ref={doughnutChartRef} data={applicationData} />} />
                 <ChartCard title="ফিডব্যাক রেকর্ড" chart={<Bar ref={barChartRef} data={feedbackData} />} />
             </div>
 

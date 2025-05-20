@@ -29,9 +29,14 @@ export async function GET(req) {
 
     const applications = await prisma.application.findMany({
       where: userId ? { userId } : {}, // If userId exists, filter
-      include: {
+      select:{
+        id: true,
+        createdAt: true,
+        data: true,
+        feedbacks: true,
         user: true,
-      },
+        userId: true,
+      }
     });
 
     return new Response(JSON.stringify(applications), { status: 200 });

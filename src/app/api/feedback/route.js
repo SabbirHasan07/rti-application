@@ -45,12 +45,8 @@ export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get("userId");
 
-    if (!userId) {
-      return NextResponse.json({ error: 'Missing userId' }, { status: 400 });
-    }
-
     const feedbacks = await prisma.feedback.findMany({
-      where: { userId },
+      where: userId ? { userId } : {},
       include: {
         application: true,
         appeal: true,
