@@ -6,12 +6,14 @@ import PageOne from "../../../components/PageOne"
 import PageTwo from "../../../components/PageTwo"
 import PageThree from "../../../components/PageThree"
 import toast, { Toaster } from "react-hot-toast"
+import { useAuth } from "@/context/AuthContext"
 
 export default function CompletedForm() {
   const [formData, setFormData] = useState(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const contentRef = useRef(null)
   const router = useRouter()
+  const {user} = useAuth();
 
   useEffect(() => {
     const data = sessionStorage.getItem("rtiForm")
@@ -23,7 +25,7 @@ export default function CompletedForm() {
   // Save data to database
   const saveToDatabase = async () => {
     try {
-      const userId = localStorage.getItem("userId")
+      const userId = user?.id;
       if (!userId) {
         toast.error("ব্যবহারকারীর তথ্য পাওয়া যায়নি।")
         return

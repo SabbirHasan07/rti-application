@@ -21,11 +21,15 @@ export async function POST(req) {
 }
 
 // GET handler for fetching applications with user details included
-export async function GET() {
+export async function GET(req) {
   try {
+    const { searchParams } = new URL(req.url);
+    const userId = searchParams.get('userId');
+
     const applications = await prisma.application.findMany({
+      where: userId ? { userId } : {}, // If userId exists, filter
       include: {
-        user: true, // Include user details along with each application
+        user: true,
       },
     });
 

@@ -20,6 +20,7 @@ import {
     Legend,
     ArcElement,
 } from 'chart.js';
+import { useAuth } from '@/context/AuthContext';
 
 ChartJS.register(
     CategoryScale,
@@ -41,6 +42,8 @@ const AdminDashboard = () => {
 
     const doughnutChartRef = useRef(null);
     const barChartRef = useRef(null);
+
+    const {logout} = useAuth();
 
     useEffect(() => {
         const allApplicationsRaw = localStorage.getItem('applications');
@@ -117,12 +120,7 @@ const AdminDashboard = () => {
                 {/* Logout */}
                 <button
                     onClick={() => {
-                        localStorage.removeItem('token');
-                        localStorage.removeItem('name');
-                        localStorage.removeItem('phone');
-                        localStorage.removeItem('email');
-                        localStorage.removeItem('userId');
-                        localStorage.removeItem('role');
+                        logout();
                         router.push('/login');
                     }}
                     className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"

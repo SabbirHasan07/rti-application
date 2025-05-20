@@ -1,4 +1,5 @@
 'use client';
+import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 
@@ -16,10 +17,11 @@ export default function AppealForm() {
     reason: '',
     informationGivenOfficer: '', // ✅ নতুন ফিল্ড
   });
+  const {user} = useAuth();
 
   const [placeholders, setPlaceholders] = useState({});
   const [loading, setLoading] = useState(false);
-  const userId = typeof window !== 'undefined' ? localStorage.getItem('userId') : null;
+  const userId = typeof window !== 'undefined' ? user?.id : null;
   const router = useRouter();
 
   useEffect(() => {

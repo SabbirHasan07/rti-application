@@ -8,54 +8,69 @@ datasource db {
 }
 
 model User {
-  id           String        @id @default(cuid())
-  fullName     String
-  email        String?       @unique
-  phone        String        @unique
-  password     String
-  role         Role          @default(USER)
-  createdAt    DateTime      @default(now())
-  applications Application[]
-  feedbacks    Feedback[]
-  appeals      Appeal[]
+  id              String        @id @default(cuid())
+  fullName        String
+  email           String?       @unique
+  phone           String        @unique
+  password        String
+  role            Role          @default(USER)
+  createdAt       DateTime      @default(now())
+  applications    Application[]
+  feedbacks       Feedback[]
+  appeals         Appeal[]
+  resetCode       String?  
+  resetCodeExpiry DateTime?
 }
 
 model Application {
-  id        String   @id @default(cuid())
-  user      User     @relation(fields: [userId], references: [id])
+  id        String     @id @default(cuid())
+  user      User       @relation(fields: [userId], references: [id])
   userId    String
   data      Json
-  createdAt DateTime @default(now())
+  feedbacks Feedback[] // 👈 inverse relation
+  createdAt DateTime   @default(now())
 }
 
-model Feedback {
-  id        String   @id @default(cuid())
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String
-  response  String
-  infoType  String?
-  appeal    Boolean
-  createdAt DateTime @default(now())
-}
 
 model Appeal {
-  id            String   @id @default(cuid())
-  user          User     @relation(fields: [userId], references: [id])
-  userId        String
-
-  applicantName String
-  address       String
-  phone         String
-  referenceNo   String
-  appealOfficer String
-  responseDate  DateTime
-  subject       String?   
-  details       String?
-  reason        String
-  informationGivenOfficer    String?
-
-  createdAt     DateTime @default(now())
+  id                       String     @id @default(cuid())
+  user                     User       @relation(fields: [userId], references: [id])
+  userId                   String
+  applicantName            String
+  address                  String
+  phone                    String
+  referenceNo              String
+  appealOfficer            String
+  responseDate             DateTime
+  subject                  String?
+  details                  String?
+  reason                   String
+  informationGivenOfficer  String?
+  feedbacks                Feedback[] // 👈 inverse relation
+  createdAt                DateTime   @default(now())
 }
+model Feedback {
+  id             String        @id @default(cuid())
+  user           User          @relation(fields: [userId], references: [id])
+  userId         String
+
+  application    Application?  @relation(fields: [applicationId], references: [id])
+  applicationId  String?       // <-- এটি nullable করতে হবে
+
+  appeal         Appeal?       @relation(fields: [appealId], references: [id])
+  appealId       String?       // <-- এটিও nullable করতে হবে
+
+  response       String
+  infoType       String?
+  isAppeal       Boolean
+  createdAt      DateTime      @default(now())
+}
+
+
+
+
+
+
 
 
 model Office {

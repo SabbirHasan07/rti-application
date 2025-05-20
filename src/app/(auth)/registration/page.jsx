@@ -6,6 +6,7 @@ import { toast, ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import { FiUser, FiLock, FiMail, FiEye, FiEyeOff } from "react-icons/fi"
 import { MdPhoneAndroid } from "react-icons/md"
+import { useAuth } from "@/context/AuthContext"
 
 const convertToBangla = (input) => {
   const englishToBanglaMap = {
@@ -25,6 +26,7 @@ const convertToBangla = (input) => {
 
 export default function RegisterPage() {
   const router = useRouter()
+  const {login} = useAuth();
 
   const [form, setForm] = useState({
     fullName: "",
@@ -134,14 +136,8 @@ export default function RegisterPage() {
       }
   
       const result = await response.json()
-     console.log(result)
       if (result.token) {
-        localStorage.setItem('token', result.token)
-        localStorage.setItem('userId', result.id)
-        localStorage.setItem('name', result.fullName)
-        localStorage.setItem('email', result.email)
-        localStorage.setItem('phone', result.phone)
-        localStorage.setItem('role', result.role)
+        await login(result.token)
         toast.success("রেজিস্ট্রেশন সফল হয়েছে!", {
           position: "top-center",
           autoClose: 500,

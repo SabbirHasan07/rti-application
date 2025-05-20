@@ -30,7 +30,6 @@ export default function PageOne({ onNext, showButton = true }) {
 
         <div className="ml-auto text-right text-base">
           <p>তারিখ<span>: {new Date().toLocaleDateString('bn-BD')}</span></p>
-          <p>সূত্র : বেলা-টাং/ আরটিআই/ ২০২৫-০২</p>
         </div>
 
         <div className="my-9">
