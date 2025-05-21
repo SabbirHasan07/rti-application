@@ -2,8 +2,23 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { Toaster, toast } from 'react-hot-toast';
+import { useRouter } from 'next/navigation';  
+
+const engToBanglaDigits = (input) => {
+  const engDigits = '0123456789';
+  const banglaDigits = '০১২৩৪৫৬৭৮৯';
+  return input
+    .split('')
+    .map((ch) => {
+      const index = engDigits.indexOf(ch);
+      return index !== -1 ? banglaDigits[index] : ch;
+    })
+    .join('');
+};
 
 export default function ForgotPasswordPage() {
+  const router = useRouter();  
+
   const [step, setStep] = useState(1);
   const [phone, setPhone] = useState('');
   const [code, setCode] = useState('');
@@ -12,8 +27,11 @@ export default function ForgotPasswordPage() {
   const [loading, setLoading] = useState(false);
 
   const handleBanglaPhoneInput = (e) => {
-    const banglaDigits = e.target.value.replace(/[^\u09E6-\u09EF]/g, '');
-    setPhone(banglaDigits);
+    let value = e.target.value;
+    value = engToBanglaDigits(value);
+    value = value.replace(/[^০-৯]/g, '');
+    if (value.length > 11) value = value.slice(0, 11);
+    setPhone(value);
   };
 
   const sendCode = async () => {
@@ -49,6 +67,11 @@ export default function ForgotPasswordPage() {
     try {
       await axios.post('/api/auth/reset-password', { phone, newPassword });
       toast.success('পাসওয়ার্ড সফলভাবে রিসেট হয়েছে।');
+
+      setTimeout(() => {
+        router.push('/login');  
+      }, 1500); 
+
       setStep(4);
     } catch (err) {
       toast.error(err.response?.data?.error || 'রিসেট ব্যর্থ হয়েছে।');
@@ -71,6 +94,7 @@ export default function ForgotPasswordPage() {
               placeholder="বাংলা মোবাইল নম্বর"
               value={phone}
               onChange={handleBanglaPhoneInput}
+              maxLength={11}
             />
             <button
               onClick={sendCode}
@@ -129,9 +153,6 @@ export default function ForgotPasswordPage() {
           </>
         )}
 
-        {step === 4 && (
-          <p className="text-center text-green-600 font-medium">🎉 পাসওয়ার্ড সফলভাবে রিসেট হয়েছে!</p>
-        )}
       </div>
     </div>
   );

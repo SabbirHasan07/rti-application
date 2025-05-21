@@ -1,12 +1,25 @@
 "use client"
 
-import { useContext, useState } from "react"
+import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { FiLock, FiEye, FiEyeOff } from "react-icons/fi"
 import { MdPhoneAndroid } from "react-icons/md"
 import toast, { Toaster } from "react-hot-toast"
 import { useAuth } from "@/context/AuthContext"
+
+// English to Bangla digit converter
+const engToBanglaDigits = (input) => {
+  const engDigits = "0123456789"
+  const banglaDigits = "০১২৩৪৫৬৭৮৯"
+  return input
+    .split("")
+    .map((ch) => {
+      const index = engDigits.indexOf(ch)
+      return index !== -1 ? banglaDigits[index] : ch
+    })
+    .join("")
+}
 
 export default function LoginPage() {
   const [form, setForm] = useState({
@@ -21,8 +34,12 @@ export default function LoginPage() {
   const handleChange = (e) => {
     const { name, value } = e.target
     if (name === "phone") {
-      const banglaDigitsOnly = value.replace(/[^\u09E6-\u09EF]/g, "")
-      setForm({ ...form, phone: banglaDigitsOnly })
+      let converted = engToBanglaDigits(value)
+      converted = converted.replace(/[^০-৯]/g, "")
+      if (converted.length > 11) {
+        converted = converted.slice(0, 11)
+      }
+      setForm({ ...form, phone: converted })
     } else {
       setForm({ ...form, [name]: value })
     }
@@ -76,7 +93,8 @@ export default function LoginPage() {
               placeholder="মোবাইল নম্বর"
               className="w-full pl-10 pr-4 py-2.5 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#008037] transition text-sm"
               inputMode="numeric"
-              pattern="[০-৯]*"
+              pattern="[০-৯]{11}"
+              maxLength={11}
             />
           </div>
 
