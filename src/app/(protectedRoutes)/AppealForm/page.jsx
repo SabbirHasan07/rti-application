@@ -100,7 +100,7 @@ export default function AppealForm() {
         <Input label="ঠিকানা" name="address" value={formData.address} onChange={handleChange} placeholder={placeholders.address} />
         <Input label="মোবাইল নম্বর" name="phone" type="tel" value={formData.phone} onChange={handleChange} placeholder={placeholders.phone} />
         <Input label="স্মারক নং" name="referenceNo" value={formData.referenceNo} onChange={handleChange} placeholder={placeholders.referenceNo} />
-        <Input label="আপিল কর্মকর্তার নাম" name="appealOfficer" value={formData.appealOfficer} onChange={handleChange} placeholder={placeholders.appealOfficer} />
+        <Input label="আপিল কর্মকর্তার নাম (সাব্বির হাসান/চেয়ারম্যান/বাংলাদেশ কেমিক্যাল ইন্ডাস্ট্রিজ কর্পোরেশন (বিসিআইসি)/টাঙ্গাইল-১৯০০)" name="appealOfficer" value={formData.appealOfficer} onChange={handleChange} placeholder={placeholders.appealOfficer} />
         <Input label="তথ্য প্রদানকারী কর্মকর্তা" name="informationGivenOfficer" value={formData.informationGivenOfficer} onChange={handleChange} placeholder={placeholders.informationGivenOfficer} />
         <Input label="আপীলের বিষয়বস্তু" name="subject" value={formData.subject} onChange={handleChange} placeholder={placeholders.subject} />
 
