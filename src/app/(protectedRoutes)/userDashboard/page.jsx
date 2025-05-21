@@ -95,10 +95,8 @@ const UserDashboard = () => {
         ) : userApplications.length > 0 ? (
           <div className="space-y-6">
             {userApplications.map((application) => {
-              const createdAt = new Date(application.createdAt);
-              const now = new Date();
-              const diffInMinutes = (now.getTime() - createdAt.getTime()) / (1000 * 60);
-              const canUpdateByTime = diffInMinutes >= 1;
+              // সবসময় আপডেট করার অনুমতি
+              const canUpdateByTime = true;
 
               const feedback = feedbacks.find(
                 (f) => f.applicationId === application.id && f.isAppeal === false
@@ -115,18 +113,13 @@ const UserDashboard = () => {
                   <div className="flex justify-end mb-4">
                     <button
                       onClick={() => router.push(`/update?applicationId=${application.id}`)}
-                      className={`px-4 py-2 rounded-md text-sm font-medium transition ${
-                        !canUpdateByTime || hasFeedback
+                      className={`px-4 py-2 rounded-md text-sm font-medium transition ${hasFeedback
                           ? "bg-gray-300 text-gray-600 cursor-not-allowed"
                           : "bg-[#008037] text-white hover:bg-[#006f2f]"
-                      }`}
-                      disabled={!canUpdateByTime || hasFeedback}
+                        }`}
+                      disabled={hasFeedback}
                     >
-                      {!canUpdateByTime
-                        ? "৩ মিনিট পরে আপডেট করুন"
-                        : hasFeedback
-                        ? "আপডেট সম্ভব নয়"
-                        : "আপডেট করুন"}
+                      {hasFeedback ? "আপডেট সম্ভব নয়" : "আপডেট করুন"}
                     </button>
                   </div>
 
@@ -147,9 +140,8 @@ const UserDashboard = () => {
 
                     <div className="sm:col-span-4 font-semibold text-gray-700">প্রতিক্রিয়া</div>
                     <div
-                      className={`sm:col-span-8 ${
-                        hasFeedback ? "text-green-600" : "text-red-500"
-                      }`}
+                      className={`sm:col-span-8 ${hasFeedback ? "text-green-600" : "text-red-500"
+                        }`}
                     >
                       : {responseText}
                     </div>
