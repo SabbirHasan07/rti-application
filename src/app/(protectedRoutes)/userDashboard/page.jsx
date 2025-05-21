@@ -42,7 +42,7 @@ const UserDashboard = () => {
   const fetchUserFeedbacks = async () => {
     try {
       const response = await axios.get(`/api/feedback?userId=${user?.id}`);
-      if (response.data && response.data.feedbacks) {
+      if (response.data?.feedbacks) {
         setFeedbacks(response.data.feedbacks);
       }
     } catch (error) {
@@ -60,27 +60,40 @@ const UserDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-white px-4 py-10 font-sans">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-white px-4 py-10">
       <ToastContainer position="top-center" />
-      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8 relative">
-        <button
-          onClick={handleLogout}
-          className="absolute top-6 right-6 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-        >
-          লগআউট
-        </button>
+      <div className="max-w-5xl mx-auto bg-white shadow-xl rounded-xl p-6 sm:p-8 relative">
+        {/* Desktop logout button */}
+        <div className="hidden sm:block absolute top-4 right-4">
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 text-sm"
+          >
+            লগআউট
+          </button>
+        </div>
 
-        <h1 className="text-4xl font-bold text-center text-[#008037] mb-6">ইউজার ড্যাশবোর্ড</h1>
-        <p className="text-center text-lg font-medium mb-10">
-          স্বাগতম, <span className="font-bold">{localUser || 'ইউজার'}</span>!
+        <h1 className="text-3xl font-bold text-center text-[#008037] mb-2">ইউজার ড্যাশবোর্ড</h1>
+        <p className="text-center text-gray-600 mb-4">
+          স্বাগতম, <span className="font-semibold">{localUser || 'ইউজার'}</span>!
         </p>
 
+        {/* Mobile logout button */}
+        <div className="block sm:hidden text-center mb-6">
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 text-sm"
+          >
+            লগআউট
+          </button>
+        </div>
+
         {loading ? (
-          <div className="flex justify-center items-center py-20">
+          <div className="flex justify-center py-20">
             <div className="w-10 h-10 border-4 border-[#008037] border-dashed rounded-full animate-spin"></div>
           </div>
         ) : userApplications.length > 0 ? (
-          <div className="grid gap-6">
+          <div className="space-y-6">
             {userApplications.map((application) => {
               const createdAt = new Date(application.createdAt);
               const now = new Date();
@@ -97,47 +110,48 @@ const UserDashboard = () => {
               return (
                 <div
                   key={application.id}
-                  className="border border-gray-200 rounded-lg shadow-sm p-6 bg-gray-50 mb-4"
+                  className="bg-gray-50 border border-gray-200 rounded-lg shadow-md p-5 sm:p-6"
                 >
-                  <div className="space-y-2 py-4">
-                    <div className="mt-4 text-right">
-                      <button
-                        onClick={() => router.push(`/update?applicationId=${application.id}`)}
-                        className={`px-4 py-2 rounded ${!canUpdateByTime || hasFeedback
+                  <div className="flex justify-end mb-4">
+                    <button
+                      onClick={() => router.push(`/update?applicationId=${application.id}`)}
+                      className={`px-4 py-2 rounded-md text-sm font-medium transition ${
+                        !canUpdateByTime || hasFeedback
                           ? "bg-gray-300 text-gray-600 cursor-not-allowed"
                           : "bg-[#008037] text-white hover:bg-[#006f2f]"
-                          }`}
-                        disabled={!canUpdateByTime || hasFeedback}
-                      >
-                        {!canUpdateByTime
-                          ? "৩ মিনিট পরে আপডেট করুন"
-                          : hasFeedback
-                            ? "আপডেট সম্ভব নয়"
-                            : "আপডেট করুন"}
-                      </button>
+                      }`}
+                      disabled={!canUpdateByTime || hasFeedback}
+                    >
+                      {!canUpdateByTime
+                        ? "৩ মিনিট পরে আপডেট করুন"
+                        : hasFeedback
+                        ? "আপডেট সম্ভব নয়"
+                        : "আপডেট করুন"}
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-12 gap-y-3 gap-x-6 text-sm sm:text-base">
+                    <div className="sm:col-span-4 font-semibold text-gray-700">আবেদনকারীর নাম</div>
+                    <div className="sm:col-span-8 text-gray-800">: {application.data.name}</div>
+
+                    <div className="sm:col-span-4 font-semibold text-gray-700">বিষয়</div>
+                    <div className="sm:col-span-8 text-gray-800">: {application.data.infoType}</div>
+
+                    <div className="sm:col-span-4 font-semibold text-gray-700">অফিসারের নাম</div>
+                    <div className="sm:col-span-8 text-gray-800">: {application.data.officer}</div>
+
+                    <div className="sm:col-span-4 font-semibold text-gray-700">অফিস</div>
+                    <div className="sm:col-span-8 text-gray-800">
+                      : {application.data.office || "প্রযোজ্য নয়"}
                     </div>
 
-                    <div className="flex gap-24 text-gray-600">
-                      <span>আবেদনকারীর নাম</span>
-                      <span>: {application.data.name}</span>
-                    </div>
-                    <div className="flex gap-48 text-gray-600">
-                      <span>বিষয়</span>
-                      <span>: {application.data.infoType}</span>
-                    </div>
-                    <div className="flex gap-30 text-gray-600">
-                      <span>অফিসারের নাম</span>
-                      <span>: {application.data.officer}</span>
-                    </div>
-                    <div className="flex gap-45 text-gray-600">
-                      <span>অফিস</span>
-                      <span>: {application.data.office || "প্রযোজ্য নয়"}</span>
-                    </div>
-                    <div className="flex gap-41 text-gray-600">
-                      <span>প্রতিক্রিয়া</span>
-                      <span className={hasFeedback ? "text-green-600" : "text-red-500"}>
-                        : {responseText}
-                      </span>
+                    <div className="sm:col-span-4 font-semibold text-gray-700">প্রতিক্রিয়া</div>
+                    <div
+                      className={`sm:col-span-8 ${
+                        hasFeedback ? "text-green-600" : "text-red-500"
+                      }`}
+                    >
+                      : {responseText}
                     </div>
                   </div>
                 </div>
@@ -145,15 +159,16 @@ const UserDashboard = () => {
             })}
           </div>
         ) : (
-          <div className="text-center py-20">
-            <p className="text-gray-500 text-xl mb-6">আপনার কোন আবেদন নেই</p>
+          <div className="text-center py-16">
+            <p className="text-gray-500 text-lg">আপনার কোন আবেদন নেই</p>
           </div>
         )}
       </div>
-      <div className="text-center mt-10">
+
+      <div className="text-center mt-8">
         <Link href="/apply">
-          <button className="bg-[#008037] text-white px-6 py-3 rounded hover:bg-[#006f2f] transition">
-            আবেদন করুন
+          <button className="bg-[#008037] text-white px-6 py-3 rounded-md hover:bg-[#006f2f] transition">
+            নতুন আবেদন করুন
           </button>
         </Link>
       </div>

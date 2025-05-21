@@ -14,17 +14,25 @@ export default function LoginPage() {
     password: "",
   })
   const [showPassword, setShowPassword] = useState(false)
+  const [loading, setLoading] = useState(false)
   const router = useRouter()
-  const {login} = useAuth();
+  const { login } = useAuth()
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value })
+    const { name, value } = e.target
+    if (name === "phone") {
+      const banglaDigitsOnly = value.replace(/[^\u09E6-\u09EF]/g, "")
+      setForm({ ...form, phone: banglaDigitsOnly })
+    } else {
+      setForm({ ...form, [name]: value })
+    }
   }
 
   const togglePassword = () => setShowPassword(!showPassword)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setLoading(true)
 
     try {
       const response = await fetch("/api/auth/login", {
@@ -39,6 +47,7 @@ export default function LoginPage() {
       })
 
       const data = await response.json()
+      setLoading(false)
 
       if (response.ok) {
         await login(data.token)
@@ -46,6 +55,7 @@ export default function LoginPage() {
         toast.error(data.message || "লগইন ব্যর্থ")
       }
     } catch (error) {
+      setLoading(false)
       toast.error("কিছু ত্রুটি ঘটেছে")
     }
   }
@@ -65,6 +75,8 @@ export default function LoginPage() {
               onChange={handleChange}
               placeholder="মোবাইল নম্বর"
               className="w-full pl-10 pr-4 py-2.5 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#008037] transition text-sm"
+              inputMode="numeric"
+              pattern="[০-৯]*"
             />
           </div>
 
@@ -88,9 +100,15 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            className="w-full bg-[#008037] hover:bg-[#006f2f] text-white font-semibold py-2.5 rounded-md transition text-sm"
+            className="w-full bg-[#008037] hover:bg-[#006f2f] text-white font-semibold py-2.5 rounded-md transition text-sm flex justify-center items-center gap-2"
+            disabled={loading}
           >
-            লগইন করুন
+            {loading && (
+              <div className="flex justify-center">
+                <div className="w-6 h-6 border-4 border-t-4 border-t-white border-gray-200 rounded-full animate-spin" />
+              </div>
+            )}
+            {loading ? "প্রসেসিং..." : "লগইন করুন"}
           </button>
         </form>
 

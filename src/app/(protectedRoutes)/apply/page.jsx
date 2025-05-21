@@ -8,8 +8,8 @@ import { useAuth } from '@/context/AuthContext';
 
 export default function RtiForm() {
   const router = useRouter();
-  const {user} = useAuth();
-  const { offices, loading, error, fetchOffices } = useApi();
+  const { user } = useAuth();
+  const { offices, loading: officeLoading, error, fetchOffices } = useApi();
 
   const [form, setForm] = useState({
     name: '',
@@ -27,6 +27,7 @@ export default function RtiForm() {
   });
 
   const [officers, setOfficers] = useState([]);
+  const [submitting, setSubmitting] = useState(false);
 
   const methodOptions = ['ফটোকপি', 'লিখিত', 'ই-মেইল', 'ফ্যাক্স'];
 
@@ -52,39 +53,49 @@ export default function RtiForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await fetch('/api/application')
-    const data = await res.json();
-    const allApplications = data ? data : [];
-    if (form.method.length === 0) {
-      alert('কমপক্ষে একটি তথ্য প্রাপ্তির পদ্ধতি নির্বাচন করুন।');
-      return;
-    }
+    setSubmitting(true);
 
-    // Officer full info
-    const selectedOfficer = officers.find((o) => o.name === form.officer);
-    const officerInfo = selectedOfficer
-      ? {
-        name: selectedOfficer.name,
-        designation: selectedOfficer.designation,
-        district: selectedOfficer.district,
+    try {
+      const res = await fetch('/api/application');
+      const data = await res.json();
+      const allApplications = data ? data : [];
+
+      if (form.method.length === 0) {
+        alert('কমপক্ষে একটি তথ্য প্রাপ্তির পদ্ধতি নির্বাচন করুন।');
+        setSubmitting(false);
+        return;
       }
-      : null;
 
-    const newApp = {
-      ...form,
-      officerInfo,
-      application_id: allApplications.length + 1,
-      createdAt: new Date().toISOString(),
-      appealed: false,
-      feedback: 'পরীক্ষাধীন',
-      timeTaken: '২৮ দিন',
-      status: 'পেন্ডিং',
-    };
+      const selectedOfficer = officers.find((o) => o.name === form.officer);
+      const officerInfo = selectedOfficer
+        ? {
+            name: selectedOfficer.name,
+            designation: selectedOfficer.designation,
+            district: selectedOfficer.district,
+          }
+        : null;
 
-    localStorage.setItem('applications', JSON.stringify([...allApplications, newApp]));
-    sessionStorage.setItem('rtiForm', JSON.stringify(newApp));
+      const newApp = {
+        ...form,
+        officerInfo,
+        application_id: allApplications.length + 1,
+        createdAt: new Date().toISOString(),
+        appealed: false,
+        feedback: 'পরীক্ষাধীন',
+        timeTaken: '২৮ দিন',
+        status: 'পেন্ডিং',
+      };
 
-    router.push('/preview');
+      localStorage.setItem('applications', JSON.stringify([...allApplications, newApp]));
+      sessionStorage.setItem('rtiForm', JSON.stringify(newApp));
+
+      router.push('/preview');
+    } catch (error) {
+      console.error('Error submitting the form:', error);
+      alert('আবেদন জমা দিতে সমস্যা হয়েছে। অনুগ্রহ করে পরে আবার চেষ্টা করুন।');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   useEffect(() => {
@@ -99,16 +110,18 @@ export default function RtiForm() {
     } else {
       setForm((prev) => ({ ...prev, name, email, phone }));
     }
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     fetchOffices();
   }, [fetchOffices]);
 
   return (
-    <div className="bg-green-[300px]">
-      <div className="max-w-3xl mx-auto p-10 md:p-24 shadow">
-        <h1 className="text-xl text-green-700 font-bold text-center mb-6">তথ্য অধিকার আবেদন ফর্ম</h1>
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-white px-4 py-10">
+      <div className="max-w-3xl mx-auto bg-white shadow-xl rounded-xl p-6 sm:p-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-center text-[#008037] mb-6">
+          তথ্য অধিকার আবেদন ফর্ম
+        </h1>
 
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
           <div className="flex items-center border p-2 rounded text-green-700">
@@ -117,7 +130,7 @@ export default function RtiForm() {
               name="name"
               value={form.name}
               readOnly
-              className="flex-1 focus:outline-none focus:border-transparent"
+              className="flex-1 focus:outline-none"
               placeholder="নাম"
               required
             />
@@ -129,7 +142,7 @@ export default function RtiForm() {
               name="father"
               value={form.father}
               onChange={handleChange}
-              className="flex-1 focus:outline-none focus:border-transparent"
+              className="flex-1 focus:outline-none"
               placeholder="পিতার নাম"
               required
             />
@@ -141,7 +154,7 @@ export default function RtiForm() {
               name="mother"
               value={form.mother}
               onChange={handleChange}
-              className="flex-1 focus:outline-none focus:border-transparent"
+              className="flex-1 focus:outline-none"
               placeholder="মাতার নাম"
               required
             />
@@ -153,7 +166,7 @@ export default function RtiForm() {
               name="presentAddress"
               value={form.presentAddress}
               onChange={handleChange}
-              className="flex-1 focus:outline-none focus:border-transparent"
+              className="flex-1 focus:outline-none"
               placeholder="বর্তমান ঠিকানা"
               required
             />
@@ -165,7 +178,7 @@ export default function RtiForm() {
               name="permanentAddress"
               value={form.permanentAddress}
               onChange={handleChange}
-              className="flex-1 focus:outline-none focus:border-transparent"
+              className="flex-1 focus:outline-none"
               placeholder="স্থায়ী ঠিকানা"
               required
             />
@@ -177,12 +190,12 @@ export default function RtiForm() {
               name="infoType"
               value={form.infoType}
               onChange={handleChange}
-              className="flex-1 focus:outline-none focus:border-transparent"
+              className="flex-1 focus:outline-none"
               placeholder="কি ধরনের তথ্য চান"
             />
           </div>
 
-          <div className="col-span-2">
+          <div className="md:col-span-2">
             <label className="text-green-700">দপ্তর নির্বাচন করুন:</label>
             <select
               name="office"
@@ -191,7 +204,7 @@ export default function RtiForm() {
               className="w-full p-2 border rounded text-green-700"
             >
               <option value="">-- নির্বাচন করুন --</option>
-              {loading ? (
+              {officeLoading ? (
                 <option>লোড হচ্ছে...</option>
               ) : error ? (
                 <option>{error}</option>
@@ -206,7 +219,7 @@ export default function RtiForm() {
           </div>
 
           {officers.length > 0 && (
-            <div className="col-span-2">
+            <div className="md:col-span-2">
               <label className="text-green-700">অফিসার নির্বাচন করুন:</label>
               <select
                 name="officer"
@@ -224,8 +237,10 @@ export default function RtiForm() {
             </div>
           )}
 
-          <div className="col-span-2">
-            <label className="text-green-700 mb-2 block">আপনি কোন কোন পদ্ধতিতে তথ্য পেতে চান?</label>
+          <div className="md:col-span-2">
+            <label className="text-green-700 mb-2 block">
+              আপনি কোন কোন পদ্ধতিতে তথ্য পেতে চান?
+            </label>
             <div className="flex flex-wrap gap-4">
               {methodOptions.map((method) => (
                 <label key={method} className="text-green-700 flex items-center">
@@ -234,7 +249,6 @@ export default function RtiForm() {
                     checked={form.method.includes(method)}
                     onChange={() => handleMethodCheckbox(method)}
                     className="mr-1"
-                      
                   />
                   <FiCheckCircle className="mr-1" />
                   {method}
@@ -243,12 +257,12 @@ export default function RtiForm() {
             </div>
           </div>
 
-          <div className="col-span-2">
+          <div className="md:col-span-2">
             <textarea
               name="description"
               value={form.description}
               onChange={handleChange}
-              className="w-full p-3 border rounded text-green-700 focus:outline-none focus:border-transparent"
+              className="w-full p-3 border rounded text-green-700"
               placeholder="তথ্যের বিস্তারিত বর্ণনা লিখুন"
               required
             />
@@ -260,9 +274,8 @@ export default function RtiForm() {
               name="email"
               value={form.email}
               readOnly
-              className="flex-1 focus:outline-none focus:border-transparent"
+              className="flex-1 focus:outline-none"
               placeholder="ই-মেইল"
-              
             />
           </div>
 
@@ -272,17 +285,44 @@ export default function RtiForm() {
               name="phone"
               value={form.phone}
               readOnly
-              className="flex-1 focus:outline-none focus:border-transparent"
+              className="flex-1 focus:outline-none"
               placeholder="ফোন নম্বর"
             />
           </div>
 
-          <div className="col-span-2">
+          <div className="md:col-span-2">
             <button
               type="submit"
-              className="w-full bg-green-600 text-white py-3 rounded hover:bg-green-700 transition"
+              className="w-full bg-green-600 text-white py-3 rounded hover:bg-green-700 transition flex items-center justify-center"
+              disabled={submitting}
             >
-              আবেদন জমা দিন
+              {submitting ? (
+                <>
+                  <svg
+                    className="animate-spin h-5 w-5 mr-3 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                    ></path>
+                  </svg>
+                  লোড হচ্ছে...
+                </>
+              ) : (
+                'সাবমিট করুন'
+              )}
             </button>
           </div>
         </form>
