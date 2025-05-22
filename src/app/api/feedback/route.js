@@ -35,7 +35,8 @@ export async function POST(req) {
       where: {
         id: applicationId
       }, data: {
-        isNotified: true
+        isNotified: true,
+        hasGivenFeedback: true,
       }
     })
 
@@ -51,9 +52,10 @@ export async function GET(req) {
   try {
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get("userId");
+    const applicationId = searchParams.get('applicationId')
 
     const feedbacks = await prisma.feedback.findMany({
-      where: userId ? { userId } : {},
+      where: userId ? { userId } : applicationId ? {applicationId} : {},
       include: {
         application: true,
         appeal: true,

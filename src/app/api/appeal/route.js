@@ -18,8 +18,30 @@ export async function POST(req) {
       subject, // ✅ নতুন ফিল্ড
       details,
       reason,
-      informationGivenOfficer
+      informationGivenOfficer,
+      applicationId,
     } = body;
+
+    const application = await prisma.application.findUnique({ where: { id: applicationId } })
+    if (!application) {
+      return NextResponse.json(
+        { success: false, message: "Application not found." },
+        { status: 404 }
+      );
+    }
+
+    const existingAppeal = await prisma.appeal.findUnique({
+      where: {
+        applicationId,
+      }
+    })
+
+    if (application?.hasAppealed || existingAppeal) {
+      return NextResponse.json(
+        { success: false, message: "User has already applied against this application." },
+        { status: 409 }
+      );
+    }
 
     const appeal = await prisma.appeal.create({
       data: {
@@ -33,9 +55,17 @@ export async function POST(req) {
         subject, // ✅ সেট করলাম
         details,
         reason,
-        informationGivenOfficer
+        informationGivenOfficer,
+        applicationId,
       },
+      select: {
+        id: true
+      }
     });
+
+    if (appeal?.id) {
+      await prisma.application.update({ where: { id: applicationId }, data: { hasAppealed: true } })
+    }
 
     return NextResponse.json({ success: true, appeal }, { status: 201 });
   } catch (error) {

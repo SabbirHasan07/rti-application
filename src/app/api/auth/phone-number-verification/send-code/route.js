@@ -34,7 +34,7 @@ export async function POST(req) {
 
     console.log('verification code is: ', code)
 
-    const result = await sendSMS(phone, code);
+    const result = await sendSMS(phone, code, false);
 
     if (!result.success) {
         return NextResponse.json(

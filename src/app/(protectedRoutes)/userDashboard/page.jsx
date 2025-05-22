@@ -99,27 +99,43 @@ const UserDashboard = () => {
               const canUpdateByTime = true;
 
               const feedback = feedbacks.find(
-                (f) => f.applicationId === application.id && f.isAppeal === false
+                (f) => f.applicationId === application.id
               );
 
-              const hasFeedback = !!feedback;
-              const responseText = hasFeedback ? feedback.response : "প্রতিক্রিয়া নেই";
+              const hasFeedback = application?.hasGivenFeedback;
+              const responseText = hasFeedback ? feedback?.response : "প্রতিক্রিয়া নেই";
+
+              console.log({one: application?.hasFeedback, two: feedback?.response})
 
               return (
                 <div
                   key={application.id}
                   className="bg-gray-50 border border-gray-200 rounded-lg shadow-md p-5 sm:p-6"
                 >
-                  <div className="flex justify-end mb-4">
+                  <div className="flex justify-end mb-4 gap-2">
                     <button
                       onClick={() => router.push(`/update?applicationId=${application.id}`)}
                       className={`px-4 py-2 rounded-md text-sm font-medium transition ${hasFeedback
-                          ? "bg-gray-300 text-gray-600 cursor-not-allowed"
-                          : "bg-[#008037] text-white hover:bg-[#006f2f]"
+                        ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+                        : "bg-[#008037] text-white hover:bg-[#006f2f]"
                         }`}
                       disabled={hasFeedback}
                     >
-                      {hasFeedback ? "আপডেট সম্ভব নয়" : "আপডেট করুন"}
+                      {hasFeedback ? "ফিডব্যাক সম্ভব নয়" : "ফিডব্যাক"}
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (!application?.hasAppealed) {
+                          router.push(`/AppealForm?applicationId=${application?.id}`);
+                        }
+                      }}
+                      disabled={application?.hasAppealed || responseText === 'প্রতিক্রিয়া নেই' || feedback?.response === 'আবেদন গৃহীত হয়নি'}
+                      className={`${application?.hasAppealed || responseText === 'প্রতিক্রিয়া নেই' || feedback?.response === 'আবেদন গৃহীত হয়নি'
+                        ? 'bg-red-300 cursor-not-allowed'
+                        : 'bg-gray-700 hover:bg-gray-900'
+                        } text-white font-bold px-6 py-2 rounded shadow`}
+                    >
+                      {application?.hasAppealed ? 'আপিল সম্ভব নয়' : 'আপিল করুন'}
                     </button>
                   </div>
 

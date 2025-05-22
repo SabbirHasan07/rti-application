@@ -21,7 +21,7 @@ export async function GET() {
     });
 
     for (const app of apps) {
-        const sms = `প্রিয় ${app?.data?.name}, বাংলাদেশ পরিবেশ আইনবিদ সমিতি – বেলার RTI Helpdesk এর মাধ্যমে করা আপনার আবেদনের ফলাফল/মতামত হালনাগাদ করুন। লগইন করে Feedback জমা দিন - https://rti-application.vercel.app/login BELA-BANGLADESH ENVIRONMENTAL LAWYERS ASSOCIATION https://www.belabangla.org`
+        const sms = `প্রিয় ${app?.data?.name}, বাংলাদেশ পরিবেশ আইনবিদ সমিতি – বেলার RTI Helpdesk এর মাধ্যমে করা আপনার আবেদনের ফলাফল/মতামত হালনাগাদ করুন। লগইন করে Feedback জমা দিন - https://rti-application.vercel.app/login https://www.belabangla.org`
         if (app?.data?.phone) {
             await sendSMS(app.data.phone, sms, true);
         }

@@ -10,7 +10,8 @@ export async function POST(req) {
       data: {
         userId: body.userId,
         data: body.data,
-        isNotified: false
+        isNotified: false,
+        hasGivenFeedback: false,
       },
     });
 
@@ -26,9 +27,12 @@ export async function GET(req) {
   try {
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get('userId');
+    const applicationId = searchParams.get('applicationId')
+
+
 
     const applications = await prisma.application.findMany({
-      where: userId ? { userId } : {}, // If userId exists, filter
+      where: userId ? { userId } : applicationId ? {id: applicationId} : {}, // If userId exists, filter
       select:{
         id: true,
         createdAt: true,
@@ -36,6 +40,8 @@ export async function GET(req) {
         feedbacks: true,
         user: true,
         userId: true,
+        hasGivenFeedback: true,
+        hasAppealed: true,
       }
     });
 

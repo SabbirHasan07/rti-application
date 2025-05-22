@@ -25,7 +25,7 @@ export async function POST(req) {
     },
   });
 
-  const result = await sendSMS(phone, code);
+  const result = await sendSMS(phone, code, false);
 
   if (!result.success) {
     return NextResponse.json(

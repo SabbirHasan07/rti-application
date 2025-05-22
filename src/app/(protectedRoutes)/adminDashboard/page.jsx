@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef, useMemo } from 'react';
-import { Bar, Doughnut } from 'react-chartjs-2';
+import { Bar, Doughnut, Pie } from 'react-chartjs-2';
 import { useRouter } from 'next/navigation';
 import { FaBell, FaWpforms, FaDatabase } from 'react-icons/fa';
 import { ApplicationList } from '../../../components/AdminDashboard/ApplicationList';
@@ -72,28 +72,54 @@ const AdminDashboard = () => {
 
     const feedbackData = useMemo(() => {
         if (allFeedbacks) {
-            const labels = ['আংশিক তথ্য', 'সম্পূর্ণ তথ্য', 'তথ্য প্রদান না করা', 'হ্যা', 'না'];
-            const type1 = allFeedbacks.filter(fb => fb.infoType === labels[0])?.length || 0
-            const type2 = allFeedbacks.filter(fb => fb.infoType === labels[1])?.length || 0
-            const type3 = allFeedbacks.filter(fb => fb.infoType === labels[2])?.length || 0
-            const type4 = allFeedbacks.filter(fb => fb.isAppeal === true)?.length || 0
-            const type5 = allFeedbacks.filter(fb => fb.isAppeal === false)?.length || 0
+            const labels = ['মোট আবেদন সংখ্যা', 'সম্পূর্ণ তথ্য', 'আংশিক তথ্য', 'কোন তথ্য দেওয়া হয়নি', 'আবেদন গৃহীত হয়নি'];
+
+            // মোট আবেদন সংখ্যা
+            const totalApplications = allApplications?.length || 0;
+
+            // সম্পূর্ণ তথ্য
+            const fullInfoReceived = allFeedbacks.filter(fb => fb.infoType === 'সম্পূর্ণ তথ্য')?.length || 0
+
+            // আংশিক তথ্য
+            const partialInfoReceived = allFeedbacks.filter(fb => fb.infoType === 'আংশিক তথ্য')?.length || 0
+
+            // কোন তথ্য দেওয়া হয়নি
+            const noInfoReceived = allFeedbacks.filter(fb => fb.infoType === 'তথ্য প্রদান না করা')?.length || 0
+
+            // আবেদন গৃহীত হয়নি
+            const responseNotReceivedApplication = allFeedbacks.filter(fb => fb.response === 'আবেদন গৃহীত হয়নি')?.length || 0;
 
             const datasets = [
                 {
                     label: 'ফিডব্যাক রেকর্ড',
-                    data: [type1, type2, type3, type4, type5],
-                    backgroundColor: ['#FF6347', '#FF8C00', '#FFD700', '#8A2BE2', '#00FF00'],
-                    borderColor: ['#FF6347', '#FF8C00', '#FFD700', '#8A2BE2', '#00FF00'],
+                    data: [totalApplications, fullInfoReceived, partialInfoReceived, noInfoReceived, responseNotReceivedApplication],
+                    backgroundColor: [
+                        '#4B9CD3', // Calm Blue - totalApplications
+                        '#F4A261', // Soft Orange - partialInfoReceived
+                        '#2A9D8F', // Teal - fullInfoReceived
+                        '#E76F51', // Warm Red - noInfoReceived
+                        '#E9C46A', // Muted Yellow - type4
+                        '#264653'  // Deep Grayish Blue - type5
+                    ],
+                    borderColor: [
+                        '#4B9CD3',
+                        '#F4A261',
+                        '#2A9D8F',
+                        '#E76F51',
+                        '#E9C46A',
+                        '#264653'
+                    ],
                     borderWidth: 1,
+                    hoverOffset: 4
                 }
+
             ]
             return {
                 labels,
                 datasets,
             }
         }
-    }, [allFeedbacks])
+    }, [allFeedbacks, allApplications])
 
     console.log({ feedbackData })
 
@@ -149,7 +175,7 @@ const AdminDashboard = () => {
 
             <div className="flex justify-between gap-4 mt-6">
                 {/* {allApplications && <ChartCard title="অভিযোগ রেকর্ড" chart={<Doughnut ref={doughnutChartRef} data={applicationData} />} />} */}
-                {allFeedbacks && <ChartCard title="ফিডব্যাক রেকর্ড" chart={<Bar ref={barChartRef} data={feedbackData} />} />}
+                {allFeedbacks && <ChartCard title="ফিডব্যাক রেকর্ড" chart={<Pie ref={barChartRef} data={feedbackData} />} />}
             </div>
 
             <div className="flex justify-center p-6 mb-9 gap-4 mt-6 mx-auto">

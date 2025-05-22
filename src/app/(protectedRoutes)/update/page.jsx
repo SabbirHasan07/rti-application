@@ -115,6 +115,7 @@ export default function FeedbackForm() {
             <option value="">-- নির্বাচন করুন --</option>
             <option value="হ্যা">হ্যা</option>
             <option value="না">না</option>
+            <option value="আবেদন গৃহীত হয়নি">আবেদন গৃহীত হয়নি</option>
           </select>
         </div>
 
@@ -157,23 +158,6 @@ export default function FeedbackForm() {
           >
             {loading ? 'লোড হচ্ছে...' : 'সংরক্ষণ করুন'}
           </button>
-
-          {showAppeal && (
-            <button
-              onClick={() => {
-                if (appealEnabled && wantToAppeal === 'হ্যাঁ') {
-                  router.push('/AppealForm');
-                }
-              }}
-              disabled={!appealEnabled || wantToAppeal !== 'হ্যাঁ'}
-              className={`${appealEnabled && wantToAppeal === 'হ্যাঁ'
-                  ? 'bg-gray-700 hover:bg-gray-900'
-                  : 'bg-red-300 cursor-not-allowed'
-                } text-white font-bold px-6 py-2 rounded shadow`}
-            >
-              আপিলের জন্য আবেদন করুন
-            </button>
-          )}
 
           <button
             onClick={() => router.push('/userDashboard')}
