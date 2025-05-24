@@ -61,7 +61,7 @@ export default function AppealForm() {
           reason: '',
           informationGivenOfficer: '', // ✅ reset
         });
-        router.push("/reviewAppeal");
+        router.push(`/reviewAppeal?appealId=${data?.id}&applicationId=${applicationId}`);
       } else {
         alert(data.message || 'সার্ভার সমস্যা হয়েছে');
       }
@@ -95,24 +95,32 @@ export default function AppealForm() {
         .catch(err => console.error('Error fetching appeal:', err));
       fetch(`/api/application?applicationId=${applicationId}`).then(res => res.json()).then(data => {
         setApplicationData(data?.[0]?.data)
-      fetch(`/api/feedback?applicationId=${applicationId}`).then(res => res.json()).then(data => setFeedbackData(data?.feedbacks?.[0]))
+        fetch(`/api/feedback?applicationId=${applicationId}`).then(res => res.json()).then(data => setFeedbackData(data?.feedbacks?.[0]))
       })
     }
   }, [userId]);
 
   useEffect(() => {
     if (applicationData) {
+      let updatedReason = formData.reason;
+
+      if (feedbackData?.response === 'না') {
+        updatedReason = 'উত্তর দেওয়া হয়নি';
+      }
+
       setFormData({
         ...formData,
         applicantName: applicationData?.name,
         address: applicationData?.presentAddress,
         phone: applicationData?.phone,
         informationGivenOfficer: `${applicationData?.officerInfo?.name}, ${applicationData?.officerInfo?.designation}, ${applicationData?.officerInfo?.district}`,
-        subject: feedbackData?.infoType || ''
+        subject: feedbackData?.infoType || '',
+        reason: updatedReason
       });
     }
-  }, [applicationData, feedbackData])
+  }, [applicationData, feedbackData]);
 
+  console.log(feedbackData?.response)
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-xl shadow-md mt-10">
       <h1 className="text-2xl font-bold mb-2 text-center text-blue-700">আপীল আবেদন ফর্ম</h1>
@@ -125,7 +133,14 @@ export default function AppealForm() {
         <Input label="স্মারক নং" name="referenceNo" value={formData.referenceNo} onChange={handleChange} placeholder={placeholders.referenceNo} />
         <Input label="আপিল কর্মকর্তার নাম (সাব্বির হাসান/চেয়ারম্যান/বাংলাদেশ কেমিক্যাল ইন্ডাস্ট্রিজ কর্পোরেশন (বিসিআইসি)/টাঙ্গাইল-১৯০০)" name="appealOfficer" value={formData.appealOfficer} onChange={handleChange} placeholder={placeholders.appealOfficer} />
         <Input disabled={true} label="তথ্য প্রদানকারী কর্মকর্তা" name="informationGivenOfficer" value={formData.informationGivenOfficer} onChange={handleChange} placeholder={placeholders.informationGivenOfficer} />
-        <Input label="আপীলের বিষয়বস্তু" name="subject" value={formData.subject} onChange={handleChange} placeholder={placeholders.subject} />
+        <Input
+          disabled={true}
+          label="আপীলের বিষয়বস্তু"
+          name="subject"
+          value={feedbackData?.response === "না" ? formData?.reason : formData?.subject}
+          onChange={handleChange}
+          placeholder={placeholders.subject}
+        />
 
         <div className="flex flex-col">
           <label className="mb-1 font-medium text-gray-700">উত্তরের তারিখ *</label>
@@ -145,8 +160,27 @@ export default function AppealForm() {
           )}
         </div>
 
-        <Textarea label="আপীলের সংক্ষিপ্ত বিবরণ" name="details" value={formData.details} onChange={handleChange} placeholder={placeholders.details} />
-        <Textarea label="তথ্য প্রদানে অস্বীকৃতি জানিয়ে থাকলে তার কারণ" name="reason" value={formData.reason} onChange={handleChange} placeholder={placeholders.reason} />
+        {formData.subject !== "তথ্য প্রদান না করা" && (
+          <Textarea
+            label="আপীলের সংক্ষিপ্ত বিবরণ"
+            name="details"
+            value={formData.details}
+            onChange={handleChange}
+            placeholder={placeholders.details}
+          />
+        )}
+
+        {formData.subject === "তথ্য প্রদান না করা" && (
+          <Textarea
+            label="তথ্য প্রদানে অস্বীকৃতি জানিয়ে থাকলে তার কারণ"
+            name="reason"
+            value={formData.reason}
+            onChange={handleChange}
+            placeholder={placeholders.reason}
+          />
+        )}
+
+
 
         <div className="md:col-span-2">
           <button

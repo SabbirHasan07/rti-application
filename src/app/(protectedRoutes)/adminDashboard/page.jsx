@@ -6,8 +6,8 @@ import { useRouter } from 'next/navigation';
 import { FaBell, FaWpforms, FaDatabase } from 'react-icons/fa';
 import { ApplicationList } from '../../../components/AdminDashboard/ApplicationList';
 import { Pagination } from '../../../components/AdminDashboard/Pagination';
-import { NotificationModal } from '../../../components/AdminDashboard/NotificationModal';
-import { ApplicantDetailModal } from '../../../components/AdminDashboard/ApplicantDetailModal';
+
+
 import { ChartCard } from '../../../components/AdminDashboard/ChartCard';
 
 import {
@@ -33,42 +33,15 @@ ChartJS.register(
 );
 
 const AdminDashboard = () => {
-    const [selected, setSelected] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
     const router = useRouter();
     const [allApplications, setAllApplications] = useState([]);
     const [allFeedbacks, setAllFeedbacks] = useState([]);
-    const [notificationVisible, setNotificationVisible] = useState(false);
-
-    const doughnutChartRef = useRef(null);
-    const barChartRef = useRef(null);
+    
+    const pieChartRef = useRef(null);
 
     const { logout } = useAuth();
-
-    useEffect(() => {
-        fetch('/api/application').then(res => res.json()).then(data => setAllApplications(data)).catch(err => console.error(err))
-        fetch('/api/feedback').then(res => res.json()).then(data => setAllFeedbacks(data?.feedbacks)).catch(err => console.error(err))
-    }, []);
-
-    const handleData = async () => {
-        const res = await fetch('/api/application')
-        const data = await res.json();
-        console.log({ data })
-    }
-
-    console.log({ allApplications, allFeedbacks })
-
-    const applicationData = {
-        labels: ['মামলা ১', 'মামলা ২', 'মামলা ৩', 'মামলা ৪'],
-        datasets: [
-            {
-                data: [15, 30, 45, 10],
-                backgroundColor: ['#FF6F61', '#6B8E23', '#FFD700', '#8A2BE2'],
-                hoverBackgroundColor: ['#FF6F61', '#6B8E23', '#FFD700', '#8A2BE2'],
-            },
-        ],
-    };
 
     const feedbackData = useMemo(() => {
         if (allFeedbacks) {
@@ -121,8 +94,6 @@ const AdminDashboard = () => {
         }
     }, [allFeedbacks, allApplications])
 
-    console.log({ feedbackData })
-
     const downloadChartImage = (chartRef) => {
         const chartCanvas = chartRef.current?.canvas;
         if (chartCanvas) {
@@ -133,6 +104,13 @@ const AdminDashboard = () => {
             link.click();
         }
     };
+
+    useEffect(() => {
+        fetch('/api/application').then(res => res.json()).then(data => setAllApplications(data)).catch(err => console.error(err))
+    }, []);
+    useEffect(()=>{
+        fetch('/api/feedback').then(res => res.json()).then(data => setAllFeedbacks(data?.feedbacks)).catch(err => console.error(err))
+    },[])
 
     return (
         <div className="max-w-7xl mx-auto p-6 font-sans text-[#212529] relative">
@@ -162,7 +140,6 @@ const AdminDashboard = () => {
 
             <ApplicationList
                 allApplications={allApplications}
-                setSelected={setSelected}
                 currentPage={currentPage}
                 itemsPerPage={itemsPerPage}
             />
@@ -175,30 +152,21 @@ const AdminDashboard = () => {
 
             <div className="flex justify-between gap-4 mt-6">
                 {/* {allApplications && <ChartCard title="অভিযোগ রেকর্ড" chart={<Doughnut ref={doughnutChartRef} data={applicationData} />} />} */}
-                {allFeedbacks && <ChartCard title="ফিডব্যাক রেকর্ড" chart={<Pie ref={barChartRef} data={feedbackData} />} />}
+                {allFeedbacks && <ChartCard title="ফিডব্যাক রেকর্ড" chart={<Pie ref={pieChartRef} data={feedbackData} />} />}
             </div>
 
             <div className="flex justify-center p-6 mb-9 gap-4 mt-6 mx-auto">
                 <button
-                    onClick={() => downloadChartImage(barChartRef)}
+                    onClick={() => downloadChartImage(pieChartRef)}
                     className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
                 >
                     Download Bar Chart
                 </button>
             </div>
 
-            {notificationVisible && (
-                <NotificationModal setNotificationVisible={setNotificationVisible} />
-            )}
+            
 
-            {selected && (
-                <ApplicantDetailModal
-                    selected={selected}
-                    setSelected={setSelected}
-                    allApplications={allApplications}
-                    setAllApplications={setAllApplications}
-                />
-            )}
+           
         </div>
     );
 };

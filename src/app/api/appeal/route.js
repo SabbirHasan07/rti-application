@@ -82,18 +82,19 @@ export async function POST(req) {
 export async function GET(req) {
   try {
     const { searchParams } = new URL(req.url);
-    const userId = searchParams.get("userId");
+    const appealId = searchParams.get("appealId");
 
-    if (!userId) {
+    if (!appealId) {
       return NextResponse.json(
-        { success: false, message: "Missing userId" },
+        { success: false, message: "Missing appeal id" },
         { status: 400 }
       );
     }
 
     const appeals = await prisma.appeal.findMany({
-      where: { userId },
-      orderBy: { createdAt: "desc" },
+      where: { id: appealId }, include: {
+        application: true
+      }
     });
 
     return NextResponse.json({ success: true, appeals });

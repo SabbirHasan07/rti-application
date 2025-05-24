@@ -54,14 +54,27 @@ export async function GET(req) {
     const userId = searchParams.get("userId");
     const applicationId = searchParams.get('applicationId')
 
+    console.log(applicationId)
+
+    let where = {}
+
+    if (userId) {
+      where = {
+        userId
+      }
+    }
+
+    if (applicationId) {
+      where = {
+        applicationId
+      }
+    }
+
     const feedbacks = await prisma.feedback.findMany({
-      where: userId ? { userId } : applicationId ? {applicationId} : {},
+      where: where,
       include: {
         application: true,
         appeal: true,
-      },
-      orderBy: {
-        createdAt: 'desc'
       }
     });
 

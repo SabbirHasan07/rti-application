@@ -87,6 +87,7 @@ model Office {
   id          String   @id @default(cuid())
   name        String
   designation String
+  division    String?
   district    String
   officeType  String?
   createdAt   DateTime @default(now())

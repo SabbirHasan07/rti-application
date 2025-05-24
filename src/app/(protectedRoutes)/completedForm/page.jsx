@@ -13,7 +13,7 @@ export default function CompletedForm() {
   const [isGenerating, setIsGenerating] = useState(false)
   const contentRef = useRef(null)
   const router = useRouter()
-  const {user} = useAuth();
+  const { user } = useAuth();
 
   useEffect(() => {
     const data = sessionStorage.getItem("rtiForm")
@@ -75,20 +75,20 @@ export default function CompletedForm() {
     pdf.save("RTI-Application.pdf")
     setIsGenerating(false)
     toast.success("PDF সফলভাবে তৈরি হয়েছে!")
-    await saveToDatabase()  
+    await saveToDatabase()
     router.push('/userDashboard')
   }
 
   const printForm = async () => {
     window.print()
-    await saveToDatabase()  
+    await saveToDatabase()
     router.push('/userDashboard')
   }
 
   if (!formData) return <p className="text-center">লোড হচ্ছে...</p>
 
   return (
-    <div className="max-w-4xl mx-auto py-10 space-y-6 font-serif">
+    <div className="max-w-4xl mx-auto py-10 space-y-6 font-[Kalpurush]">
       <Toaster />
       <h1 className="text-2xl font-bold text-center mb-6 print:hidden">
         আপনার পূর্ণাঙ্গ আবেদন ফর্ম
@@ -133,15 +133,19 @@ export default function CompletedForm() {
         </button>
       </div>
 
-      <div ref={contentRef} className="space-y-10">
-        <div className="pdf-page bg-white px-28 text-[18px] leading-relaxed">
-          <PageOne data={formData} showButton={false} />
+      <div ref={contentRef} className="space-y-4 font-[Kalpurush]">
+        <div className="pdf-page w-[794px] space-y-4 mx-auto bg-white p-[40px] text-[16px] leading-relaxed">
+          <div className=" bg-white text-[18px] leading-relaxed">
+            <PageOne data={formData} showButton={false} />
+          </div>
         </div>
-        <div className="pdf-page bg-white p-28 text-[18px] leading-relaxed">
-          <PageTwo data={formData} showButton={false} />
-        </div>
-        <div className="pdf-page bg-white p-28 text-[18px] leading-relaxed">
-          <PageThree data={formData} showButton={false} />
+        <div className="pdf-page w-[794px] space-y-4 mx-auto bg-white p-[40px] text-[16px] leading-relaxed">
+          <div className=" bg-white text-[18px] leading-relaxed">
+            <PageTwo data={formData} showButton={false} />
+          </div>
+          <div className=" bg-white text-[18px] leading-relaxed">
+            <PageThree data={formData} showButton={false} />
+          </div>
         </div>
       </div>
     </div>

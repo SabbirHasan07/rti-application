@@ -153,14 +153,6 @@ const UserDashboard = () => {
                     <div className="sm:col-span-8 text-gray-800">
                       : {application.data.office || "প্রযোজ্য নয়"}
                     </div>
-
-                    <div className="sm:col-span-4 font-semibold text-gray-700">প্রতিক্রিয়া</div>
-                    <div
-                      className={`sm:col-span-8 ${hasFeedback ? "text-green-600" : "text-red-500"
-                        }`}
-                    >
-                      : {responseText}
-                    </div>
                   </div>
                 </div>
               );

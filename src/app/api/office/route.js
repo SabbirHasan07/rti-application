@@ -4,14 +4,14 @@ import { NextResponse } from 'next/server';
 // POST: Create an office
 export async function POST(req) {
   try {
-    const { name, designation, district, officeType } = await req.json();
+    const { name, designation,division, district, officeType } = await req.json();
 
-    if (!name || !designation || !district || !officeType) {
+    if (!name || !designation || !division  || !district || !officeType) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
     const office = await prisma.office.create({
-      data: { name, designation, district, officeType },
+      data: { name, designation,division, district, officeType },
     });
 
     return NextResponse.json({ message: 'Office created', office }, { status: 201 });
