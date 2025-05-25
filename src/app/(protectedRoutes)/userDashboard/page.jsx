@@ -105,7 +105,7 @@ const UserDashboard = () => {
               const hasFeedback = application?.hasGivenFeedback;
               const responseText = hasFeedback ? feedback?.response : "প্রতিক্রিয়া নেই";
 
-              console.log({one: application?.hasFeedback, two: feedback?.response})
+
 
               return (
                 <div
@@ -147,12 +147,13 @@ const UserDashboard = () => {
                     <div className="sm:col-span-8 text-gray-800">: {application.data.infoType}</div>
 
                     <div className="sm:col-span-4 font-semibold text-gray-700">অফিসারের নাম</div>
-                    <div className="sm:col-span-8 text-gray-800">: {application.data.officer}</div>
+                    <div className="sm:col-span-8 text-gray-800">: {application.data.officer},{application.data.office},{application.data.division}</div>
 
-                    <div className="sm:col-span-4 font-semibold text-gray-700">অফিস</div>
+                    <div className="sm:col-span-4 font-semibold text-gray-700">তারিখ</div>
                     <div className="sm:col-span-8 text-gray-800">
-                      : {application.data.office || "প্রযোজ্য নয়"}
+                      : {application.createdAt ? new Date(application.createdAt).toLocaleDateString() : "প্রযোজ্য নয়"}
                     </div>
+
                   </div>
                 </div>
               );

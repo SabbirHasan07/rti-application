@@ -10,7 +10,6 @@ export default function RtiForm() {
   const router = useRouter();
   const { user } = useAuth();
   const { offices, loading: officeLoading, error, fetchOffices } = useApi();
-
   const [form, setForm] = useState({
     name: '',
     father: '',
@@ -19,6 +18,7 @@ export default function RtiForm() {
     permanentAddress: '',
     office: '',
     officer: '',
+    division: '',
     infoType: '',
     description: '',
     method: [],
@@ -72,6 +72,7 @@ export default function RtiForm() {
             name: selectedOfficer.name,
             designation: selectedOfficer.designation,
             district: selectedOfficer.district,
+            division: selectedOfficer.division,
           }
         : null;
 
@@ -126,130 +127,90 @@ export default function RtiForm() {
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
           <div className="flex items-center border p-2 rounded text-green-700">
             <FiUser className="mr-2" />
-            <input
-              name="name"
-              value={form.name}
-              readOnly
-              className="flex-1 focus:outline-none"
-              placeholder="নাম"
-              required
-            />
+            <input name="name" value={form.name} readOnly className="flex-1 focus:outline-none" placeholder="নাম" required />
           </div>
 
           <div className="flex items-center border p-2 rounded text-green-700">
             <FiUser className="mr-2" />
-            <input
-              name="father"
-              value={form.father}
-              onChange={handleChange}
-              className="flex-1 focus:outline-none"
-              placeholder="পিতার নাম"
-              required
-            />
+            <input name="father" value={form.father} onChange={handleChange} className="flex-1 focus:outline-none" placeholder="পিতার নাম" required />
           </div>
 
           <div className="flex items-center border p-2 rounded text-green-700">
             <FiUser className="mr-2" />
-            <input
-              name="mother"
-              value={form.mother}
-              onChange={handleChange}
-              className="flex-1 focus:outline-none"
-              placeholder="মাতার নাম"
-              required
-            />
+            <input name="mother" value={form.mother} onChange={handleChange} className="flex-1 focus:outline-none" placeholder="মাতার নাম" required />
           </div>
 
           <div className="flex items-center border p-2 rounded text-green-700">
             <FiMapPin className="mr-2" />
-            <input
-              name="presentAddress"
-              value={form.presentAddress}
-              onChange={handleChange}
-              className="flex-1 focus:outline-none"
-              placeholder="বর্তমান ঠিকানা"
-              required
-            />
+            <input name="presentAddress" value={form.presentAddress} onChange={handleChange} className="flex-1 focus:outline-none" placeholder="বর্তমান ঠিকানা" required />
           </div>
 
           <div className="flex items-center border p-2 rounded text-green-700">
             <FiMapPin className="mr-2" />
-            <input
-              name="permanentAddress"
-              value={form.permanentAddress}
-              onChange={handleChange}
-              className="flex-1 focus:outline-none"
-              placeholder="স্থায়ী ঠিকানা"
-              required
-            />
+            <input name="permanentAddress" value={form.permanentAddress} onChange={handleChange} className="flex-1 focus:outline-none" placeholder="স্থায়ী ঠিকানা" required />
           </div>
 
           <div className="flex items-center border p-2 rounded text-green-700">
             <FiMail className="mr-2" />
-            <input
-              name="infoType"
-              value={form.infoType}
-              onChange={handleChange}
-              className="flex-1 focus:outline-none"
-              placeholder="কি ধরনের তথ্য চান"
-            />
+            <input name="infoType" value={form.infoType} onChange={handleChange} className="flex-1 focus:outline-none" placeholder="কি ধরনের তথ্য চান" />
           </div>
 
           <div className="md:col-span-2">
-            <label className="text-green-700">দপ্তর নির্বাচন করুন:</label>
-            <select
-              name="office"
-              value={form.office}
-              onChange={handleChange}
-              className="w-full p-2 border rounded text-green-700"
-            >
-              <option value="">-- নির্বাচন করুন --</option>
-              {officeLoading ? (
-                <option>লোড হচ্ছে...</option>
-              ) : error ? (
-                <option>{error}</option>
-              ) : (
-                [...new Set(offices.map((o) => o.officeType))].map((type) => (
-                  <option key={type} value={type}>
-                    {type}
-                  </option>
-                ))
-              )}
+            <label className="text-green-700">বিভাগ নির্বাচন করুন:</label>
+            <select name="division" value={form.division} onChange={handleChange} className="w-full p-2 border rounded text-green-700">
+              <option value="">-- বিভাগ নির্বাচন করুন --</option>
+              {["ঢাকা", "চট্টগ্রাম", "রাজশাহী", "খুলনা", "বরিশাল", "সিলেট", "রংপুর", "ময়মনসিংহ"].map((division) => (
+                <option key={division} value={division}>
+                  {division}
+                </option>
+              ))}
             </select>
           </div>
 
-          {officers.length > 0 && (
+          {form.division && (
+            <div className="md:col-span-2">
+              <label className="text-green-700">দপ্তর নির্বাচন করুন:</label>
+              <select name="office" value={form.office} onChange={handleChange} className="w-full p-2 border rounded text-green-700">
+                <option value="">-- দপ্তর নির্বাচন করুন --</option>
+                {officeLoading ? (
+                  <option>লোড হচ্ছে...</option>
+                ) : error ? (
+                  <option>{error}</option>
+                ) : (
+                  offices
+                    .filter((o) => o.division === form.division)
+                    .map((o) => (
+                      <option key={o.officeType} value={o.officeType}>
+                        {o.officeType}
+                      </option>
+                    ))
+                )}
+              </select>
+            </div>
+          )}
+
+          {form.office && officers.length > 0 && (
             <div className="md:col-span-2">
               <label className="text-green-700">অফিসার নির্বাচন করুন:</label>
-              <select
-                name="officer"
-                value={form.officer}
-                onChange={handleChange}
-                className="w-full p-2 border rounded text-green-700"
-              >
+              <select name="officer" value={form.officer} onChange={handleChange} className="w-full p-2 border rounded text-green-700">
                 <option value="">-- একজন নির্বাচন করুন --</option>
-                {officers.map((officer) => (
-                  <option key={officer.id} value={officer.name}>
-                    {officer.name} ({officer.designation}, {officer.district})
-                  </option>
-                ))}
+                {officers
+                  .filter((officer) => officer.officeType === form.office)
+                  .map((officer) => (
+                    <option key={officer.id} value={officer.name}>
+                      {officer.name} ({officer.designation}, {officer.district})
+                    </option>
+                  ))}
               </select>
             </div>
           )}
 
           <div className="md:col-span-2">
-            <label className="text-green-700 mb-2 block">
-              আপনি কোন কোন পদ্ধতিতে তথ্য পেতে চান?
-            </label>
+            <label className="text-green-700 mb-2 block">আপনি কোন কোন পদ্ধতিতে তথ্য পেতে চান?</label>
             <div className="flex flex-wrap gap-4">
               {methodOptions.map((method) => (
                 <label key={method} className="text-green-700 flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={form.method.includes(method)}
-                    onChange={() => handleMethodCheckbox(method)}
-                    className="mr-1"
-                  />
+                  <input type="checkbox" checked={form.method.includes(method)} onChange={() => handleMethodCheckbox(method)} className="mr-1" />
                   <FiCheckCircle className="mr-1" />
                   {method}
                 </label>
@@ -258,71 +219,22 @@ export default function RtiForm() {
           </div>
 
           <div className="md:col-span-2">
-            <textarea
-              name="description"
-              value={form.description}
-              onChange={handleChange}
-              className="w-full p-3 border rounded text-green-700"
-              placeholder="তথ্যের বিস্তারিত বর্ণনা লিখুন"
-              required
-            />
+            <textarea name="description" value={form.description} onChange={handleChange} className="w-full p-3 border rounded text-green-700" placeholder="তথ্যের বিস্তারিত বর্ণনা লিখুন" required />
           </div>
 
           <div className="flex items-center border p-2 rounded text-green-700">
             <FiMail className="mr-2" />
-            <input
-              name="email"
-              value={form.email}
-              readOnly
-              className="flex-1 focus:outline-none"
-              placeholder="ই-মেইল"
-            />
+            <input name="email" value={form.email} readOnly className="flex-1 focus:outline-none" placeholder="ই-মেইল" />
           </div>
 
           <div className="flex items-center border p-2 rounded text-green-700">
             <FiPhone className="mr-2" />
-            <input
-              name="phone"
-              value={form.phone}
-              readOnly
-              className="flex-1 focus:outline-none"
-              placeholder="ফোন নম্বর"
-            />
+            <input name="phone" value={form.phone} readOnly className="flex-1 focus:outline-none" placeholder="মোবাইল নম্বর" />
           </div>
 
           <div className="md:col-span-2">
-            <button
-              type="submit"
-              className="w-full bg-green-600 text-white py-3 rounded hover:bg-green-700 transition flex items-center justify-center"
-              disabled={submitting}
-            >
-              {submitting ? (
-                <>
-                  <svg
-                    className="animate-spin h-5 w-5 mr-3 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                    ></path>
-                  </svg>
-                  লোড হচ্ছে...
-                </>
-              ) : (
-                'সাবমিট করুন'
-              )}
+            <button type="submit" disabled={submitting} className="w-full bg-[#008037] hover:bg-green-700 text-white py-3 rounded text-lg font-semibold">
+              {submitting ? 'জমা দেওয়া হচ্ছে...' : 'আবেদন জমা দিন'}
             </button>
           </div>
         </form>

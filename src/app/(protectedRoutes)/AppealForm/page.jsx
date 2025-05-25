@@ -46,6 +46,7 @@ export default function AppealForm() {
         body: JSON.stringify({ ...formData, userId, applicationId }),
       });
       const data = await res.json();
+      console.log(data)
       if (res.ok) {
         alert('আপীল সফলভাবে জমা হয়েছে!');
         setFormData({
@@ -131,7 +132,7 @@ export default function AppealForm() {
         <Input disabled={true} label="ঠিকানা" name="address" value={formData.address} onChange={handleChange} placeholder={placeholders.address} />
         <Input disabled={true} label="মোবাইল নম্বর" name="phone" type="tel" value={formData.phone} onChange={handleChange} placeholder={placeholders.phone} />
         <Input label="স্মারক নং" name="referenceNo" value={formData.referenceNo} onChange={handleChange} placeholder={placeholders.referenceNo} />
-        <Input label="আপিল কর্মকর্তার নাম (সাব্বির হাসান/চেয়ারম্যান/বাংলাদেশ কেমিক্যাল ইন্ডাস্ট্রিজ কর্পোরেশন (বিসিআইসি)/টাঙ্গাইল-১৯০০)" name="appealOfficer" value={formData.appealOfficer} onChange={handleChange} placeholder={placeholders.appealOfficer} />
+        <Input label="আপিল কর্মকর্তার নাম (সাব্বির হাসান,চেয়ারম্যান,বাংলাদেশ কেমিক্যাল ইন্ডাস্ট্রিজ কর্পোরেশন (বিসিআইসি),টাঙ্গাইল-১৯০০)" name="appealOfficer" value={formData.appealOfficer} onChange={handleChange} placeholder={placeholders.appealOfficer} />
         <Input disabled={true} label="তথ্য প্রদানকারী কর্মকর্তা" name="informationGivenOfficer" value={formData.informationGivenOfficer} onChange={handleChange} placeholder={placeholders.informationGivenOfficer} />
         <Input
           disabled={true}

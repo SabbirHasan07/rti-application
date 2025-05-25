@@ -62,7 +62,7 @@ export async function POST(req) {
         id: true
       }
     });
-
+    console.log(appeal?.id)
     if (appeal?.id) {
       await prisma.application.update({ where: { id: applicationId }, data: { hasAppealed: true } })
     }

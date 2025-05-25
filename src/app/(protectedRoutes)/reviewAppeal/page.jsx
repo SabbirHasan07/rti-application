@@ -64,7 +64,7 @@ export default function AppealReview() {
     return `${day} ${monthName}, ${year}`;
   }
 
-  
+  console.log(appealData)
   return (
     <div className="max-w-5xl mx-auto p-18 bg-white shadow rounded text-[17px] leading-[2.3rem] font-[Kalpurush]">
       <h2 className="text-center text-xl  mb-11">-  রেজিষ্ট্রিকৃত ডাকযোগে প্রেরিত -</h2>
