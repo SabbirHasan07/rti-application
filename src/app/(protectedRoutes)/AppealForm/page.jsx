@@ -62,7 +62,7 @@ export default function AppealForm() {
           reason: '',
           informationGivenOfficer: '', // ✅ reset
         });
-        router.push(`/reviewAppeal?appealId=${data?.id}&applicationId=${applicationId}`);
+        router.push(`/reviewAppeal?appealId=${data?.appeal?.id}&applicationId=${applicationId}`);
       } else {
         alert(data.message || 'সার্ভার সমস্যা হয়েছে');
       }
