@@ -17,23 +17,23 @@ const UserDashboard = () => {
 
   useEffect(() => {
     if (user) {
-      setLocalUser(user?.fullName);
+      setLocalUser(user.fullName);
       fetchUserApplications();
       fetchUserFeedbacks();
     } else {
-      router.push("/login");
+      router.push('/login');
     }
   }, []);
 
   const fetchUserApplications = async () => {
     try {
-      const response = await axios.get(`/api/application?userId=${user?.id}`);
+      const response = await axios.get(`/api/application?userId=${user.id}`);
       if (response.data) {
         setUserApplications(response.data);
       }
     } catch (error) {
-      console.error("Error fetching user applications:", error);
-      toast.error("আপনার আবেদন তথ্য লোড করতে সমস্যা হয়েছে।");
+      console.error('Error fetching user applications:', error);
+      toast.error('আপনার আবেদন তথ্য লোড করতে সমস্যা হয়েছে।');
     } finally {
       setLoading(false);
     }
@@ -41,12 +41,12 @@ const UserDashboard = () => {
 
   const fetchUserFeedbacks = async () => {
     try {
-      const response = await axios.get(`/api/feedback?userId=${user?.id}`);
-      if (response.data?.feedbacks) {
+      const response = await axios.get(`/api/feedback?userId=${user.id}`);
+      if (response.data && response.data.feedbacks) {
         setFeedbacks(response.data.feedbacks);
       }
     } catch (error) {
-      console.error("Error fetching feedbacks:", error);
+      console.error('Error fetching feedbacks:', error);
     }
   };
 
@@ -94,48 +94,52 @@ const UserDashboard = () => {
           </div>
         ) : userApplications.length > 0 ? (
           <div className="space-y-6">
-            {userApplications.map((application) => {
-              // সবসময় আপডেট করার অনুমতি
+            {userApplications.map(application => {
+              // Always allow update
               const canUpdateByTime = true;
 
-              const feedback = feedbacks.find(
-                (f) => f.applicationId === application.id
-              );
+              const feedback = feedbacks.find(f => f.applicationId === application.id);
 
-              const hasFeedback = application?.hasGivenFeedback;
-              const responseText = hasFeedback ? feedback?.response : "প্রতিক্রিয়া নেই";
-
-
+              const hasFeedback = application.hasGivenFeedback;
+              const responseText = hasFeedback ? (feedback ? feedback.response : '') : 'প্রতিক্রিয়া নেই';
 
               return (
                 <div
-                  key={application.id}
+                  key={application.id} 
                   className="bg-gray-50 border border-gray-200 rounded-lg shadow-md p-5 sm:p-6"
                 >
                   <div className="flex justify-end mb-4 gap-2">
                     <button
                       onClick={() => router.push(`/update?applicationId=${application.id}`)}
-                      className={`px-4 py-2 rounded-md text-sm font-medium transition ${hasFeedback
-                        ? "bg-gray-300 text-gray-600 cursor-not-allowed"
-                        : "bg-[#008037] text-white hover:bg-[#006f2f]"
-                        }`}
+                      className={`px-4 py-2 rounded-md text-sm font-medium transition ${
+                        hasFeedback
+                          ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                          : 'bg-[#008037] text-white hover:bg-[#006f2f]'
+                      }`}
                       disabled={hasFeedback}
                     >
-                      {hasFeedback ? "ফিডব্যাক সম্ভব নয়" : "ফিডব্যাক"}
+                      {hasFeedback ? 'ফিডব্যাক সম্ভব নয়' : 'ফিডব্যাক'}
                     </button>
                     <button
                       onClick={() => {
-                        if (!application?.hasAppealed) {
-                          router.push(`/AppealForm?applicationId=${application?.id}`);
+                        if (!application.hasAppealed) {
+                          router.push(`/AppealForm?applicationId=${application.id}`);
                         }
                       }}
-                      disabled={application?.hasAppealed || responseText === 'প্রতিক্রিয়া নেই' || feedback?.response === 'আবেদন গৃহীত হয়নি'}
-                      className={`${application?.hasAppealed || responseText === 'প্রতিক্রিয়া নেই' || feedback?.response === 'আবেদন গৃহীত হয়নি'
-                        ? 'bg-red-300 cursor-not-allowed'
-                        : 'bg-gray-700 hover:bg-gray-900'
-                        } text-white font-bold px-6 py-2 rounded shadow`}
+                      disabled={
+                        application.hasAppealed ||
+                        responseText === 'প্রতিক্রিয়া নেই' ||
+                        responseText === 'আবেদন গৃহীত হয়নি'
+                      }
+                      className={`${
+                        application.hasAppealed ||
+                        responseText === 'প্রতিক্রিয়া নেই' ||
+                        responseText === 'আবেদন গৃহীত হয়নি'
+                          ? 'bg-red-300 cursor-not-allowed'
+                          : 'bg-gray-700 hover:bg-gray-900'
+                      } text-white font-bold px-6 py-2 rounded shadow`}
                     >
-                      {application?.hasAppealed ? 'আপিল সম্ভব নয়' : 'আপিল করুন'}
+                      {application.hasAppealed ? 'আপিল সম্ভব নয়' : 'আপিল করুন'}
                     </button>
                   </div>
 
@@ -147,13 +151,14 @@ const UserDashboard = () => {
                     <div className="sm:col-span-8 text-gray-800">: {application.data.infoType}</div>
 
                     <div className="sm:col-span-4 font-semibold text-gray-700">অফিসারের নাম</div>
-                    <div className="sm:col-span-8 text-gray-800">: {application.data.officer},{application.data.office},{application.data.division}</div>
+                    <div className="sm:col-span-8 text-gray-800">
+                      : {application.data.officer}, {application.data.office}, {application.data.division}
+                    </div>
 
                     <div className="sm:col-span-4 font-semibold text-gray-700">তারিখ</div>
                     <div className="sm:col-span-8 text-gray-800">
-                      : {application.createdAt ? new Date(application.createdAt).toLocaleDateString() : "প্রযোজ্য নয়"}
+                      : {application.createdAt ? new Date(application.createdAt).toLocaleDateString() : 'প্রযোজ্য নয়'}
                     </div>
-
                   </div>
                 </div>
               );

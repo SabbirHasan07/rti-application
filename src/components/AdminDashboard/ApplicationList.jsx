@@ -1,14 +1,39 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import ApplicationPdfDocument from '../PDFs/ApplicationPdfDocument';
+import { pdf } from '@react-pdf/renderer';
 
 export const ApplicationList = ({ allApplications, currentPage, itemsPerPage }) => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedData = allApplications.slice(startIndex, startIndex + itemsPerPage);
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
+  const handleDownload = async () => {
+    setLoading(true);
+    const blob = await pdf(<ApplicationPdfDocument data={allApplications} />).toBlob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'RTI_Application_table.pdf';
+    a.click();
+    URL.revokeObjectURL(url);
+    setLoading(false)
+  };
 
   return (
     <div className="bg-white shadow-md rounded-2xl p-4 mb-6 overflow-x-auto">
-      <h2 className="text-xl font-semibold mb-4 text-[#008037]">আবেদনের তালিকা</h2>
+      <div className='flex items-center justify-between mb-2'>
+        <h2 className="text-xl font-semibold mb-4 text-[#008037]">আবেদনের তালিকা</h2>
+
+        <button
+          onClick={handleDownload}
+          disabled={loading}
+          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow"
+        >
+          {loading ? 'PDF ডাউনলোড হচ্ছে' : 'PDF ডাউনলোড করুন'}
+        </button>
+      </div>
 
       <table className="min-w-full text-sm text-left border rounded-lg">
         <thead className="bg-[#008037] text-white">

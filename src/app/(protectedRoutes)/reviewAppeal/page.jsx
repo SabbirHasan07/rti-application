@@ -1,9 +1,12 @@
 'use client';
 
+import AppealPdfDocument from '@/components/PDFs/AppealPdfDocument';
 import { useAuth } from '@/context/AuthContext';
 import { getSection } from '@/utils/getCorrespondingSection';
+import { pdf } from '@react-pdf/renderer';
+import { html2pdf } from 'html2pdf.js';
 import { useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 export default function AppealReview() {
   const searchParams = useSearchParams();
@@ -12,6 +15,7 @@ export default function AppealReview() {
   const [appealData, setAppealData] = useState(null);
   const [feedbackData, setFeedbackData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const contentRef = useRef(null)
   const { user } = useAuth();
 
   useEffect(() => {
@@ -36,6 +40,27 @@ export default function AppealReview() {
       setLoading(false);
     }
   }, []);
+  // function handleDownloadPDF() {
+  //   if (!contentRef.current) return;
+  //   const opt = {
+  //     margin: 0.5,
+  //     filename: 'appeal_review.pdf',
+  //     image: { type: 'jpeg', quality: 0.98 },
+  //     html2canvas: { scale: 2 },
+  //     jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+  //   };
+  //   html2pdf().from(contentRef.current).set(opt).save();
+  // }
+
+  const handleDownload = async () => {
+        const blob = await pdf(<AppealPdfDocument data={{}} />).toBlob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'RTI_Appeal_Application.pdf';
+        a.click();
+        URL.revokeObjectURL(url);
+    };
 
   if (loading) {
     return (
@@ -66,7 +91,15 @@ export default function AppealReview() {
 
   console.log(appealData)
   return (
-    <div className="max-w-5xl mx-auto p-18 bg-white shadow rounded text-[17px] leading-[2.3rem] font-[Kalpurush]">
+    <div className="max-w-5xl mx-auto p-18 bg-white shadow rounded text-[17px] leading-[2.3rem] font-[Kalpurush]" ref={contentRef}>
+      <div className="flex justify-end mb-4">
+        <button
+          onClick={handleDownload}
+          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow"
+        >
+          PDF ডাউনলোড করুন
+        </button>
+      </div>
       <h2 className="text-center text-xl  mb-11">-  রেজিষ্ট্রিকৃত ডাকযোগে প্রেরিত -</h2>
 
       <p className='mb-2 text-lg'>বরাবর,</p>
@@ -91,7 +124,7 @@ export default function AppealReview() {
       <p className="mt-4 font-bold">জনাব,</p>
       <p>শুভেচ্ছা জানবেন।</p>
       <p>নিম্নেস্বাক্ষরকারী গত, {formatBanglaDateFromISO(appealData?.application?.createdAt)} তারিখে বাংলাদেশ কেমিক্যাল ইন্ডাস্ট্রিজ কর্পোরেশন (বিসিআইসি) দায়িত্ব প্রাপ্ত তথ্য কর্মকর্তা <span className='font-bold'>{appealData?.informationGivenOfficer}</span> - বরাবর তথ্য অধিকার আইন, ২০০৯-এর ধারা ৮(৩) অনুযায়ী নির্ধারিত ফরমেটে {appealData?.application?.data?.infoType} তথ্য চেয়ে আবেদন জানায় (সংযুক্ত)।</p>
-      <p>{getSection({response: feedbackData?.response, infoType: feedbackData?.infoType, appealData})}</p>
+      <p>{getSection({ response: feedbackData?.response, infoType: feedbackData?.infoType, appealData })}</p>
       <p>এমতাবস্থায় নিম্নস্বাক্ষরকারীতথ্য অধিকার আইন, ২০০৯-এর ধারা ২৪ অনুযায়ী <span className='font-bold'>{appealData?.appealOfficer}</span> - এর আপীল কর্মকর্তা হিসেবে আপনার বরাবরে নির্ধারিত ফরমেটে আপীল আবেদন প্রেরণ করছে এবং ধারা ২৪ (৩) অনুযায়ী তথ্য সরবরাহের জন্য সংশ্লিষ্ট দায়িত্বপ্রাপ্ত কর্মকর্তাকে চাহিদা মাফিক তথ্যগুলি ১৫ দিনের মধ্যে নিম্নস্বাক্ষরকারী বরাবর প্রেরণের নির্দেশ প্রদানের জন্য আপনাকে অনুরোধ জানাচ্ছে।</p>
       <p></p>
 
@@ -110,8 +143,6 @@ export default function AppealReview() {
 
       <h2 className="text-center font-bold text-lg mb-2">ফরম ‘গ’ - আপীল আবেদন</h2>
       <p className="italic text-sm text-gray-600 text-center">[তথ্য অধিকার (তথ্য প্রাপ্তি সংক্রান্ত) বিধিমালার বিধি-৬ দ্রষ্টব্য]</p>
-
-      <p className="mt-4">{appealData.officer}</p>
 
       <div className="mt-4 space-y-3">
         <div className="mt-4 space-y-3">

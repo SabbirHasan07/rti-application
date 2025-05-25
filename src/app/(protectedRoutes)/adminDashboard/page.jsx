@@ -38,15 +38,13 @@ const AdminDashboard = () => {
     const router = useRouter();
     const [allApplications, setAllApplications] = useState([]);
     const [allFeedbacks, setAllFeedbacks] = useState([]);
-    
+
     const pieChartRef = useRef(null);
 
     const { logout } = useAuth();
 
     const feedbackData = useMemo(() => {
         if (allFeedbacks) {
-            const labels = ['মোট আবেদন সংখ্যা', 'সম্পূর্ণ তথ্য', 'আংশিক তথ্য', 'কোন তথ্য দেওয়া হয়নি', 'আবেদন গৃহীত হয়নি'];
-
             // মোট আবেদন সংখ্যা
             const totalApplications = allApplications?.length || 0;
 
@@ -62,17 +60,22 @@ const AdminDashboard = () => {
             // আবেদন গৃহীত হয়নি
             const responseNotReceivedApplication = allFeedbacks.filter(fb => fb.response === 'আবেদন গৃহীত হয়নি')?.length || 0;
 
+            // ফিডব্যাক দেওয়া হয়নি
+            const notGivenFeedback = allApplications?.filter(item => item?.hasGivenFeedback === false)?.length || 0;
+
+            const labels = [`মোট আবেদন সংখ্যা: ${totalApplications}`, `সম্পূর্ণ তথ্য: ${fullInfoReceived}`, `আংশিক তথ্য: ${partialInfoReceived}`, `কোন তথ্য দেওয়া হয়নি: ${noInfoReceived}`, `আবেদন গৃহীত হয়নি: ${responseNotReceivedApplication}`, `ফিডব্যাক দেওয়া হয়নি: ${notGivenFeedback}`];
+
             const datasets = [
                 {
                     label: 'ফিডব্যাক রেকর্ড',
-                    data: [totalApplications, fullInfoReceived, partialInfoReceived, noInfoReceived, responseNotReceivedApplication],
+                    data: [totalApplications, fullInfoReceived, partialInfoReceived, noInfoReceived, responseNotReceivedApplication, notGivenFeedback],
                     backgroundColor: [
                         '#4B9CD3', // Calm Blue - totalApplications
                         '#F4A261', // Soft Orange - partialInfoReceived
                         '#2A9D8F', // Teal - fullInfoReceived
                         '#E76F51', // Warm Red - noInfoReceived
                         '#E9C46A', // Muted Yellow - type4
-                        '#264653'  // Deep Grayish Blue - type5
+                        '#FAF9F6'  // Deep Grayish Blue - type5
                     ],
                     borderColor: [
                         '#4B9CD3',
@@ -80,7 +83,7 @@ const AdminDashboard = () => {
                         '#2A9D8F',
                         '#E76F51',
                         '#E9C46A',
-                        '#264653'
+                        '#FAF9F6'
                     ],
                     borderWidth: 1,
                     hoverOffset: 4
@@ -108,12 +111,12 @@ const AdminDashboard = () => {
     useEffect(() => {
         fetch('/api/application').then(res => res.json()).then(data => setAllApplications(data)).catch(err => console.error(err))
     }, []);
-    useEffect(()=>{
+    useEffect(() => {
         fetch('/api/feedback').then(res => res.json()).then(data => setAllFeedbacks(data?.feedbacks)).catch(err => console.error(err))
-    },[])
+    }, [])
 
     return (
-        <div className="max-w-7xl mx-auto p-6 font-sans text-[#212529] relative">
+        <div className=" mx-auto p-6 font-sans text-[#212529] relative">
             {/* Header Buttons */}
             <div className="absolute top-6 right-6 flex items-center gap-4">
                 <button
@@ -149,13 +152,17 @@ const AdminDashboard = () => {
                 setCurrentPage={setCurrentPage}
                 totalPages={Math.ceil(allApplications.length / itemsPerPage)}
             />
-
-            <div className="flex justify-between gap-4 mt-6">
-                {/* {allApplications && <ChartCard title="অভিযোগ রেকর্ড" chart={<Doughnut ref={doughnutChartRef} data={applicationData} />} />} */}
-                {allFeedbacks && <ChartCard title="ফিডব্যাক রেকর্ড" chart={<Pie ref={pieChartRef} data={feedbackData} />} />}
+            <div className="flex items-center justify-center text-center">
+                {allFeedbacks && (
+                    <ChartCard
+                        title="ফিডব্যাক রেকর্ড"
+                        chart={<Pie ref={pieChartRef} data={feedbackData} />}
+                    />
+                )}
             </div>
 
-            <div className="flex justify-center p-6 mb-9 gap-4 mt-6 mx-auto">
+
+            <div className="flex justify-center mx-auto">
                 <button
                     onClick={() => downloadChartImage(pieChartRef)}
                     className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
@@ -164,9 +171,9 @@ const AdminDashboard = () => {
                 </button>
             </div>
 
-            
 
-           
+
+
         </div>
     );
 };

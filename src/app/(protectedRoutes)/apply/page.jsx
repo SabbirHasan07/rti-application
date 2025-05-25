@@ -73,6 +73,7 @@ export default function RtiForm() {
             designation: selectedOfficer.designation,
             district: selectedOfficer.district,
             division: selectedOfficer.division,
+            officeType: selectedOfficer.officeType,
           }
         : null;
 
@@ -155,39 +156,23 @@ export default function RtiForm() {
             <input name="infoType" value={form.infoType} onChange={handleChange} className="flex-1 focus:outline-none" placeholder="কি ধরনের তথ্য চান" />
           </div>
 
-          <div className="md:col-span-2">
-            <label className="text-green-700">বিভাগ নির্বাচন করুন:</label>
-            <select name="division" value={form.division} onChange={handleChange} className="w-full p-2 border rounded text-green-700">
-              <option value="">-- বিভাগ নির্বাচন করুন --</option>
-              {["ঢাকা", "চট্টগ্রাম", "রাজশাহী", "খুলনা", "বরিশাল", "সিলেট", "রংপুর", "ময়মনসিংহ"].map((division) => (
-                <option key={division} value={division}>
-                  {division}
-                </option>
-              ))}
-            </select>
-          </div>
+          
 
-          {form.division && (
+        
             <div className="md:col-span-2">
               <label className="text-green-700">দপ্তর নির্বাচন করুন:</label>
-              <select name="office" value={form.office} onChange={handleChange} className="w-full p-2 border rounded text-green-700">
+              <select
+                name="office"
+                value={form.office}
+                onChange={handleChange}
+                className="w-full p-2 border rounded text-green-700"
+              >
                 <option value="">-- দপ্তর নির্বাচন করুন --</option>
-                {officeLoading ? (
-                  <option>লোড হচ্ছে...</option>
-                ) : error ? (
-                  <option>{error}</option>
-                ) : (
-                  offices
-                    .filter((o) => o.division === form.division)
-                    .map((o) => (
-                      <option key={o.officeType} value={o.officeType}>
-                        {o.officeType}
-                      </option>
-                    ))
-                )}
+                <option value="পরিবেশ অধিদপ্তর">পরিবেশ অধিদপ্তর</option>
+                <option value="জেলা প্রশাসকের কার্যালয়">জেলা প্রশাসকের কার্যালয়</option>
               </select>
             </div>
-          )}
+       
 
           {form.office && officers.length > 0 && (
             <div className="md:col-span-2">

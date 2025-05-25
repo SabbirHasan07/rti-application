@@ -23,12 +23,9 @@ const OfficerProfileForm = () => {
     district: '',
     officeType: ''
   });
-  const [errors, setErrors] = useState({});
   const [offices, setOffices] = useState([]);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-
-  const validateBangla = (text) => /^[\u0980-\u09FF\s]+$/.test(text);
 
   const fetchOffices = async () => {
     try {
@@ -51,38 +48,15 @@ const OfficerProfileForm = () => {
       setFormData((prev) => ({
         ...prev,
         division: value,
-        district: '' 
+        district: ''
       }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
-
-    setErrors((prev) => ({ ...prev, [name]: '' }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const newErrors = {};
-    if (!formData.name || !validateBangla(formData.name)) {
-      newErrors.name = 'শুধুমাত্র বাংলায় নাম লিখুন';
-    }
-    if (!formData.designation || !validateBangla(formData.designation)) {
-      newErrors.designation = 'শুধুমাত্র বাংলায় পদবী লিখুন';
-    }
-    if (!formData.division) {
-      newErrors.division = 'বিভাগ নির্বাচন করুন';
-    }
-    if (!formData.district) {
-      newErrors.district = 'জেলা নির্বাচন করুন';
-    }
-    if (!formData.officeType) {
-      newErrors.officeType = 'কার্যালয় নির্বাচন করুন';
-    }
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
 
     setLoading(true);
     try {
@@ -129,7 +103,6 @@ const OfficerProfileForm = () => {
     <div className="max-w-3xl mx-auto mt-10 p-4 bg-white space-y-6">
       <form onSubmit={handleSubmit} className="space-y-4">
         <h2 className="text-xl font-bold text-center text-green-700">অফিসার প্রোফাইল</h2>
-       
 
         <div>
           <label className="block mb-1 text-sm">নাম</label>
@@ -141,7 +114,6 @@ const OfficerProfileForm = () => {
             placeholder="নাম লিখুন"
             className="w-full border rounded px-3 py-2"
           />
-          {errors.name && <p className="text-red-600 text-sm mt-1">{errors.name}</p>}
         </div>
 
         <div>
@@ -154,7 +126,6 @@ const OfficerProfileForm = () => {
             placeholder="পদবী লিখুন"
             className="w-full border rounded px-3 py-2"
           />
-          {errors.designation && <p className="text-red-600 text-sm mt-1">{errors.designation}</p>}
         </div>
 
         <div className="grid grid-cols-2 gap-4">
@@ -171,7 +142,6 @@ const OfficerProfileForm = () => {
                 <option key={division} value={division}>{division}</option>
               ))}
             </select>
-            {errors.division && <p className="text-red-600 text-sm mt-1">{errors.division}</p>}
           </div>
 
           <div>
@@ -189,7 +159,6 @@ const OfficerProfileForm = () => {
                   <option key={district} value={district}>{district}</option>
                 ))}
             </select>
-            {errors.district && <p className="text-red-600 text-sm mt-1">{errors.district}</p>}
           </div>
         </div>
 
@@ -205,7 +174,6 @@ const OfficerProfileForm = () => {
             <option value="পরিবেশ অধিদপ্তর">পরিবেশ অধিদপ্তর</option>
             <option value="জেলা প্রশাসকের কার্যালয়">জেলা প্রশাসকের কার্যালয়</option>
           </select>
-          {errors.officeType && <p className="text-red-600 text-sm mt-1">{errors.officeType}</p>}
         </div>
 
         <button
@@ -253,13 +221,14 @@ const OfficerProfileForm = () => {
           </table>
         </div>
       )}
-       <button
-      onClick={() => router.back()}
-      className="flex items-center mx-auto gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg shadow transition"
-    >
-      <ArrowLeft className="w-4 h-4" />
-      পেছনে যান
-    </button>
+
+      <button
+        onClick={() => router.back()}
+        className="flex items-center mx-auto gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg shadow transition"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        পেছনে যান
+      </button>
     </div>
   );
 };

@@ -7,6 +7,8 @@ import PageTwo from "../../../components/PageTwo"
 import PageThree from "../../../components/PageThree"
 import toast, { Toaster } from "react-hot-toast"
 import { useAuth } from "@/context/AuthContext"
+import RTIPdfDocument from "@/components/PDFs/RTIPdfDocument"
+import { pdf } from "@react-pdf/renderer"
 
 export default function CompletedForm() {
   const [formData, setFormData] = useState(null)
@@ -85,6 +87,21 @@ export default function CompletedForm() {
     router.push('/userDashboard')
   }
 
+  const handleDownload = async () => {
+    setIsGenerating(true)
+    const blob = await pdf(<RTIPdfDocument />).toBlob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'RTI_Application.pdf';
+    a.click();
+    URL.revokeObjectURL(url);
+    setIsGenerating(false)
+    toast.success("PDF সফলভাবে তৈরি হয়েছে!")
+    await saveToDatabase()
+    router.push('/userDashboard')
+  };
+
   if (!formData) return <p className="text-center">লোড হচ্ছে...</p>
 
   return (
@@ -96,7 +113,7 @@ export default function CompletedForm() {
 
       <div className="flex justify-center gap-4 mt-6 print:hidden">
         <button
-          onClick={generatePDF}
+          onClick={handleDownload}
           className="relative px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2 disabled:opacity-60"
           disabled={isGenerating}
         >
