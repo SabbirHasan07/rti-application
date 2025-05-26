@@ -5,6 +5,7 @@ import { pdf } from "@react-pdf/renderer";
 
 export const ApplicationList = ({
   allApplications,
+  allFeedbacks,
   currentPage,
   itemsPerPage,
 }) => {

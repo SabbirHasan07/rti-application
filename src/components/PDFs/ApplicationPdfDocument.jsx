@@ -1,3 +1,4 @@
+'use client'
 import React from 'react';
 import {
   Page,
@@ -5,19 +6,29 @@ import {
   View,
   Document,
   StyleSheet,
-  Font
+  Font,
 } from '@react-pdf/renderer';
 
 Font.register({
-  family: 'Kalpurush',
-  src: '/fonts/Kalpurush.ttf'
+  family: 'kalpurush',
+  src: '/fonts/kalpurush.ttf',
+  //   fonts: [
+  //     {
+  //       src: '/fonts/kalpurush ANSI.ttf',
+  //       fontWeight: 'normal',
+  //     },
+  //     // {
+  //     //   src: '/fonts/Anek Bangla SemiBold.ttf',
+  //     //   fontWeight: 'semibold',
+  //     // },
+  //   ],
 });
 
 const styles = StyleSheet.create({
   page: {
     flexDirection: 'column',
     padding: 20,
-    fontFamily: 'Kalpurush',
+    fontFamily: 'kalpurush',
   },
   section: {
     marginBottom: 10,
