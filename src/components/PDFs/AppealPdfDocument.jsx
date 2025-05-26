@@ -89,7 +89,7 @@ const AppealPdfDocument = ({ data }) => {
 
             </View>
             <View style={{ display: 'flex', flexDirection: 'column', lineHeight: 0.8, alignItems: 'flex-end', marginBottom: 20 }}>
-                <Text style={{ lineHeight: 0.8, backgroundColor: 'yellow' }}>তারিখ: {new Date().toLocaleDateString('bn-BD')} </Text>
+                <Text style={{ lineHeight: 0.8 }}>তারিখ: {new Date().toLocaleDateString('bn-BD')} </Text>
             </View>
             <Text style={{ textAlign: 'center' }}>বিষয়ঃ তথ্য অধিকার আইন, ২০০৯-এর ধারা-২৪ অনুযায়ী আপীল। </Text>
             <View style={{ display: 'flex', flexDirection: 'column', flexWrap: 'wrap', gap: 10, marginBottom: 30 }}>
