@@ -1,6 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 import { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer';
+// import kalpurush from '/fonts/kalpurush.ttf';
 
 Font.register({
     family: 'kalpurush',

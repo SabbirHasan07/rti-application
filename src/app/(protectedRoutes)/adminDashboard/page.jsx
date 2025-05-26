@@ -45,9 +45,6 @@ const AdminDashboard = () => {
 
     const feedbackData = useMemo(() => {
         if (allFeedbacks) {
-            // মোট আবেদন সংখ্যা
-            const totalApplications = allApplications?.length || 0;
-
             // সম্পূর্ণ তথ্য
             const fullInfoReceived = allFeedbacks.filter(fb => fb.infoType === 'সম্পূর্ণ তথ্য')?.length || 0
 
@@ -61,14 +58,14 @@ const AdminDashboard = () => {
             const responseNotReceivedApplication = allFeedbacks.filter(fb => fb.response === 'আবেদন গৃহীত হয়নি')?.length || 0;
 
             // ফিডব্যাক দেওয়া হয়নি
-            const notGivenFeedback = allApplications?.filter(item => item?.hasGivenFeedback === false)?.length || 0;
+            const feedbackNotGiven = allApplications?.filter(app => app.hasGivenFeedback === false)?.length || 0;
 
-            const labels = [`মোট আবেদন সংখ্যা: ${totalApplications}`, `সম্পূর্ণ তথ্য: ${fullInfoReceived}`, `আংশিক তথ্য: ${partialInfoReceived}`, `কোন তথ্য দেওয়া হয়নি: ${noInfoReceived}`, `আবেদন গৃহীত হয়নি: ${responseNotReceivedApplication}`, `ফিডব্যাক দেওয়া হয়নি: ${notGivenFeedback}`];
+            const labels = [`সম্পূর্ণ তথ্য: ${fullInfoReceived}`, `আংশিক তথ্য: ${partialInfoReceived}`, `কোন তথ্য দেওয়া হয়নি: ${noInfoReceived}`, `আবেদন গৃহীত হয়নি: ${responseNotReceivedApplication}`, `ফিডব্যাক দেওয়া হয়নি: ${feedbackNotGiven}`];
 
             const datasets = [
                 {
                     label: 'ফিডব্যাক রেকর্ড',
-                    data: [totalApplications, fullInfoReceived, partialInfoReceived, noInfoReceived, responseNotReceivedApplication, notGivenFeedback],
+                    data: [fullInfoReceived, partialInfoReceived, noInfoReceived, responseNotReceivedApplication, feedbackNotGiven],
                     backgroundColor: [
                         '#4B9CD3', // Calm Blue - totalApplications
                         '#F4A261', // Soft Orange - partialInfoReceived
@@ -155,6 +152,8 @@ const AdminDashboard = () => {
             <div className="flex items-center justify-center text-center">
                 {allFeedbacks && (
                     <ChartCard
+                        totalApplications={allApplications?.length || 0}
+                        totalFeedbacks={allFeedbacks?.length || 0}
                         title="ফিডব্যাক রেকর্ড"
                         chart={<Pie ref={pieChartRef} data={feedbackData} />}
                     />

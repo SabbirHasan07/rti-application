@@ -58,14 +58,18 @@ export default function AppealReview() {
         alert('ডেটা লোড হয়নি');
         return;
     }
-        const blob = await pdf(<AppealPdfDocument data={{appealData,feedbackData}} />).toBlob();
+        try{
+          const blob = await pdf(<AppealPdfDocument data={{appealData,feedbackData}} />).toBlob();
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
         a.download = 'RTI_Appeal_Application.pdf';
         a.click();
         URL.revokeObjectURL(url);
-        // router.push('/userDashboard')
+        } catch (err) {
+          console.error(err);
+        }
+         router.push('/userDashboard')
     };
 
   if (loading) {

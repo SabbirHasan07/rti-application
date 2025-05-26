@@ -1,36 +1,36 @@
-'use client'
+"use client";
 
-import { useEffect, useRef, useState } from "react"
-import { useRouter } from "next/navigation"
-import PageOne from "../../../components/PageOne"
-import PageTwo from "../../../components/PageTwo"
-import PageThree from "../../../components/PageThree"
-import toast, { Toaster } from "react-hot-toast"
-import { useAuth } from "@/context/AuthContext"
-import RTIPdfDocument from "@/components/PDFs/RTIPdfDocument"
-import { pdf } from "@react-pdf/renderer"
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import PageOne from "../../../components/PageOne";
+import PageTwo from "../../../components/PageTwo";
+import PageThree from "../../../components/PageThree";
+import toast, { Toaster } from "react-hot-toast";
+import { useAuth } from "@/context/AuthContext";
+import RTIPdfDocument from "@/components/PDFs/RTIPdfDocument";
+import { pdf } from "@react-pdf/renderer";
 
 export default function CompletedForm() {
-  const [formData, setFormData] = useState(null)
-  const [isGenerating, setIsGenerating] = useState(false)
-  const contentRef = useRef(null)
-  const router = useRouter()
+  const [formData, setFormData] = useState(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const contentRef = useRef(null);
+  const router = useRouter();
   const { user } = useAuth();
 
   useEffect(() => {
-    const data = sessionStorage.getItem("rtiForm")
+    const data = sessionStorage.getItem("rtiForm");
     if (data) {
-      setFormData(JSON.parse(data))
+      setFormData(JSON.parse(data));
     }
-  }, [])
+  }, []);
 
   // Save data to database
   const saveToDatabase = async () => {
     try {
       const userId = user?.id;
       if (!userId) {
-        toast.error("ব্যবহারকারীর তথ্য পাওয়া যায়নি।")
-        return
+        toast.error("ব্যবহারকারীর তথ্য পাওয়া যায়নি।");
+        return;
       }
 
       const res = await fetch("/api/application", {
@@ -42,67 +42,72 @@ export default function CompletedForm() {
           data: formData,
           userId,
         }),
-      })
+      });
 
-      if (!res.ok) throw new Error("সার্ভারে সংরক্ষণ ব্যর্থ হয়েছে।")
-      toast.success("আবেদনটি সংরক্ষণ করা হয়েছে।")
+      if (!res.ok) throw new Error("সার্ভারে সংরক্ষণ ব্যর্থ হয়েছে।");
+      toast.success("আবেদনটি সংরক্ষণ করা হয়েছে।");
     } catch (err) {
-      toast.error("ডেটা সংরক্ষণে সমস্যা হয়েছে।")
-      console.error(err)
+      toast.error("ডেটা সংরক্ষণে সমস্যা হয়েছে।");
+      console.error(err);
     }
-  }
+  };
 
   const generatePDF = async () => {
-    setIsGenerating(true)
-    const html2canvas = (await import("html2canvas")).default
-    const jsPDF = (await import("jspdf")).default
-    const input = contentRef.current
-    const pages = input.querySelectorAll('.pdf-page')
-    const pdf = new jsPDF('p', 'mm', 'a4')
+    setIsGenerating(true);
+    const html2canvas = (await import("html2canvas")).default;
+    const jsPDF = (await import("jspdf")).default;
+    const input = contentRef.current;
+    const pages = input.querySelectorAll(".pdf-page");
+    const pdf = new jsPDF("p", "mm", "a4");
 
     for (let i = 0; i < pages.length; i++) {
       const canvas = await html2canvas(pages[i], {
         scale: 1.5,
-        useCORS: true
-      })
-      const imgData = canvas.toDataURL('image/jpeg', 0.7)
-      const imgProps = pdf.getImageProperties(imgData)
-      const pdfWidth = pdf.internal.pageSize.getWidth()
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width
+        useCORS: true,
+      });
+      const imgData = canvas.toDataURL("image/jpeg", 0.7);
+      const imgProps = pdf.getImageProperties(imgData);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
-      if (i !== 0) pdf.addPage()
-      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight, '', 'FAST')
+      if (i !== 0) pdf.addPage();
+      pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight, "", "FAST");
     }
 
-    pdf.save("RTI-Application.pdf")
-    setIsGenerating(false)
-    toast.success("PDF সফলভাবে তৈরি হয়েছে!")
-    await saveToDatabase()
-    router.push('/userDashboard')
-  }
-
-  const printForm = async () => {
-    window.print()
-    await saveToDatabase()
-    router.push('/userDashboard')
-  }
-
-  const handleDownload = async () => {
-    setIsGenerating(true)
-    const blob = await pdf(<RTIPdfDocument />).toBlob();
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'RTI_Application.pdf';
-    a.click();
-    URL.revokeObjectURL(url);
-    setIsGenerating(false)
-    toast.success("PDF সফলভাবে তৈরি হয়েছে!")
-    await saveToDatabase()
-    router.push('/userDashboard')
+    pdf.save("RTI-Application.pdf");
+    setIsGenerating(false);
+    toast.success("PDF সফলভাবে তৈরি হয়েছে!");
+    await saveToDatabase();
+    router.push("/userDashboard");
   };
 
-  if (!formData) return <p className="text-center">লোড হচ্ছে...</p>
+  const printForm = async () => {
+    window.print();
+    await saveToDatabase();
+    router.push("/userDashboard");
+  };
+
+  const handleDownload = async () => {
+    try {
+      setIsGenerating(true);
+      const blob = await pdf(<RTIPdfDocument />).toBlob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "RTI_Application.pdf";
+      a.click();
+      URL.revokeObjectURL(url);
+      setIsGenerating(false);
+      toast.success("PDF সফলভাবে তৈরি হয়েছে!");
+      await saveToDatabase();
+      router.push("/userDashboard");
+    } catch (err) {
+      setIsGenerating(false);
+      toast.error("PDF তৈরি ব্যর্থ হয়েছে!");
+    }
+  };
+
+  if (!formData) return <p className="text-center">লোড হচ্ছে...</p>;
 
   return (
     <div className="max-w-4xl mx-auto py-10 space-y-6 font-[Kalpurush]">
@@ -166,5 +171,5 @@ export default function CompletedForm() {
         </div>
       </div>
     </div>
-  )
+  );
 }
