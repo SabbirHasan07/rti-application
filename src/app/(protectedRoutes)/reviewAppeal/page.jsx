@@ -4,8 +4,8 @@ import AppealPdfDocument from '@/components/PDFs/AppealPdfDocument';
 import { useAuth } from '@/context/AuthContext';
 import { getSection } from '@/utils/getCorrespondingSection';
 import { pdf } from '@react-pdf/renderer';
-import { html2pdf } from 'html2pdf.js';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+
 import React, { useEffect, useRef, useState } from 'react';
 
 export default function AppealReview() {
@@ -17,6 +17,7 @@ export default function AppealReview() {
   const [loading, setLoading] = useState(true);
   const contentRef = useRef(null)
   const { user } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
     const userId = user?.id;
@@ -60,6 +61,7 @@ export default function AppealReview() {
         a.download = 'RTI_Appeal_Application.pdf';
         a.click();
         URL.revokeObjectURL(url);
+        router.push('/userDashboard')
     };
 
   if (loading) {
@@ -92,10 +94,10 @@ export default function AppealReview() {
   console.log(appealData)
   return (
     <div className="max-w-5xl mx-auto p-18 bg-white shadow rounded text-[17px] leading-[2.3rem] font-[Kalpurush]" ref={contentRef}>
-      <div className="flex justify-end mb-4">
+      <div className="flex justify-center mb-11">
         <button
           onClick={handleDownload}
-          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow"
+          className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded shadow"
         >
           PDF ডাউনলোড করুন
         </button>
@@ -188,7 +190,7 @@ export default function AppealReview() {
 
       </div>
 
-      <p className="mt-18 text-right">-------------------<br />
+      <p className="mt-18 text-right">----------------------<br />
         আবেদনকারীর স্বাক্ষর <br />
         আবেদন তারিখঃ {new Date().toLocaleDateString('bn-BD')}</p>
     </div>
