@@ -69,7 +69,7 @@ export default function AppealReview() {
         } catch (err) {
           console.error(err);
         }
-        // router.push('/userDashboard')
+         router.push('/userDashboard')
     };
 
   if (loading) {
