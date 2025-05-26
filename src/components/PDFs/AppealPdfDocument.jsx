@@ -56,7 +56,6 @@ const AppealPdfDocument = ({ data }) => {
 
         return `${dayBangla} ${month}, ${year}`;
     };
-    console.log(appealData, feedbackData);
     return <Document>
         <Page size="A4" style={styles.page}>
             <Text style={{
@@ -99,7 +98,7 @@ const AppealPdfDocument = ({ data }) => {
                     {`নিম্নেস্বাক্ষরকারী গত, ${formatBanglaDateFromISO(appealData?.application?.createdAt)} তারিখে  দায়িত্ব প্রাপ্ত তথ্য কর্মকর্তা, ${appealData?.informationGivenOfficer} - বরাবর তথ্য অধিকার আইন, ২০০৯-এর ধারা ৮(৩) অনুযায়ী নির্ধারিত ফরমেটে ${appealData?.application?.data?.infoType} তথ্য চেয়ে আবেদন জানায় (সংযুক্ত)।`.split(' ').map((item, index) => <Text key={index}>{item}{' '}</Text>)}
                 </Text>
                 <Text style={{}}>
-                    {`${getSection({ response: '', infoType: 'তথ্য প্রদান না করা' })}`.split(' ').map((item, index) => <Text key={index}>{item}{' '}</Text>)}
+                    {`${getSection({ response: feedbackData?.response, infoType: feedbackData?.infoType })}`.split(' ').map((item, index) => <Text key={index}>{item}{' '}</Text>)}
                 </Text>
                 <Text style={{}}>
                     {`এমতাবস্থায় নিম্নস্বাক্ষরকারীতথ্য অধিকার আইন, ২০০৯-এর ধারা ২৪ অনুযায়ী ${appealData?.appealOfficer
