@@ -86,7 +86,7 @@ const PdfPreview = () => {
             </div>
             <div className="w-full h-[80vh] border rounded shadow">
                 <PDFViewer width="100%" height="100%">
-                    <ApplicationPdfDocument data={mockData} />
+                    <AppealPdfDocument data={mockData} />
                 </PDFViewer>
             </div>
         </div>

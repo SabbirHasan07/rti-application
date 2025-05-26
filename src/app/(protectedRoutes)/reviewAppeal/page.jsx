@@ -54,14 +54,18 @@ export default function AppealReview() {
   // }
 
   const handleDownload = async () => {
-        const blob = await pdf(<AppealPdfDocument data={{}} />).toBlob();
+      if (!appealData || !feedbackData) {
+        alert('ডেটা লোড হয়নি');
+        return;
+    }
+        const blob = await pdf(<AppealPdfDocument data={{appealData,feedbackData}} />).toBlob();
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
         a.download = 'RTI_Appeal_Application.pdf';
         a.click();
         URL.revokeObjectURL(url);
-        router.push('/userDashboard')
+        // router.push('/userDashboard')
     };
 
   if (loading) {
@@ -91,7 +95,7 @@ export default function AppealReview() {
     return `${day} ${monthName}, ${year}`;
   }
 
-  console.log(appealData)
+  
   return (
     <div className="max-w-5xl mx-auto p-18 bg-white shadow rounded text-[17px] leading-[2.3rem] font-[Kalpurush]" ref={contentRef}>
       <div className="flex justify-center mb-11">
@@ -125,7 +129,7 @@ export default function AppealReview() {
 
       <p className="mt-4 font-bold">জনাব,</p>
       <p>শুভেচ্ছা জানবেন।</p>
-      <p>নিম্নেস্বাক্ষরকারী গত, {formatBanglaDateFromISO(appealData?.application?.createdAt)} তারিখে বাংলাদেশ কেমিক্যাল ইন্ডাস্ট্রিজ কর্পোরেশন (বিসিআইসি) দায়িত্ব প্রাপ্ত তথ্য কর্মকর্তা <span className='font-bold'>{appealData?.informationGivenOfficer}</span> - বরাবর তথ্য অধিকার আইন, ২০০৯-এর ধারা ৮(৩) অনুযায়ী নির্ধারিত ফরমেটে {appealData?.application?.data?.infoType} তথ্য চেয়ে আবেদন জানায় (সংযুক্ত)।</p>
+      <p>নিম্নেস্বাক্ষরকারী গত, {formatBanglaDateFromISO(appealData?.application?.createdAt)} তারিখে  দায়িত্ব প্রাপ্ত তথ্য কর্মকর্তা <span className='font-bold'>{appealData?.informationGivenOfficer}</span> - বরাবর তথ্য অধিকার আইন, ২০০৯-এর ধারা ৮(৩) অনুযায়ী নির্ধারিত ফরমেটে {appealData?.application?.data?.infoType} তথ্য চেয়ে আবেদন জানায় (সংযুক্ত)।</p>
       <p>{getSection({ response: feedbackData?.response, infoType: feedbackData?.infoType, appealData })}</p>
       <p>এমতাবস্থায় নিম্নস্বাক্ষরকারীতথ্য অধিকার আইন, ২০০৯-এর ধারা ২৪ অনুযায়ী <span className='font-bold'>{appealData?.appealOfficer}</span> - এর আপীল কর্মকর্তা হিসেবে আপনার বরাবরে নির্ধারিত ফরমেটে আপীল আবেদন প্রেরণ করছে এবং ধারা ২৪ (৩) অনুযায়ী তথ্য সরবরাহের জন্য সংশ্লিষ্ট দায়িত্বপ্রাপ্ত কর্মকর্তাকে চাহিদা মাফিক তথ্যগুলি ১৫ দিনের মধ্যে নিম্নস্বাক্ষরকারী বরাবর প্রেরণের নির্দেশ প্রদানের জন্য আপনাকে অনুরোধ জানাচ্ছে।</p>
       <p></p>
@@ -194,5 +198,6 @@ export default function AppealReview() {
         আবেদনকারীর স্বাক্ষর <br />
         আবেদন তারিখঃ {new Date().toLocaleDateString('bn-BD')}</p>
     </div>
+    
   );
 }
