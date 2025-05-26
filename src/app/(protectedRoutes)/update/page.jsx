@@ -37,7 +37,7 @@ export default function FeedbackForm() {
     setError('');
     setAppealEnabled(false);
     setWantToAppeal('');
-    if (value === 'আংশিক তথ্য' || value === 'তথ্য প্রদান না করা') {
+    if (value === 'আংশিক তথ্য' || value === 'কোন তথ্য প্রদান করেনি') {
       setShowAppeal(true);
     } else {
       setShowAppeal(false);
@@ -130,12 +130,12 @@ export default function FeedbackForm() {
               <option value="">-- নির্বাচন করুন --</option>
               <option value="আংশিক তথ্য">আংশিক তথ্য</option>
               <option value="সম্পূর্ণ তথ্য">সম্পূর্ণ তথ্য</option>
-              <option value="তথ্য প্রদান না করা">তথ্য প্রদান না করা</option>
+              <option value="কোন তথ্য প্রদান করেনি">কোন তথ্য প্রদান করেনি</option>
             </select>
           </div>
         )}
 
-        {showAppeal && (
+        {/* {showAppeal && (
           <div>
             <label className="block mb-2 font-semibold">আপনি কি আপিল করতে চান?</label>
             <select
@@ -148,7 +148,7 @@ export default function FeedbackForm() {
               <option value="না">না</option>
             </select>
           </div>
-        )}
+        )} */}
 
         <div className="flex flex-wrap gap-4 justify-center mt-4">
           <button

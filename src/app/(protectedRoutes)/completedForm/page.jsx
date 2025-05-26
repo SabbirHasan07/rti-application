@@ -52,34 +52,6 @@ export default function CompletedForm() {
     }
   };
 
-  const generatePDF = async () => {
-    setIsGenerating(true);
-    const html2canvas = (await import("html2canvas")).default;
-    const jsPDF = (await import("jspdf")).default;
-    const input = contentRef.current;
-    const pages = input.querySelectorAll(".pdf-page");
-    const pdf = new jsPDF("p", "mm", "a4");
-
-    for (let i = 0; i < pages.length; i++) {
-      const canvas = await html2canvas(pages[i], {
-        scale: 1.5,
-        useCORS: true,
-      });
-      const imgData = canvas.toDataURL("image/jpeg", 0.7);
-      const imgProps = pdf.getImageProperties(imgData);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-
-      if (i !== 0) pdf.addPage();
-      pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight, "", "FAST");
-    }
-
-    pdf.save("RTI-Application.pdf");
-    setIsGenerating(false);
-    toast.success("PDF সফলভাবে তৈরি হয়েছে!");
-    await saveToDatabase();
-    router.push("/userDashboard");
-  };
 
   const printForm = async () => {
     window.print();

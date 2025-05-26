@@ -101,7 +101,7 @@ const UserDashboard = () => {
               const feedback = feedbacks.find(f => f.applicationId === application.id);
 
               const hasFeedback = application.hasGivenFeedback;
-              const responseText = hasFeedback ? (feedback ? feedback.response : '') : 'প্রতিক্রিয়া নেই';
+              // const responseText = hasFeedback ? (feedback ? feedback.response : '') : 'প্রতিক্রিয়া নেই';
 
               return (
                 <div
@@ -127,14 +127,14 @@ const UserDashboard = () => {
                         }
                       }}
                       disabled={
+                        !hasFeedback ||
                         application.hasAppealed ||
-                        responseText === 'প্রতিক্রিয়া নেই' ||
-                        responseText === 'আবেদন গৃহীত হয়নি'
+                        feedback?.infoType === 'সম্পূর্ণ তথ্য'
                       }
                       className={`${
+                        !hasFeedback ||
                         application.hasAppealed ||
-                        responseText === 'প্রতিক্রিয়া নেই' ||
-                        responseText === 'আবেদন গৃহীত হয়নি'
+                        feedback?.infoType === 'সম্পূর্ণ তথ্য'
                           ? 'bg-red-300 cursor-not-allowed'
                           : 'bg-gray-700 hover:bg-gray-900'
                       } text-white font-bold px-6 py-2 rounded shadow`}

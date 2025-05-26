@@ -10,25 +10,28 @@ import {
 } from '@react-pdf/renderer';
 
 Font.register({
-  family: 'kalpurush',
-  src: '/fonts/kalpurush.ttf',
-  //   fonts: [
-  //     {
-  //       src: '/fonts/kalpurush ANSI.ttf',
-  //       fontWeight: 'normal',
-  //     },
-  //     // {
-  //     //   src: '/fonts/Anek Bangla SemiBold.ttf',
-  //     //   fontWeight: 'semibold',
-  //     // },
-  //   ],
+  family: 'SolaimanLipi',
+    fonts: [
+      {
+        src: '/fonts/SolaimanLipi-Normal.ttf',
+        fontWeight: 'normal',
+      },
+      {
+        src: '/fonts/SolaimanLipi-Bold.ttf',
+        fontWeight: 'bold',
+      },
+      {
+        src: '/fonts/SolaimanLipi-Thin.ttf',
+        fontWeight: 'thin',
+      },
+    ],
 });
 
 const styles = StyleSheet.create({
   page: {
     flexDirection: 'column',
     padding: 20,
-    fontFamily: 'kalpurush',
+    fontFamily: 'SolaimanLipi',
   },
   section: {
     marginBottom: 10,

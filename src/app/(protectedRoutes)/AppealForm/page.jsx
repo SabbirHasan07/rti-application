@@ -109,6 +109,10 @@ export default function AppealForm() {
         updatedReason = 'উত্তর দেওয়া হয়নি';
       }
 
+      if (feedbackData?.response === 'আবেদন গৃহীত হয়নি') {
+        updatedReason = feedbackData?.response;
+      }
+
       setFormData({
         ...formData,
         applicantName: applicationData?.name,
@@ -121,7 +125,7 @@ export default function AppealForm() {
     }
   }, [applicationData, feedbackData]);
 
-  console.log(feedbackData?.response)
+  console.log({ applicationData, feedbackData: feedbackData, subject: formData.reason })
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-xl shadow-md mt-10">
       <h1 className="text-2xl font-bold mb-2 text-center text-blue-700">আপীল আবেদন ফর্ম</h1>
@@ -138,12 +142,12 @@ export default function AppealForm() {
           disabled={true}
           label="আপীলের বিষয়বস্তু"
           name="subject"
-          value={feedbackData?.response === "না" ? formData?.reason : formData?.subject}
+          value={feedbackData?.response === "না" || feedbackData?.response === "আবেদন গৃহীত হয়নি" ? formData?.reason : formData?.subject}
           onChange={handleChange}
           placeholder={placeholders.subject}
         />
 
-        <div className="flex flex-col">
+        {!(feedbackData?.response === 'না' || feedbackData?.response === 'আবেদন গৃহীত হয়নি') && <div className="flex flex-col">
           <label className="mb-1 font-medium text-gray-700">উত্তরের তারিখ *</label>
           <input
             type="date"
@@ -159,9 +163,9 @@ export default function AppealForm() {
               বাংলা তারিখ: {formatBanglaDate(formData.responseDate)}
             </span>
           )}
-        </div>
+        </div>}
 
-        {formData.subject !== "তথ্য প্রদান না করা" && (
+        {formData.subject !== "কোন তথ্য প্রদান করেনি" && (
           <Textarea
             label="আপীলের সংক্ষিপ্ত বিবরণ"
             name="details"
@@ -171,7 +175,7 @@ export default function AppealForm() {
           />
         )}
 
-        {formData.subject === "তথ্য প্রদান না করা" && (
+        {formData.subject === "কোন তথ্য প্রদান করেনি" && (
           <Textarea
             label="তথ্য প্রদানে অস্বীকৃতি জানিয়ে থাকলে তার কারণ"
             name="reason"

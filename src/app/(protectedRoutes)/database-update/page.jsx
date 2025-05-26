@@ -1,6 +1,5 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-
 import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -21,7 +20,8 @@ const OfficerProfileForm = () => {
     designation: '',
     division: '',
     district: '',
-    officeType: ''
+    officeType: '',
+  
   });
   const [offices, setOffices] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -43,13 +43,8 @@ const OfficerProfileForm = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     if (name === 'division') {
-      setFormData((prev) => ({
-        ...prev,
-        division: value,
-        district: ''
-      }));
+      setFormData((prev) => ({ ...prev, division: value, district: '' }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
@@ -57,7 +52,6 @@ const OfficerProfileForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setLoading(true);
     try {
       const res = await fetch('/api/office', {
@@ -67,10 +61,15 @@ const OfficerProfileForm = () => {
       });
 
       const result = await res.json();
-
       if (!res.ok) throw new Error(result.error);
 
-      setFormData({ name: '', designation: '', division: '', district: '', officeType: '' });
+      setFormData({
+        name: '',
+        designation: '',
+        division: '',
+        district: '',
+        officeType: '',
+      });
       fetchOffices();
     } catch (error) {
       console.error('Submit Error:', error.message);
@@ -81,7 +80,6 @@ const OfficerProfileForm = () => {
 
   const handleDelete = async (id) => {
     if (!confirm('আপনি কি নিশ্চিতভাবে এই অফিসার মুছে ফেলতে চান?')) return;
-
     try {
       const res = await fetch('/api/office', {
         method: 'DELETE',
@@ -90,7 +88,6 @@ const OfficerProfileForm = () => {
       });
 
       const result = await res.json();
-
       if (!res.ok) throw new Error(result.error);
 
       fetchOffices();
@@ -117,7 +114,7 @@ const OfficerProfileForm = () => {
         </div>
 
         <div>
-          <label className="block mb-1 text-sm">পদবী</label>
+          <label className="block mb-1 text-sm">অফিসারের বিস্তারিত তথ্য</label>
           <input
             type="text"
             name="designation"
@@ -161,7 +158,6 @@ const OfficerProfileForm = () => {
             </select>
           </div>
         </div>
-
         <div>
           <label className="block mb-1 text-sm">কার্যালয়</label>
           <select
@@ -192,7 +188,7 @@ const OfficerProfileForm = () => {
             <thead className="bg-gray-100">
               <tr>
                 <th className="px-3 py-2 border">নাম</th>
-                <th className="px-3 py-2 border">পদবী</th>
+                <th className="px-3 py-2 border">অফিসারের বিস্তারিত তথ্য</th>
                 <th className="px-3 py-2 border">বিভাগ</th>
                 <th className="px-3 py-2 border">জেলা</th>
                 <th className="px-3 py-2 border">কার্যালয়</th>

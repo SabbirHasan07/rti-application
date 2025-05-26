@@ -42,6 +42,9 @@ export async function GET(req) {
         userId: true,
         hasGivenFeedback: true,
         hasAppealed: true,
+      },
+      orderBy:{
+        createdAt: 'desc'
       }
     });
 

@@ -52,7 +52,7 @@ const AdminDashboard = () => {
             const partialInfoReceived = allFeedbacks.filter(fb => fb.infoType === 'আংশিক তথ্য')?.length || 0
 
             // কোন তথ্য দেওয়া হয়নি
-            const noInfoReceived = allFeedbacks.filter(fb => fb.infoType === 'তথ্য প্রদান না করা')?.length || 0
+            const noInfoReceived = allFeedbacks.filter(fb => fb.infoType === 'কোন তথ্য প্রদান করেনি')?.length || 0
 
             // আবেদন গৃহীত হয়নি
             const responseNotReceivedApplication = allFeedbacks.filter(fb => fb.response === 'আবেদন গৃহীত হয়নি')?.length || 0;

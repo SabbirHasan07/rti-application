@@ -4,18 +4,21 @@ import { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/rendere
 import { getSection } from '@/utils/getCorrespondingSection';
 
 Font.register({
-    family: 'kalpurush',
-    src: '/fonts/kalpurush.ttf',
-    //   fonts: [
-    //     {
-    //       src: '/fonts/kalpurush ANSI.ttf',
-    //       fontWeight: 'normal',
-    //     },
-    //     // {
-    //     //   src: '/fonts/Anek Bangla SemiBold.ttf',
-    //     //   fontWeight: 'semibold',
-    //     // },
-    //   ],
+    family: 'SolaimanLipi',
+    fonts: [
+        {
+            src: '/fonts/SolaimanLipi-Normal.ttf',
+            fontWeight: 'normal',
+        },
+        {
+            src: '/fonts/SolaimanLipi-Bold.ttf',
+            fontWeight: 'bold',
+        },
+        {
+            src: '/fonts/SolaimanLipi-Thin.ttf',
+            fontWeight: 'thin',
+        },
+    ],
 });
 
 // Define styles
@@ -25,7 +28,7 @@ const styles = StyleSheet.create({
     page: {
         padding: 50,
         fontSize: 12,
-        fontFamily: 'kalpurush',
+        fontFamily: 'SolaimanLipi',
     },
     section: {
         marginBottom: 10,
@@ -61,10 +64,9 @@ const AppealPdfDocument = ({ data }) => {
             <Text style={{
                 marginBottom: 20,
                 textAlign: 'center',
-                fontWeight: 'semibold',
             }}>-রেজিষ্ট্রিকৃত ডাকযোগে প্রেরিত- </Text>
             <View style={{ display: 'flex', flexDirection: 'column', lineHeight: 0.8, }}>
-                <Text style={{ lineHeight: 0.8, fontWeight: 700 }}>বরাবর </Text>
+                <Text style={{ lineHeight: 0.8, }}>বরাবর </Text>
             </View>
             <View
                 style={{
@@ -73,12 +75,12 @@ const AppealPdfDocument = ({ data }) => {
                     lineHeight: 0.8,
                 }}
             >
-                {appealData?.appealOfficer.split(',').map((item, index) => (
+                {appealData?.appealOfficer?.split(',')?.map((item, index) => (
                     <Text
                         key={index}
                         style={{
                             lineHeight: 0.8,
-                            fontWeight: index === 0 ? 700 : 'normal',
+                            fontWeight: index === 0 ? 'bold' : 'normal',
                             maxWidth: 200,
                         }}
                     >
@@ -90,19 +92,21 @@ const AppealPdfDocument = ({ data }) => {
             <View style={{ display: 'flex', flexDirection: 'column', lineHeight: 0.8, alignItems: 'flex-end', marginBottom: 20 }}>
                 <Text style={{ lineHeight: 0.8 }}>তারিখ: {new Date().toLocaleDateString('bn-BD')} </Text>
             </View>
-            <Text style={{ textAlign: 'center' }}>বিষয়ঃ তথ্য অধিকার আইন, ২০০৯-এর ধারা-২৪ অনুযায়ী আপীল। </Text>
+            <Text style={{ textAlign: 'center', fontWeight: 'bold' }}>বিষয়ঃ তথ্য অধিকার আইন, ২০০৯-এর ধারা-২৪ অনুযায়ী আপীল। </Text>
             <View style={{ display: 'flex', flexDirection: 'column', flexWrap: 'wrap', gap: 10, marginBottom: 30 }}>
                 <Text>জনাব,</Text>
                 <Text>শুভেচ্ছা জানবেন।</Text>
                 <Text style={{}}>
-                    {`নিম্নেস্বাক্ষরকারী গত, ${formatBanglaDateFromISO(appealData?.application?.createdAt)} তারিখে  দায়িত্ব প্রাপ্ত তথ্য কর্মকর্তা, ${appealData?.informationGivenOfficer} - বরাবর তথ্য অধিকার আইন, ২০০৯-এর ধারা ৮(৩) অনুযায়ী নির্ধারিত ফরমেটে ${appealData?.application?.data?.infoType} তথ্য চেয়ে আবেদন জানায় (সংযুক্ত)।`.split(' ').map((item, index) => <Text key={index}>{item}{' '}</Text>)}
+                    নিম্নেস্বাক্ষরকারী গত, <Text>{formatBanglaDateFromISO(appealData?.application?.createdAt)}</Text> তারিখে  দায়িত্ব প্রাপ্ত তথ্য কর্মকর্তা, <Text>{appealData?.informationGivenOfficer}</Text> - বরাবর তথ্য অধিকার আইন, ২০০৯-এর ধারা ৮(৩) অনুযায়ী নির্ধারিত ফরমেটে <Text>{appealData?.application?.data?.infoType}</Text> তথ্য চেয়ে আবেদন জানায় (সংযুক্ত)।
+                    {/* {`নিম্নেস্বাক্ষরকারী গত, ${formatBanglaDateFromISO(appealData?.application?.createdAt)} তারিখে  দায়িত্ব প্রাপ্ত তথ্য কর্মকর্তা, ${appealData?.informationGivenOfficer} - বরাবর তথ্য অধিকার আইন, ২০০৯-এর ধারা ৮(৩) অনুযায়ী নির্ধারিত ফরমেটে ${appealData?.application?.data?.infoType} তথ্য চেয়ে আবেদন জানায় (সংযুক্ত)।`.split(' ').map((item, index) => <Text key={index}>{item}{' '}</Text>)} */}
                 </Text>
                 <Text style={{}}>
-                    {`${getSection({ response: feedbackData?.response, infoType: feedbackData?.infoType })}`.split(' ').map((item, index) => <Text key={index}>{item}{' '}</Text>)}
+                    {getSection({ response: feedbackData?.response, infoType: feedbackData?.infoType })}
                 </Text>
                 <Text style={{}}>
-                    {`এমতাবস্থায় নিম্নস্বাক্ষরকারীতথ্য অধিকার আইন, ২০০৯-এর ধারা ২৪ অনুযায়ী ${appealData?.appealOfficer
-                        } - এর আপীল কর্মকর্তা হিসেবে আপনার বরাবরে নির্ধারিত ফরমেটে আপীল আবেদন প্রেরণ করছে এবং ধারা ২৪ (৩) অনুযায়ী তথ্য সরবরাহের জন্য সংশ্লিষ্ট দায়িত্বপ্রাপ্ত কর্মকর্তাকে চাহিদা মাফিক তথ্যগুলি ১৫ দিনের মধ্যে নিম্নস্বাক্ষরকারী বরাবর প্রেরণের নির্দেশ প্রদানের জন্য আপনাকে অনুরোধ জানাচ্ছে।`.split(' ').map((item, index) => <Text key={index}>{item}{' '}</Text>)}
+                    এমতাবস্থায় নিম্নস্বাক্ষরকারীতথ্য অধিকার আইন, ২০০৯-এর ধারা ২৪ অনুযায়ী <Text>{appealData?.appealOfficer}</Text> - এর আপীল কর্মকর্তা হিসেবে আপনার বরাবরে নির্ধারিত ফরমেটে আপীল আবেদন প্রেরণ করছে এবং ধারা ২৪ (৩) অনুযায়ী তথ্য সরবরাহের জন্য সংশ্লিষ্ট দায়িত্বপ্রাপ্ত কর্মকর্তাকে চাহিদা মাফিক তথ্যগুলি ১৫ দিনের মধ্যে নিম্নস্বাক্ষরকারী বরাবর প্রেরণের নির্দেশ প্রদানের জন্য আপনাকে অনুরোধ জানাচ্ছে।
+                    {/* {`এমতাবস্থায় নিম্নস্বাক্ষরকারীতথ্য অধিকার আইন, ২০০৯-এর ধারা ২৪ অনুযায়ী ${appealData?.appealOfficer
+                        } - এর আপীল কর্মকর্তা হিসেবে আপনার বরাবরে নির্ধারিত ফরমেটে আপীল আবেদন প্রেরণ করছে এবং ধারা ২৪ (৩) অনুযায়ী তথ্য সরবরাহের জন্য সংশ্লিষ্ট দায়িত্বপ্রাপ্ত কর্মকর্তাকে চাহিদা মাফিক তথ্যগুলি ১৫ দিনের মধ্যে নিম্নস্বাক্ষরকারী বরাবর প্রেরণের নির্দেশ প্রদানের জন্য আপনাকে অনুরোধ জানাচ্ছে।`.split(' ').map((item, index) => <Text key={index}>{item}{' '}</Text>)} */}
                 </Text>
             </View>
             <Text>বিনীত </Text>

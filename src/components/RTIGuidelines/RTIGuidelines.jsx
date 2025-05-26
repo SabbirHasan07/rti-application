@@ -1,5 +1,5 @@
 import Image from "next/image";
-export default function RTIGuidelines() {
+export default function sRTIGuidelines() {
   return (
     <div>
       <div className="flex justify-between px-4">
