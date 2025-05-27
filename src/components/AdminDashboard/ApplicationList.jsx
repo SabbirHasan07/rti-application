@@ -55,7 +55,7 @@ export const ApplicationList = ({
       <table className="min-w-full text-sm text-left border rounded-lg">
         <thead className="bg-[#008037] text-white">
           <tr>
-            <th className="px-4 py-2">অ্যাপ্লিকেশন আইডি</th>
+            <th className="px-1 py-2">অ্যাপ্লিকেশন আইডি</th>
             <th className="px-4 py-2">নাম</th>
             <th className="px-4 py-2">আবেদনকারীর মোবাইল নম্বর</th>
             <th className="px-4 py-2">বিষয়</th>
@@ -70,7 +70,7 @@ export const ApplicationList = ({
         <tbody className="divide-y">
           {paginatedData.map((item, index) => (
             <tr key={index} className="hover:bg-gray-100">
-              <td className="px-4 py-2">{item?.id}</td>
+              <td className="px-1 py-2">{item?.id}</td>
               <td className="px-4 py-2">{item?.data?.name}</td>
               <td className="px-4 py-2">{item?.data?.phone}</td>
               <td className="px-4 py-2">{item?.data?.infoType}</td>
