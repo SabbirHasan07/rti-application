@@ -57,6 +57,7 @@ export const ApplicationList = ({
           <tr>
             <th className="px-4 py-2">অ্যাপ্লিকেশন আইডি</th>
             <th className="px-4 py-2">নাম</th>
+            <th className="px-4 py-2">আবেদনকারীর মোবাইল নম্বর</th>
             <th className="px-4 py-2">বিষয়</th>
             <th className="px-4 py-2">অফিসারের নাম</th>
             <th className="px-4 py-2">অফিস এবং জেলা</th>
@@ -71,6 +72,7 @@ export const ApplicationList = ({
             <tr key={index} className="hover:bg-gray-100">
               <td className="px-4 py-2">{item?.id}</td>
               <td className="px-4 py-2">{item?.data?.name}</td>
+              <td className="px-4 py-2">{item?.data?.phone}</td>
               <td className="px-4 py-2">{item?.data?.infoType}</td>
               <td className="px-4 py-2">{item?.data?.officer}</td>
               <td className="px-4 py-2">{item?.data?.officerInfo?.officeType},{item?.data?.officerInfo?.
