@@ -90,6 +90,7 @@ export default function FeedbackForm() {
     } finally {
       setLoading(false);
     }
+    router.push("/userDashboard")
   };
 
   return (
@@ -157,13 +158,6 @@ export default function FeedbackForm() {
             className="bg-[#008037] hover:bg-[#006f2f] text-white font-bold px-6 py-2 rounded shadow"
           >
             {loading ? 'লোড হচ্ছে...' : 'সংরক্ষণ করুন'}
-          </button>
-
-          <button
-            onClick={() =>router.back()}
-            className="bg-red-600 hover:bg-red-700 text-white font-bold px-6 py-2 rounded shadow"
-          >
-            পিছনে যান
           </button>
         </div>
       </div>

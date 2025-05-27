@@ -87,6 +87,7 @@ model Office {
   id          String   @id @default(cuid())
   name        String
   designation String
+  addres      String?
   division    String?
   district    String
   officeType  String?

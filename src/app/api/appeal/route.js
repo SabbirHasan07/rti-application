@@ -51,7 +51,7 @@ export async function POST(req) {
         phone,
         referenceNo,
         appealOfficer,
-        responseDate: new Date(responseDate),
+        responseDate:  responseDate ? new Date(responseDate) : null,
         subject, // ✅ সেট করলাম
         details,
         reason,

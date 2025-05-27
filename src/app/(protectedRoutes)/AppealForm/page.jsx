@@ -8,8 +8,8 @@ export default function AppealForm() {
   const applicationId = searchParams.get('applicationId');
   const [applicationData, setApplicationData] = useState();
   const [feedbackData, setFeedbackData] = useState();
+  const [loadingData, setLoadingData] = useState(true);
   const { user } = useAuth();
-  console.log({ user })
   const [formData, setFormData] = useState({
     applicantName: '',
     address: '',
@@ -85,6 +85,7 @@ export default function AppealForm() {
 
   useEffect(() => {
     if (userId) {
+     setLoadingData(true)
       fetch(`/api/appeal?userId=${userId}`)
         .then(res => res.json())
         .then(data => {
@@ -97,6 +98,7 @@ export default function AppealForm() {
       fetch(`/api/application?applicationId=${applicationId}`).then(res => res.json()).then(data => {
         setApplicationData(data?.[0]?.data)
         fetch(`/api/feedback?applicationId=${applicationId}`).then(res => res.json()).then(data => setFeedbackData(data?.feedbacks?.[0]))
+        setLoadingData(false)
       })
     }
   }, [userId]);
@@ -122,10 +124,22 @@ export default function AppealForm() {
         subject: feedbackData?.infoType || '',
         reason: updatedReason
       });
+       
     }
   }, [applicationData, feedbackData]);
 
-  console.log({ applicationData, feedbackData: feedbackData, subject: formData.reason })
+
+  if (loadingData) {
+  return (
+    <div className="flex justify-center items-center min-h-[300px]">
+      <svg className="animate-spin h-8 w-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+      </svg>
+      <span className="ml-3 text-blue-600 font-medium">তথ্য লোড হচ্ছে...</span>
+    </div>
+  );
+}
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-xl shadow-md mt-10">
       <h1 className="text-2xl font-bold mb-2 text-center text-blue-700">আপীল আবেদন ফর্ম</h1>
@@ -152,7 +166,7 @@ export default function AppealForm() {
           <input
             type="date"
             name="responseDate"
-            value={formData.responseDate}
+            value={formData.responseDate || ' '}
             onChange={handleChange}
             required
             className="p-2 border border-blue-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"

@@ -18,11 +18,12 @@ const OfficerProfileForm = () => {
   const [formData, setFormData] = useState({
     name: '',
     designation: '',
+    addres: '',
     division: '',
     district: '',
     officeType: '',
-  
   });
+
   const [offices, setOffices] = useState([]);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -66,6 +67,7 @@ const OfficerProfileForm = () => {
       setFormData({
         name: '',
         designation: '',
+        addres: '',
         division: '',
         district: '',
         officeType: '',
@@ -113,16 +115,30 @@ const OfficerProfileForm = () => {
           />
         </div>
 
-        <div>
-          <label className="block mb-1 text-sm">অফিসারের বিস্তারিত তথ্য</label>
-          <input
-            type="text"
-            name="designation"
-            value={formData.designation}
-            onChange={handleChange}
-            placeholder="পদবী লিখুন"
-            className="w-full border rounded px-3 py-2"
-          />
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block mb-1 text-sm">পদবী</label>
+            <input
+              type="text"
+              name="designation"
+              value={formData.designation}
+              onChange={handleChange}
+              placeholder="পদবী লিখুন"
+              className="w-full border rounded px-3 py-2"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-1 text-sm">ঠিকানা</label>
+            <input
+              type="text"
+              name="addres"
+              value={formData.address}
+              onChange={handleChange}
+              placeholder="ঠিকানা লিখুন"
+              className="w-full border rounded px-3 py-2"
+            />
+          </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
@@ -158,6 +174,7 @@ const OfficerProfileForm = () => {
             </select>
           </div>
         </div>
+
         <div>
           <label className="block mb-1 text-sm">কার্যালয়</label>
           <select
@@ -188,7 +205,8 @@ const OfficerProfileForm = () => {
             <thead className="bg-gray-100">
               <tr>
                 <th className="px-3 py-2 border">নাম</th>
-                <th className="px-3 py-2 border">অফিসারের বিস্তারিত তথ্য</th>
+                <th className="px-3 py-2 border">পদবী</th>
+                <th className="px-3 py-2 border">ঠিকানা</th>
                 <th className="px-3 py-2 border">বিভাগ</th>
                 <th className="px-3 py-2 border">জেলা</th>
                 <th className="px-3 py-2 border">কার্যালয়</th>
@@ -200,6 +218,7 @@ const OfficerProfileForm = () => {
                 <tr key={entry.id} className="border-t">
                   <td className="px-3 py-2 border">{entry.name}</td>
                   <td className="px-3 py-2 border">{entry.designation}</td>
+                  <td className="px-3 py-2 border">{entry.addres}</td>
                   <td className="px-3 py-2 border">{entry.division}</td>
                   <td className="px-3 py-2 border">{entry.district}</td>
                   <td className="px-3 py-2 border">{entry.officeType}</td>
