@@ -111,7 +111,7 @@ const AdminDashboard = () => {
     useEffect(() => {
         fetch('/api/feedback').then(res => res.json()).then(data => setAllFeedbacks(data?.feedbacks)).catch(err => console.error(err))
     }, [])
-
+console.log(allFeedbacks)
     return (
         <div className=" mx-auto p-6 font-sans text-[#212529] relative">
             {/* Header Buttons */}
@@ -140,6 +140,7 @@ const AdminDashboard = () => {
 
             <ApplicationList
                 allApplications={allApplications}
+                allFeedbacks = {allFeedbacks}
                 currentPage={currentPage}
                 itemsPerPage={itemsPerPage}
             />
@@ -164,7 +165,7 @@ const AdminDashboard = () => {
             <div className="flex justify-center mx-auto">
                 <button
                     onClick={() => downloadChartImage(pieChartRef)}
-                    className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                    className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 mt-6"
                 >
                     Download Bar Chart
                 </button>

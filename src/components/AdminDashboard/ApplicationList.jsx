@@ -16,7 +16,7 @@ export const ApplicationList = ({
   );
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-
+  console.log(paginatedData?.data?.hasAppealed);
   const handleDownload = async () => {
     try {
       setLoading(true);
@@ -59,6 +59,9 @@ export const ApplicationList = ({
             <th className="px-4 py-2">নাম</th>
             <th className="px-4 py-2">বিষয়</th>
             <th className="px-4 py-2">অফিসারের নাম</th>
+            <th className="px-4 py-2">অফিস এবং জেলা</th>
+            <th className="px-4 py-2">প্রতিক্রিয়া তথ্য</th>
+            <th className="px-4 py-2">আপিল</th>
             <th className="px-4 py-2">তারিখ ও সময়</th>
             <th className="px-4 py-2 text-center">বিবরণ</th>
           </tr>
@@ -66,10 +69,32 @@ export const ApplicationList = ({
         <tbody className="divide-y">
           {paginatedData.map((item, index) => (
             <tr key={index} className="hover:bg-gray-100">
-              <td className="px-4 py-2">{item.id}</td>
-              <td className="px-4 py-2">{item.data.name}</td>
-              <td className="px-4 py-2">{item.data.infoType}</td>
-              <td className="px-4 py-2">{item.data.officer}</td>
+              <td className="px-4 py-2">{item?.id}</td>
+              <td className="px-4 py-2">{item?.data?.name}</td>
+              <td className="px-4 py-2">{item?.data?.infoType}</td>
+              <td className="px-4 py-2">{item?.data?.officer}</td>
+              <td className="px-4 py-2">{item?.data?.officerInfo?.officeType},{item?.data?.officerInfo?.
+                district}</td>
+              <td className="px-4 py-2">
+                {item.feedbacks && item.feedbacks.length > 0 ? (
+                  item.feedbacks.map((fb, i) => (
+                    <div key={i}>
+                      {fb.response === "না"
+                        ? "কোনো উত্তর প্রদান করেনি"
+                        : fb.response === "আবেদন গৃহীত হয়নি"
+                          ? "আবেদন গৃহীত হয়নি"
+                          : fb.infoType}
+                    </div>
+                  ))
+                ) : (
+                  "কোনো ফিডব্যাক নেই"
+                )}
+              </td>
+              <td className="px-4 py-2">
+                {item?.data?.hasAppealed ? "হ্যাঁ" : "না"}
+              </td>
+
+
               <td className="px-4 py-2">
                 {new Date(item.data.createdAt).toLocaleString()}
               </td>

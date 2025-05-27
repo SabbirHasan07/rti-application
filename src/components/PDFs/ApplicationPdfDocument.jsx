@@ -11,20 +11,20 @@ import {
 
 Font.register({
   family: 'SolaimanLipi',
-    fonts: [
-      {
-        src: '/fonts/SolaimanLipi-Normal.ttf',
-        fontWeight: 'normal',
-      },
-      {
-        src: '/fonts/SolaimanLipi-Bold.ttf',
-        fontWeight: 'bold',
-      },
-      {
-        src: '/fonts/SolaimanLipi-Thin.ttf',
-        fontWeight: 'thin',
-      },
-    ],
+  fonts: [
+    {
+      src: '/fonts/SolaimanLipi-Normal.ttf',
+      fontWeight: 'normal',
+    },
+    {
+      src: '/fonts/SolaimanLipi-Bold.ttf',
+      fontWeight: 'bold',
+    },
+    {
+      src: '/fonts/SolaimanLipi-Thin.ttf',
+      fontWeight: 'thin',
+    },
+  ],
 });
 
 const styles = StyleSheet.create({
@@ -82,18 +82,63 @@ const ApplicationPdfDocument = ({ data }) => (
           <View style={styles.tableColHeader}><Text style={styles.tableCellHeader}>নাম</Text></View>
           <View style={styles.tableColHeader}><Text style={styles.tableCellHeader}>বিষয়</Text></View>
           <View style={styles.tableColHeader}><Text style={styles.tableCellHeader}>অফিসারের নাম</Text></View>
+          <View style={styles.tableColHeader}><Text style={styles.tableCellHeader}>অফিস এবং জেলা</Text></View>
+          <View style={styles.tableColHeader}><Text style={styles.tableCellHeader}>প্রতিক্রিয়া তথ্য</Text></View>
+          <View style={styles.tableColHeader}><Text style={styles.tableCellHeader}>আপিল</Text></View>
           <View style={styles.tableColHeader}><Text style={styles.tableCellHeader}>তারিখ ও সময়</Text></View>
         </View>
 
         {/* Table Body */}
         {data.map((item, index) => (
           <View style={styles.tableRow} key={index}>
-            <View style={styles.tableCol}><Text style={styles.tableCell}>{item.data.name}</Text></View>
-            <View style={styles.tableCol}><Text style={styles.tableCell}>{item.data.infoType}</Text></View>
-            <View style={styles.tableCol}><Text style={styles.tableCell}>{item.data.officer}</Text></View>
-            <View style={styles.tableCol}><Text style={styles.tableCell}>{new Date(item.data.createdAt).toLocaleString()}</Text></View>
+            <View style={styles.tableCol}>
+              <Text style={styles.tableCell}>{item?.id}</Text>
+            </View>
+            <View style={styles.tableCol}>
+              <Text style={styles.tableCell}>{item?.data?.name}</Text>
+            </View>
+            <View style={styles.tableCol}>
+              <Text style={styles.tableCell}>{item?.data?.infoType}</Text>
+            </View>
+            <View style={styles.tableCol}>
+              <Text style={styles.tableCell}>{item?.data?.officer}</Text>
+            </View>
+            <View style={styles.tableCol}>
+              <Text style={styles.tableCell}>
+                {item?.data?.officerInfo?.officeType},{" "}
+                {item?.data?.officerInfo?.district}
+              </Text>
+            </View>
+            <View style={styles.tableCol}>
+              <Text style={styles.tableCell}>
+                {item.feedbacks && item.feedbacks.length > 0 ? (
+                  item.feedbacks
+                    .map((fb) =>
+                      fb.response === "না"
+                        ? "কোনো উত্তর প্রদান করেনি"
+                        : fb.response === "আবেদন গৃহীত হয়নি"
+                          ? "আবেদন গৃহীত হয়নি"
+                          : fb.infoType
+                    )
+                    .join(", ")
+                ) : (
+                  "কোনো ফিডব্যাক নেই"
+                )}
+              </Text>
+            </View>
+            <View style={styles.tableCol}>
+              <Text style={styles.tableCell}>
+                {item?.data?.hasAppealed ? "হ্যাঁ" : "না"}
+              </Text>
+            </View>
+            <View style={styles.tableCol}>
+              <Text style={styles.tableCell}>
+                {new Date(item.data.createdAt).toLocaleString()}
+              </Text>
+            </View>
           </View>
         ))}
+
       </View>
     </Page>
   </Document>
