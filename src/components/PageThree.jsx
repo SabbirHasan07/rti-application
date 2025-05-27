@@ -37,6 +37,8 @@ export default function PageThree({ showButton = true }) {
         <span className="text-base">: জনাব</span>
         <p className="font-bold mt-2 text-base ml-2">{formData?.officerInfo?.name}</p>
         <p className='text-base ml-2'> {formData?.officerInfo?.designation}, {formData?.officerInfo?.district}</p>
+        <p className='text-base ml-2'> {formData?.officerInfo?.addres}, {formData?.officerInfo?.district}</p>
+
       </div>
     </div>
 

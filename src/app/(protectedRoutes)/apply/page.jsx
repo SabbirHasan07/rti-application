@@ -41,7 +41,7 @@ export default function RtiForm() {
       setForm((prev) => ({ ...prev, officer: '' }));
     }
   };
-
+console.log(officers)
   const handleMethodCheckbox = (value) => {
     setForm((prev) => {
       const methods = prev.method.includes(value)
@@ -72,6 +72,7 @@ export default function RtiForm() {
             name: selectedOfficer.name,
             designation: selectedOfficer.designation,
             district: selectedOfficer.district,
+            addres: selectedOfficer.addres,
             division: selectedOfficer.division,
             officeType: selectedOfficer.officeType,
           }
@@ -87,6 +88,8 @@ export default function RtiForm() {
         timeTaken: '২৮ দিন',
         status: 'পেন্ডিং',
       };
+    console.log('Selected officer:', selectedOfficer);
+
 
       localStorage.setItem('applications', JSON.stringify([...allApplications, newApp]));
       sessionStorage.setItem('rtiForm', JSON.stringify(newApp));
@@ -183,7 +186,7 @@ export default function RtiForm() {
                   .filter((officer) => officer.officeType === form.office)
                   .map((officer) => (
                     <option key={officer.id} value={officer.name}>
-                      {officer.name} ({officer.designation}, {officer.district})
+                      {officer.name} ({officer.designation},{officer.addres} , {officer.district})
                     </option>
                   ))}
               </select>

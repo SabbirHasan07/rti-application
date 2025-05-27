@@ -60,6 +60,7 @@ const RTIPdfDocument = () => {
                 <Text style={{  fontWeight: 'bold' }}>{data?.officerInfo?.name} </Text>
                 <Text style={{  maxWidth: 200 }}>{data?.officerInfo?.designation} </Text>
                 <Text style={{ }}>{data?.officerInfo?.officeType}, {data?.officerInfo?.district}</Text>
+                <Text style={{ }}>{data?.officerInfo?.addres}</Text>
             </View>
             <View style={{ display: 'flex', flexDirection: 'column', lineHeight: 0.8, alignItems: 'flex-end', marginBottom: 20 }}>
                 <Text style={{ lineHeight: 0.8 }}>তারিখ: {new Date().toLocaleDateString('bn-BD')} </Text>
@@ -150,6 +151,10 @@ const RTIPdfDocument = () => {
             <View style={{ display: 'flex', flexDirection: 'row', marginBottom: 70 }}>
                 <Text style={{ width: '61%' }}></Text>
                 <Text style={{ width: '39%' }}>{data?.officerInfo?.officeType},{data?.officerInfo?.district}</Text>
+            </View>
+            <View style={{ display: 'flex', flexDirection: 'row', marginBottom: 70 }}>
+                <Text style={{ width: '61%' }}></Text>
+                <Text style={{ width: '39%' }}>{data?.officerInfo?.addres}</Text>
             </View>
             <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                 <Text style={{ width: '60%' }}>৭। আবেদনের তারিখ: <Text>{new Date().toLocaleDateString('bn-BD')}</Text> </Text>
