@@ -1,20 +1,11 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-
-export default function PageOne({ onNext, showButton = true }) {
-  const [data, setData] = useState(null)
-
-  useEffect(() => {
-    const stored = sessionStorage.getItem('rtiForm')
-    if (stored) {
-      setData(JSON.parse(stored))
-    }
-  }, [])
+export default function PageOne({ data, onNext, showButton = true }) {
+  
 
   if (!data) return <p className="text-center mt-10">লোড হচ্ছে...</p>
 
-  console.log(data?.officerInfo)
+  // console.log(data?.officerInfo)
 
   return (
     <div>

@@ -111,7 +111,7 @@ const AdminDashboard = () => {
     useEffect(() => {
         fetch('/api/feedback').then(res => res.json()).then(data => setAllFeedbacks(data?.feedbacks)).catch(err => console.error(err))
     }, [])
-console.log(allFeedbacks)
+// console.log(allFeedbacks)
     return (
         <div className=" mx-auto p-6 font-sans text-[#212529] relative">
             {/* Header Buttons */}

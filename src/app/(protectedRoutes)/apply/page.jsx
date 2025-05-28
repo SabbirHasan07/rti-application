@@ -6,10 +6,30 @@ import { FiMail, FiPhone, FiUser, FiMapPin, FiCheckCircle } from 'react-icons/fi
 import useApi from '../../../hooks/officeApi';
 import { useAuth } from '@/context/AuthContext';
 
+const FORM_INITIAL_STATE = {
+  name: '',
+  father: '',
+  mother: '',
+  presentAddress: '',
+  permanentAddress: '',
+  office: '',
+  officer: '',
+  division: '',
+  infoType: '',
+  description: '',
+  method: [],
+  email: '',
+  phone: '',
+}
+
 export default function RtiForm() {
   const router = useRouter();
   const { user } = useAuth();
   const { offices, loading: officeLoading, error, fetchOffices } = useApi();
+  const [allDivisions, setAllDivisions] = useState([]);
+  const [allDistricts, setAllDistricts] = useState([]);
+  const [selectedDivision, setSelectedDivision] = useState('')
+  const [selectedDistrict, setSelectedDistrict] = useState('')
   const [form, setForm] = useState({
     name: '',
     father: '',
@@ -36,12 +56,28 @@ export default function RtiForm() {
     setForm((prev) => ({ ...prev, [name]: value }));
 
     if (name === 'office') {
-      const filteredOfficers = offices.filter((o) => o.officeType === value);
-      setOfficers(filteredOfficers);
+      if (value === '') {
+        setAllDivisions([]);
+        setForm((prev) => ({ ...prev, officer: '' }));
+        setAllDistricts([]);
+        setOfficers([]);
+        setSelectedDivision('');
+        setSelectedDistrict('');
+        return;
+      }
+      const divisions = offices
+        .filter(o => o.officeType === value)
+        .map(o => o.division)
+        .filter((v, i, a) => a.indexOf(v) === i)
+      setAllDivisions(divisions);
+      setAllDistricts([]);
+      setOfficers([]);
+      setSelectedDivision('');
+      setSelectedDistrict('');
       setForm((prev) => ({ ...prev, officer: '' }));
     }
   };
-console.log(officers)
+
   const handleMethodCheckbox = (value) => {
     setForm((prev) => {
       const methods = prev.method.includes(value)
@@ -69,14 +105,26 @@ console.log(officers)
       const selectedOfficer = officers.find((o) => o.name === form.officer);
       const officerInfo = selectedOfficer
         ? {
-            name: selectedOfficer.name,
-            designation: selectedOfficer.designation,
-            district: selectedOfficer.district,
-            addres: selectedOfficer.addres,
-            division: selectedOfficer.division,
-            officeType: selectedOfficer.officeType,
-          }
+          name: selectedOfficer.name,
+          designation: selectedOfficer.designation,
+          district: selectedOfficer.district,
+          addres: selectedOfficer.addres,
+          division: selectedOfficer.division,
+          officeType: selectedOfficer.officeType,
+        }
         : null;
+
+      if (!officerInfo) {
+        alert('আবেদন জমা দিতে সমস্যা হয়েছে। অনুগ্রহ করে পরে আবার চেষ্টা করুন।');
+        sessionStorage.removeItem('rtiForm')
+        setForm(FORM_INITIAL_STATE)
+        setAllDivisions([])
+        setAllDistricts([])
+        setSelectedDivision('')
+        setSelectedDistrict('')
+        setOfficers([])
+        return;
+      }
 
       const newApp = {
         ...form,
@@ -88,20 +136,45 @@ console.log(officers)
         timeTaken: '২৮ দিন',
         status: 'পেন্ডিং',
       };
-    console.log('Selected officer:', selectedOfficer);
-
-
-      localStorage.setItem('applications', JSON.stringify([...allApplications, newApp]));
       sessionStorage.setItem('rtiForm', JSON.stringify(newApp));
 
       router.push('/preview');
     } catch (error) {
       console.error('Error submitting the form:', error);
       alert('আবেদন জমা দিতে সমস্যা হয়েছে। অনুগ্রহ করে পরে আবার চেষ্টা করুন।');
+      sessionStorage.removeItem('rtiForm')
+      setForm(FORM_INITIAL_STATE)
+      setAllDivisions([])
+      setAllDistricts([])
+      setSelectedDivision('')
+      setSelectedDistrict('')
+      setOfficers([])
+
     } finally {
       setSubmitting(false);
     }
   };
+
+  const handleDivisionChange = (e) => {
+    const division = e.target.value
+    setSelectedDivision(division)
+    const districts = offices
+      .filter(o => o.division === division)
+      .map(o => o.district)
+      .filter((v, i, a) => a.indexOf(v) === i)
+    setAllDistricts(districts);
+    setSelectedDistrict('');
+  }
+
+  const handleDistrictChange = (e) => {
+    const district = e.target.value;
+    setSelectedDistrict(district)
+    const officers = offices.filter(
+      o => o.division === selectedDivision && o.district === district
+    )
+    setOfficers(officers);
+    setForm((prev) => ({ ...prev, officer: '' }));
+  }
 
   useEffect(() => {
     const saved = sessionStorage.getItem('rtiForm');
@@ -112,10 +185,30 @@ console.log(officers)
     if (saved) {
       const parsed = JSON.parse(saved);
       setForm((prev) => ({ ...prev, ...parsed }));
+
+      if (parsed?.office?.length > 0) {
+        const divisions = offices
+          .filter(o => o.officeType === parsed?.office)
+          .map(o => o.division)
+          .filter((v, i, a) => a.indexOf(v) === i)
+        const districts = offices
+          .filter(o => o.division === parsed?.officerInfo?.division)
+          .map(o => o.district)
+          .filter((v, i, a) => a.indexOf(v) === i)
+        const officers = offices.filter(
+          o => o.division === selectedDivision && o.district === parsed?.officerInfo?.district
+        )
+        setAllDivisions(divisions);
+        setAllDistricts(districts);
+        setOfficers(officers)
+        setSelectedDivision(parsed?.officerInfo?.division)
+        setSelectedDistrict(parsed?.officerInfo?.district)
+      }
     } else {
       setForm((prev) => ({ ...prev, name, email, phone }));
     }
-  }, [user]);
+
+  }, [user, offices]);
 
   useEffect(() => {
     fetchOffices();
@@ -159,25 +252,55 @@ console.log(officers)
             <input name="infoType" value={form.infoType} onChange={handleChange} className="flex-1 focus:outline-none" placeholder="কি ধরনের তথ্য চান" />
           </div>
 
-          
+          <div className="md:col-span-2">
+            <label className="text-green-700">দপ্তর নির্বাচন করুন:</label>
+            <select
+              name="office"
+              value={form.office}
+              onChange={handleChange}
+              className="w-full p-2 border rounded text-green-700"
+            >
+              <option value="">-- দপ্তর নির্বাচন করুন --</option>
+              <option value="পরিবেশ অধিদপ্তর">পরিবেশ অধিদপ্তর</option>
+              <option value="জেলা প্রশাসকের কার্যালয়">জেলা প্রশাসকের কার্যালয়</option>
+            </select>
+          </div>
 
-        
-            <div className="md:col-span-2">
-              <label className="text-green-700">দপ্তর নির্বাচন করুন:</label>
+          {/*বিভাগ নির্বাচন  */}
+          {
+            allDivisions?.length > 0 && <div className="md:col-span-2">
+              <label className="text-green-700">বিভাগ নির্বাচন করুন:</label>
               <select
-                name="office"
-                value={form.office}
-                onChange={handleChange}
+                value={selectedDivision}
+                onChange={handleDivisionChange}
                 className="w-full p-2 border rounded text-green-700"
               >
-                <option value="">-- দপ্তর নির্বাচন করুন --</option>
-                <option value="পরিবেশ অধিদপ্তর">পরিবেশ অধিদপ্তর</option>
-                <option value="জেলা প্রশাসকের কার্যালয়">জেলা প্রশাসকের কার্যালয়</option>
+                <option value="">-- বিভাগ নির্বাচন করুন --</option>
+                {
+                  allDivisions?.map((item, index) => <option key={index} value={item}>{item}</option>)
+                }
               </select>
             </div>
-       
+          }
 
-          {form.office && officers.length > 0 && (
+          {/*জেলা নির্বাচন  */}
+          {
+            allDistricts?.length > 0 && <div className="md:col-span-2">
+              <label className="text-green-700">জেলা নির্বাচন করুন:</label>
+              <select
+                value={selectedDistrict}
+                onChange={handleDistrictChange}
+                className="w-full p-2 border rounded text-green-700"
+              >
+                <option value="">-- জেলা নির্বাচন করুন --</option>
+                {
+                  allDistricts?.map((item, index) => <option key={index} value={item}>{item}</option>)
+                }
+              </select>
+            </div>
+          }
+
+          {form.office && officers?.length > 0 && (
             <div className="md:col-span-2">
               <label className="text-green-700">অফিসার নির্বাচন করুন:</label>
               <select name="officer" value={form.officer} onChange={handleChange} className="w-full p-2 border rounded text-green-700">

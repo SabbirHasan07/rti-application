@@ -39,16 +39,8 @@ const styles = StyleSheet.create({
     },
 });
 
-const RTIPdfDocument = () => {
-    const [data, setData] = useState();
-    useEffect(() => {
-        const stored = sessionStorage.getItem('rtiForm')
-        if (stored) {
-            setData(JSON.parse(stored))
-        }
-    }, [])
+const RTIPdfDocument = ({data}) => {
 
-    console.log(data)
     return <Document>
         <Page size="A4" style={styles.page}>
             <Text style={{
@@ -148,7 +140,7 @@ const RTIPdfDocument = () => {
                 <Text style={{ width: '61%' }}></Text>
                 <Text style={{ width: '39%' }}>{data?.officerInfo?.designation}</Text>
             </View>
-            <View style={{ display: 'flex', flexDirection: 'row', marginBottom: 70 }}>
+            <View style={{ display: 'flex', flexDirection: 'row', }}>
                 <Text style={{ width: '61%' }}></Text>
                 <Text style={{ width: '39%' }}>{data?.officerInfo?.officeType},{data?.officerInfo?.district}</Text>
             </View>

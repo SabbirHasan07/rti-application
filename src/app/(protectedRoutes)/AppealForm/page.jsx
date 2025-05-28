@@ -46,7 +46,7 @@ export default function AppealForm() {
         body: JSON.stringify({ ...formData, userId, applicationId }),
       });
       const data = await res.json();
-      console.log(data)
+      // console.log(data)
       if (res.ok) {
         alert('আপীল সফলভাবে জমা হয়েছে!');
         setFormData({

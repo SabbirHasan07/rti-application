@@ -16,7 +16,7 @@ export const ApplicationList = ({
   );
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  console.log(paginatedData?.data?.hasAppealed);
+  // console.log(paginatedData?.data?.hasAppealed);
   const handleDownload = async () => {
     try {
       setLoading(true);

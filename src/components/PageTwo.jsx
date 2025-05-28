@@ -1,15 +1,6 @@
 'use client'
-import { useEffect, useState } from 'react'
 
-export default function PageTwo({ onNext, showButton = true }) {
-    const [formData, setFormData] = useState(null)
-
-    useEffect(() => {
-        const storedData = sessionStorage.getItem('rtiForm')
-        if (storedData) {
-            setFormData(JSON.parse(storedData))
-        }
-    }, [])
+export default function PageTwo({ data : formData, onNext, showButton = true }) {
 
     if (!formData) return null
 

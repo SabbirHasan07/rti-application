@@ -13,6 +13,9 @@ export async function POST(req) {
         isNotified: false,
         hasGivenFeedback: false,
       },
+      select:{
+        id: true
+      }
     });
 
     return Response.json(application);

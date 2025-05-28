@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import PageOne from "../../../components/PageOne";
 import PageTwo from "../../../components/PageTwo";
 import PageThree from "../../../components/PageThree";
@@ -11,58 +11,28 @@ import RTIPdfDocument from "@/components/PDFs/RTIPdfDocument";
 import { pdf } from "@react-pdf/renderer";
 
 export default function CompletedForm() {
-  const [formData, setFormData] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const contentRef = useRef(null);
   const router = useRouter();
-  const { user } = useAuth();
-
-  useEffect(() => {
-    const data = sessionStorage.getItem("rtiForm");
-    if (data) {
-      setFormData(JSON.parse(data));
-    }
-  }, []);
-
-  // Save data to database
-  const saveToDatabase = async () => {
-    try {
-      const userId = user?.id;
-      if (!userId) {
-        toast.error("ব্যবহারকারীর তথ্য পাওয়া যায়নি।");
-        return;
-      }
-
-      const res = await fetch("/api/application", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          data: formData,
-          userId,
-        }),
-      });
-
-      if (!res.ok) throw new Error("সার্ভারে সংরক্ষণ ব্যর্থ হয়েছে।");
-      toast.success("আবেদনটি সংরক্ষণ করা হয়েছে।");
-    } catch (err) {
-      toast.error("ডেটা সংরক্ষণে সমস্যা হয়েছে।");
-      console.error(err);
-    }
-  };
+  const searchParams = useSearchParams();
+  const applicationId = searchParams.get('applicationId');
+  const [applicationData, setApplicationData] = useState();
+  const [loadingData, setLoadingData] = useState(true);
 
 
   const printForm = async () => {
     window.print();
-    await saveToDatabase();
     router.push("/userDashboard");
   };
 
   const handleDownload = async () => {
+    if (!applicationData) {
+      toast.error('কিছু সময় অপেক্ষা করুন')
+      return;
+    }
     try {
       setIsGenerating(true);
-      const blob = await pdf(<RTIPdfDocument />).toBlob();
+      const blob = await pdf(<RTIPdfDocument data={applicationData} />).toBlob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -71,7 +41,6 @@ export default function CompletedForm() {
       URL.revokeObjectURL(url);
       setIsGenerating(false);
       toast.success("PDF সফলভাবে তৈরি হয়েছে!");
-      await saveToDatabase();
       router.push("/userDashboard");
     } catch (err) {
       setIsGenerating(false);
@@ -79,7 +48,23 @@ export default function CompletedForm() {
     }
   };
 
-  if (!formData) return <p className="text-center">লোড হচ্ছে...</p>;
+  useEffect(() => {
+    try {
+      fetch(`/api/application?applicationId=${applicationId}`).then(res => res.json()).then(data => {
+        setApplicationData(data?.[0]?.data)
+        setLoadingData(false)
+      })
+    } catch (e) {
+      setLoadingData(false)
+      console.error(e)
+    }
+  }, []);
+
+  console.log({ applicationData, loadingData })
+
+  if (loadingData) return <p className="text-center">লোড হচ্ছে...</p>;
+
+  if (!applicationData && !loadingData) return <p className="text-center">এখন অ্যাপ্লিকেশন ডেটা লোড করা যাচ্ছে না। দয়া করে পরে আবার চেষ্টা করুন।</p>;
 
   return (
     <div className="max-w-4xl mx-auto py-10 space-y-6 font-[Kalpurush]">
@@ -130,15 +115,15 @@ export default function CompletedForm() {
       <div ref={contentRef} className="space-y-4 font-[Kalpurush]">
         <div className="pdf-page w-[794px] space-y-4 mx-auto bg-white p-[40px] text-[16px] leading-relaxed">
           <div className=" bg-white text-[18px] leading-relaxed">
-            <PageOne data={formData} showButton={false} />
+            <PageOne data={applicationData} showButton={false} />
           </div>
         </div>
         <div className="pdf-page w-[794px] space-y-4 mx-auto bg-white p-[40px] text-[16px] leading-relaxed">
           <div className=" bg-white text-[18px] leading-relaxed">
-            <PageTwo data={formData} showButton={false} />
+            <PageTwo data={applicationData} showButton={false} />
           </div>
           <div className=" bg-white text-[18px] leading-relaxed">
-            <PageThree data={formData} showButton={false} />
+            <PageThree data={applicationData} showButton={false} />
           </div>
         </div>
       </div>
