@@ -60,8 +60,6 @@ export default function CompletedForm() {
     }
   }, []);
 
-  console.log({ applicationData, loadingData })
-
   if (loadingData) return <p className="text-center">লোড হচ্ছে...</p>;
 
   if (!applicationData && !loadingData) return <p className="text-center">এখন অ্যাপ্লিকেশন ডেটা লোড করা যাচ্ছে না। দয়া করে পরে আবার চেষ্টা করুন।</p>;

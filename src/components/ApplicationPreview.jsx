@@ -5,7 +5,7 @@ import PageOne from './PageOne'
 import PageTwo from './PageTwo'
 import PageThree from './PageThree'
 
-export default function ApplicationPreview({ sessionData }) {
+export default function ApplicationPreview({ data }) {
   const [step, setStep] = useState(1)
 
   const nextStep = () => setStep(prev => prev + 1)
@@ -13,9 +13,9 @@ export default function ApplicationPreview({ sessionData }) {
 
   return (
     <div>
-      {step === 1 && <PageOne data={sessionData} onNext={nextStep} />}
-      {step === 2 && <PageTwo data={sessionData} onNext={nextStep} />}
-      {step === 3 && <PageThree data={sessionData} onConfirm={showReview} />}
+      {step === 1 && <PageOne data={data} onNext={nextStep} />}
+      {step === 2 && <PageTwo data={data} onNext={nextStep} />}
+      {step === 3 && <PageThree data={data} onConfirm={showReview} />}
     </div>
   )
 }
