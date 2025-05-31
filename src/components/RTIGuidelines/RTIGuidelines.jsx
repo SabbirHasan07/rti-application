@@ -2,20 +2,21 @@ import Image from "next/image";
 export default function sRTIGuidelines() {
   return (
     <div>
-      <div className="flex justify-between px-4">
-        <div>
-          <p className="px-6 py-2 my-3 text-[#008037] font-bold text-3xl underline">আরটিআই আবেদনের বিবরণ</p>
-        </div>
-        <div>
+      <div className="flex flex-col items-center justify-center lg:flex-row lg:justify-between px-4">
+        <p className="px-6 py-2 my-3 text-[#008037] font-bold text-3xl underline text-center lg:text-left">
+          আরটিআই আবেদনের বিবরণ
+        </p>
+        <div className="my-3 flex justify-center lg:justify-end w-full lg:w-auto">
           <button
             onClick={() => window.location.href = "/login"}
-            className="my-3 bg-[#008037] hover:bg-[#006f2f] text-white font-bold px-6 py-2 rounded shadow transition-colors"
+            className="bg-[#008037] hover:bg-[#006f2f] text-white font-bold px-6 py-2 rounded shadow transition-colors"
           >
-            আরটিআই আবেদন
+            আরটিআই আবেদন করুন
           </button>
-
         </div>
       </div>
+
+
       <div className="min-h-screen bg-gradient-to-br from-gray-100 to-blue-50 py-12 px-4">
         <div className="max-w-4xl mx-auto relative bg-white  border border-blue-100 p-10 text-gray-800 leading-loose font-[Kalpurush,ui-sans-serif] overflow-hidden">
           {/* Edge Cut Effect */}

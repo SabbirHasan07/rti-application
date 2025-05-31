@@ -9,7 +9,7 @@ export async function GET() {
     // twentyDaysAgo.setDate(twentyDaysAgo.getDate() - 20);
     
     // 10 minutes for test
-    const twentyDaysAgo = new Date(Date.now() - 10 * 60 * 1000); 
+    const twentyDaysAgo = new Date(Date.now() - 1 * 60 * 1000); 
 
     const apps = await prisma.application.findMany({
         where: {

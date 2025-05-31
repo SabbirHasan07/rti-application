@@ -25,8 +25,8 @@ Font.register({
 Font.registerHyphenationCallback(word => [word]);
 const styles = StyleSheet.create({
     page: {
-        padding: 50,
-        fontSize: 12,
+        padding: 72,
+        fontSize: 13,
         fontFamily: 'SolaimanLipi',
     },
     section: {
@@ -39,7 +39,9 @@ const styles = StyleSheet.create({
     },
 });
 
-const RTIPdfDocument = ({data}) => {
+const RTIPdfDocument = ({ data }) => {
+
+    // console.log(data?.infoType)
 
     return <Document>
         <Page size="A4" style={styles.page}>
@@ -48,11 +50,10 @@ const RTIPdfDocument = ({data}) => {
                 textAlign: 'center',
             }}>-রেজিষ্ট্রিকৃত ডাকযোগে প্রেরিত- </Text>
             <View style={{ display: 'flex', flexDirection: 'column', }}>
-                <Text style={{  fontWeight: 'bold' }}>বরাবর </Text>
-                <Text style={{  fontWeight: 'bold' }}>{data?.officerInfo?.name} </Text>
-                <Text style={{  maxWidth: 200 }}>{data?.officerInfo?.designation} </Text>
-                <Text style={{ }}>{data?.officerInfo?.officeType}, {data?.officerInfo?.district}</Text>
-                <Text style={{ }}>{data?.officerInfo?.addres}</Text>
+                <Text style={{ fontWeight: 'bold' }}>বরাবর </Text>
+                <Text style={{ fontWeight: 'bold' }}>{data?.officerInfo?.name}  </Text>
+                <Text style={{ maxWidth: 200 }}>{data?.officerInfo?.designation}  </Text>
+                <Text style={{ maxWidth: 200 }}>{data?.officerInfo?.addres}  </Text>
             </View>
             <View style={{ display: 'flex', flexDirection: 'column', lineHeight: 0.8, alignItems: 'flex-end', marginBottom: 20 }}>
                 <Text style={{ lineHeight: 0.8 }}>তারিখ: {new Date().toLocaleDateString('bn-BD')} </Text>
@@ -60,15 +61,11 @@ const RTIPdfDocument = ({data}) => {
             <Text style={{ textAlign: 'center', fontWeight: 'bold' }}>বিষয়: তথ্য প্রদান প্রসঙ্গে।</Text>
             <View style={{ marginBottom: 30 }}>
                 <Text style={{ fontWeight: 'bold', marginBottom: 20 }}>জনাব,</Text>
-                <Text style={{ marginBottom: 20}}>
-                    শুভেচ্ছা ! তথ্য অধিকার আইন, ২০০৯-এর ধারা ৮(৩) অনুযায়ী নিম্ন স্বাক্ষরকারী <Text style={{ fontWeight: 'bold' }}>{data?.infoType}</Text> নিম্নোক্ত নির্ধারিত ফরমেটে (সংযুক্ত) তথ্য চেয়ে আবেদন জানাচ্ছে।| 
+                <Text style={{ marginBottom: 20 }}>
+                    শুভেচ্ছা ! তথ্য অধিকার আইন, ২০০৯-এর ধারা ৮(৩) অনুযায়ী নিম্ন স্বাক্ষরকারী <Text style={{ fontWeight: 'bold' }}>{data?.infoType}</Text> নির্ধারিত ফরমেটে (সংযুক্ত) তথ্য চেয়ে আবেদন জানাচ্ছে।।
                 </Text>
-                {/* <Text style={{}}>
-                    {`শুভেচ্ছা ! তথ্য অধিকার আইন, ২০০৯-এর ধারা ৮(৩) অনুযায়ী নিম্ন স্বাক্ষরকারী ${<Text style={{ fontWeight: 'bold' }}>{data?.infoType}</Text>} নিম্নোক্ত নির্ধারিত ফরমেটে (সংযুক্ত) তথ্য চেয়ে আবেদন জানাচ্ছে।`.split(' ').map((item, index) => <Text key={index}>{item}{' '}</Text>)} */}
-                {/* </Text> */}
                 <Text style={{}}>
-                    উল্লেখ্য যে, তথ্য অধিকার আইন, ২০০৯-এর ধারা ৯(২) অনুযায়ী অনুরোধকৃত তথ্যের সাথে একাধিক তথ্য প্রদানকারী ইউনিট বা কর্তৃপক্ষের সংশ্লিষ্টতা থাকলে উক্ত অনুরোধকৃত তথ্য অনধিক ৩০ (ত্রিশ) কার্য দিবসের মধ্যে প্রদানের বিধান রয়েছে। | 
-                    {/* {'উল্লেখ্য যে, তথ্য অধিকার আইন, ২০০৯-এর ধারা ৯(২) অনুযায়ী অনুরোধকৃত তথ্যের সাথে একাধিক তথ্য প্রদানকারী ইউনিট বা কর্তৃপক্ষের সংশ্লিষ্টতা থাকলে উক্ত অনুরোধকৃত তথ্য অনধিক ৩০ (ত্রিশ) কার্য দিবসের মধ্যে প্রদানের বিধান রয়েছে।'.split(' ').map((item, index) => <Text key={index}>{item}{' '}</Text>)} */}
+                    {'উল্লেখ্য যে, তথ্য অধিকার আইন, ২০০৯-এর ধারা ৯(২) অনুযায়ী অনুরোধকৃত তথ্যের সাথে একাধিক তথ্য প্রদানকারী ইউনিট বা কর্তৃপক্ষের সংশ্লিষ্টতা থাকলে উক্ত অনুরোধকৃত তথ্য অনধিক ৩০ (ত্রিশ) কার্যদিবসের মধ্যে প্রদানের বিধান রয়েছে। '.split(' ').map((item, index) => <Text key={index}>{item}{' '}</Text>)}  
                 </Text>
             </View>
             <Text style={{ marginBottom: 30 }}>বিনীত </Text>
@@ -91,7 +88,7 @@ const RTIPdfDocument = ({data}) => {
                 </View>
                 <View style={{ display: 'flex', flexDirection: 'row' }}>
                     <Text style={{ width: '50%' }}>মাতার নাম </Text>
-                    <Text style={{ width: '50%' }}>: {data?.mother}</Text>
+                    <Text style={{ width: '50%' }}>: {data?.mother} </Text>
                 </View>
                 <View style={{ display: 'flex', flexDirection: 'row' }}>
                     <Text style={{ width: '50%' }}>বর্তমান ঠিকানা </Text>
@@ -99,7 +96,7 @@ const RTIPdfDocument = ({data}) => {
                 </View>
                 <View style={{ display: 'flex', flexDirection: 'row' }}>
                     <Text style={{ width: '50%' }}>স্থায়ী ঠিকানা </Text>
-                    <Text style={{ width: '50%' }}>: {data?.permanentAddress} </Text>
+                    <Text style={{ width: '50%' }}>: {data?.permanentAddress}  </Text>
                 </View>
                 <View style={{ display: 'flex', flexDirection: 'row' }}>
                     <Text style={{ width: '50%' }}>ফ্যাক্স,ই-মেইল,টেলিফোন ও মোবাইল ফোন নম্বর   </Text>
@@ -138,15 +135,11 @@ const RTIPdfDocument = ({data}) => {
             </View>
             <View style={{ display: 'flex', flexDirection: 'row', }}>
                 <Text style={{ width: '61%' }}></Text>
-                <Text style={{ width: '39%' }}>{data?.officerInfo?.designation}</Text>
-            </View>
-            <View style={{ display: 'flex', flexDirection: 'row', }}>
-                <Text style={{ width: '61%' }}></Text>
-                <Text style={{ width: '39%' }}>{data?.officerInfo?.officeType},{data?.officerInfo?.district}</Text>
+                <Text style={{ width: '39%' }}>{data?.officerInfo?.designation}  </Text>
             </View>
             <View style={{ display: 'flex', flexDirection: 'row', marginBottom: 70 }}>
                 <Text style={{ width: '61%' }}></Text>
-                <Text style={{ width: '39%' }}>{data?.officerInfo?.addres}</Text>
+                <Text style={{ width: '39%' }}>{data?.officerInfo?.addres}  </Text>
             </View>
             <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                 <Text style={{ width: '60%' }}>৭। আবেদনের তারিখ: <Text>{new Date().toLocaleDateString('bn-BD')}</Text> </Text>

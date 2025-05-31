@@ -1,17 +1,26 @@
 // app/pdf-preview/page.jsx or components/PdfPreview.jsx
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { PDFViewer, pdf } from '@react-pdf/renderer';
 import RTIPdfDocument from '@/components/PDFs/RTIPdfDocument';
 import AppealPdfDocument from '@/components/PDFs/AppealPdfDocument';
 import ApplicationPdfDocument from '@/components/PDFs/ApplicationPdfDocument';
+import { useSearchParams } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 
 
 const PdfPreview = () => {
+    const searchParams = useSearchParams();
+    const appealId = searchParams.get('appealId');
+    const applicationId = searchParams.get('applicationId');
+    const [appealData, setAppealData] = useState(null);
+    const [feedbackData, setFeedbackData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const { user } = useAuth();
 
     const handleDownload = async () => {
-        const blob = await pdf(<RTIPdfDocument data={mockData} />).toBlob();
+        const blob = await pdf(<AppealPdfDocument data={{appealData,feedbackData}}/>).toBlob();
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
@@ -73,6 +82,42 @@ const PdfPreview = () => {
         },
     ];
 
+    // useEffect(() => {
+    //     try {
+    //         fetch(`/api/application?applicationId=${applicationId}`).then(res => res.json()).then(data => {
+    //             setApplicationData(data?.[0]?.data)
+    //             setLoadingData(false)
+    //         })
+    //     } catch (e) {
+    //         setLoadingData(false)
+    //         console.error(e)
+    //     }
+    // }, []);
+
+    useEffect(() => {
+        const userId = user?.id;
+
+        if (userId) {
+            const fetchAppeal = fetch(`/api/appeal?appealId=${appealId}`).then(res => res.json());
+            const fetchFeedback = fetch(`/api/feedback?applicationId=${applicationId}`).then(res => res.json());
+
+            Promise.all([fetchAppeal, fetchFeedback])
+                .then(([appeal, feedback]) => {
+                    setAppealData(appeal?.appeals[0]);
+                    setFeedbackData(feedback?.feedbacks[0]);
+                    setLoading(false);
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    setLoading(false);
+                });
+        } else {
+            console.warn('User ID not found');
+            setLoading(false);
+        }
+    }, []);
+
+    if (loading) return <p className="text-center">লোড হচ্ছে...</p>;
 
     return (
         <div className="flex flex-col items-start gap-6 p-6">
@@ -86,7 +131,8 @@ const PdfPreview = () => {
             </div>
             <div className="w-full h-[80vh] border rounded shadow">
                 <PDFViewer width="100%" height="100%">
-                    <RTIPdfDocument/>
+                    {/* <RTIPdfDocument data={applicationData} /> */}
+                    <AppealPdfDocument data={{appealData,feedbackData}}/>
                 </PDFViewer>
             </div>
         </div>

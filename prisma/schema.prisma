@@ -48,6 +48,7 @@ model Appeal {
   phone                    String
   referenceNo              String
   appealOfficer            String
+  apealOfficerAddress      String?
   responseDate             DateTime?
   subject                  String?
   details                  String?

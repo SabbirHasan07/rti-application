@@ -45,15 +45,21 @@ export default function RtiForm() {
     email: '',
     phone: '',
   });
-
   const [officers, setOfficers] = useState([]);
   const [submitting, setSubmitting] = useState(false);
+  const [sameAsPresent, setSameAsPresent] = useState(false);
 
   const methodOptions = ['ফটোকপি', 'লিখিত', 'ই-মেইল', 'ফ্যাক্স'];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    setForm((prev) => {
+      const updated = { ...prev, [name]: value };
+      if (name === 'presentAddress' && sameAsPresent) {
+        updated.permanentAddress = value;
+      }
+      return updated;
+    });
 
     if (name === 'office') {
       if (value === '') {
@@ -236,21 +242,48 @@ export default function RtiForm() {
             <FiUser className="mr-2" />
             <input name="mother" value={form.mother} onChange={handleChange} className="flex-1 focus:outline-none" placeholder="মাতার নাম" required />
           </div>
-
           <div className="flex items-center border p-2 rounded text-green-700">
-            <FiMapPin className="mr-2" />
-            <input name="presentAddress" value={form.presentAddress} onChange={handleChange} className="flex-1 focus:outline-none" placeholder="বর্তমান ঠিকানা" required />
+            <FiPhone className="mr-2" />
+            <input name="phone" value={form.phone} readOnly className="flex-1 focus:outline-none" placeholder="মোবাইল নম্বর" />
           </div>
 
           <div className="flex items-center border p-2 rounded text-green-700">
             <FiMapPin className="mr-2" />
-            <input name="permanentAddress" value={form.permanentAddress} onChange={handleChange} className="flex-1 focus:outline-none" placeholder="স্থায়ী ঠিকানা" required />
+            <input name="presentAddress" value={form.presentAddress} onChange={handleChange} className="flex-1 focus:outline-none" placeholder="বর্তমান ঠিকানা - ( গ্রাম/এলাকা,থানা,জেলা )" required />
           </div>
-
+           <div className="flex items-center border p-2 rounded text-green-700">
+            <FiMail className="mr-2" />
+            <input name="email" value={form.email} readOnly className="flex-1 focus:outline-none" placeholder="ই-মেইল" />
+          </div>
+          <div className="md:col-span-2 flex items-center text-green-700">
+            <input
+              type="checkbox"
+              id="sameAsPresent"
+              checked={sameAsPresent}
+              onChange={(e) => {
+                const checked = e.target.checked;
+                setSameAsPresent(checked);
+                if (checked) {
+                  setForm((prev) => ({ ...prev, permanentAddress: prev.presentAddress }));
+                }
+              }}
+              className="mr-2"
+            />
+            <label htmlFor="sameAsPresent">স্থায়ী ঠিকানা বর্তমান ঠিকানার মত</label>
+          </div>
+          
+          <div className="flex items-center border p-2 rounded text-green-700">
+            <FiMapPin className="mr-2" />
+            <input name="permanentAddress" value={form.permanentAddress} onChange={handleChange} 
+            readOnly={sameAsPresent}
+            className="flex-1 focus:outline-none" placeholder="স্থায়ী ঠিকানা - ( গ্রাম/এলাকা,থানা,জেলা )" required />
+          </div>
           <div className="flex items-center border p-2 rounded text-green-700">
             <FiMail className="mr-2" />
-            <input name="infoType" value={form.infoType} onChange={handleChange} className="flex-1 focus:outline-none" placeholder="কি ধরনের তথ্য চান" />
+            <input name="infoType" value={form.infoType} onChange={handleChange} className="flex-1 focus:outline-none" placeholder="কি বিষয়ক তথ্য চান" />
           </div>
+
+          
 
           <div className="md:col-span-2">
             <label className="text-green-700">দপ্তর নির্বাচন করুন:</label>
@@ -333,15 +366,9 @@ export default function RtiForm() {
             <textarea name="description" value={form.description} onChange={handleChange} className="w-full p-3 border rounded text-green-700" placeholder="তথ্যের বিস্তারিত বর্ণনা লিখুন" required />
           </div>
 
-          <div className="flex items-center border p-2 rounded text-green-700">
-            <FiMail className="mr-2" />
-            <input name="email" value={form.email} readOnly className="flex-1 focus:outline-none" placeholder="ই-মেইল" />
-          </div>
+          
 
-          <div className="flex items-center border p-2 rounded text-green-700">
-            <FiPhone className="mr-2" />
-            <input name="phone" value={form.phone} readOnly className="flex-1 focus:outline-none" placeholder="মোবাইল নম্বর" />
-          </div>
+         
 
           <div className="md:col-span-2">
             <button type="submit" disabled={submitting} className="w-full bg-[#008037] hover:bg-green-700 text-white py-3 rounded text-lg font-semibold">

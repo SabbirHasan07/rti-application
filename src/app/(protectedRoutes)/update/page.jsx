@@ -18,7 +18,7 @@ export default function FeedbackForm() {
   const applicationId = searchParams.get('applicationId');
 
   const userId = typeof window !== 'undefined' ? user?.id : null;
-
+  console.log(user.role);
   const handleResponseChange = (value) => {
     setResponse(value);
     setError('');
@@ -90,7 +90,11 @@ export default function FeedbackForm() {
     } finally {
       setLoading(false);
     }
-    router.push("/userDashboard")
+    if (user?.role === 'ADMIN') {
+      router.push('/adminDashboard');
+    } else {
+      router.push('/userDashboard');
+    }
   };
 
   return (
@@ -155,7 +159,7 @@ export default function FeedbackForm() {
           <button
             onClick={handleSaveFeedback}
             disabled={loading}
-            className="bg-[#008037] hover:bg-[#006f2f] text-white font-bold px-6 py-2 rounded shadow"
+            className="bg-[#008037] hover:bg-[#006f2f] text-white font-bold px-6 py-2 rounded shadow cursor-pointer"
           >
             {loading ? 'লোড হচ্ছে...' : 'সংরক্ষণ করুন'}
           </button>

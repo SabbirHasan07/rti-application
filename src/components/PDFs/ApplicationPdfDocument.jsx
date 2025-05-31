@@ -48,14 +48,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   tableColHeader: {
-    width: '25%',
+    width: '14.29%',
     borderStyle: 'solid',
     borderBottomWidth: 1,
     borderRightWidth: 1,
     backgroundColor: '#008037',
   },
   tableCol: {
-    width: '25%',
+    width: '14.29%',
     borderStyle: 'solid',
     borderBottomWidth: 1,
     borderRightWidth: 1,
@@ -92,21 +92,18 @@ const ApplicationPdfDocument = ({ data }) => (
         {data.map((item, index) => (
           <View style={styles.tableRow} key={index}>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>{item?.id}</Text>
+              <Text style={styles.tableCell}>{item?.data?.name} </Text>
             </View>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>{item?.data?.name}</Text>
+              <Text style={styles.tableCell}>{item?.data?.infoType} </Text>
             </View>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>{item?.data?.infoType}</Text>
-            </View>
-            <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>{item?.data?.officer}</Text>
+              <Text style={styles.tableCell}>{item?.data?.officer} </Text>
             </View>
             <View style={styles.tableCol}>
               <Text style={styles.tableCell}>
                 {item?.data?.officerInfo?.officeType},{" "}
-                {item?.data?.officerInfo?.district}
+                {item?.data?.officerInfo?.district} 
               </Text>
             </View>
             <View style={styles.tableCol}>
@@ -133,7 +130,7 @@ const ApplicationPdfDocument = ({ data }) => (
             </View>
             <View style={styles.tableCol}>
               <Text style={styles.tableCell}>
-                {new Date(item.data.createdAt).toLocaleString()}
+                {new Date(item.data.createdAt).toLocaleString()}  
               </Text>
             </View>
           </View>

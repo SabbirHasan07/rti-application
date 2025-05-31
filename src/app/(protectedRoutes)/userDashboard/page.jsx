@@ -10,7 +10,6 @@ import { useAuth } from '@/context/AuthContext';
 const UserDashboard = () => {
   const [localUser, setLocalUser] = useState(null);
   const [userApplications, setUserApplications] = useState([]);
-  const [feedbacks, setFeedbacks] = useState([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const { logout, user } = useAuth();
@@ -19,7 +18,6 @@ const UserDashboard = () => {
     if (user) {
       setLocalUser(user.fullName);
       fetchUserApplications();
-      fetchUserFeedbacks();
     } else {
       router.push('/login');
     }
@@ -36,17 +34,6 @@ const UserDashboard = () => {
       toast.error('আপনার আবেদন তথ্য লোড করতে সমস্যা হয়েছে।');
     } finally {
       setLoading(false);
-    }
-  };
-
-  const fetchUserFeedbacks = async () => {
-    try {
-      const response = await axios.get(`/api/feedback?userId=${user.id}`);
-      if (response.data && response.data.feedbacks) {
-        setFeedbacks(response.data.feedbacks);
-      }
-    } catch (error) {
-      console.error('Error fetching feedbacks:', error);
     }
   };
 
@@ -95,27 +82,22 @@ const UserDashboard = () => {
         ) : userApplications.length > 0 ? (
           <div className="space-y-6">
             {userApplications.map(application => {
-              // Always allow update
-              const canUpdateByTime = true;
-
-              const feedback = feedbacks.find(f => f.applicationId === application.id);
 
               const hasFeedback = application.hasGivenFeedback;
-              // const responseText = hasFeedback ? (feedback ? feedback.response : '') : 'প্রতিক্রিয়া নেই';
+              const hasReceivedFullInfo = application?.feedbacks?.[0]?.infoType === 'সম্পূর্ণ তথ্য'
 
               return (
                 <div
-                  key={application.id} 
+                  key={application.id}
                   className="bg-gray-50 border border-gray-200 rounded-lg shadow-md p-5 sm:p-6"
                 >
                   <div className="flex justify-end mb-4 gap-2">
                     <button
                       onClick={() => router.push(`/update?applicationId=${application.id}`)}
-                      className={`px-4 py-2 rounded-md text-sm font-medium transition ${
-                        hasFeedback
-                          ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
-                          : 'bg-[#008037] text-white hover:bg-[#006f2f]'
-                      }`}
+                      className={`px-4 py-2 rounded-md text-sm font-medium transition ${hasFeedback
+                        ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                        : 'bg-[#008037] text-white hover:bg-[#006f2f] cursor-pointer'
+                        }`}
                       disabled={hasFeedback}
                     >
                       {hasFeedback ? 'ফিডব্যাক সম্ভব নয়' : 'ফিডব্যাক'}
@@ -129,15 +111,14 @@ const UserDashboard = () => {
                       disabled={
                         !hasFeedback ||
                         application.hasAppealed ||
-                        feedback?.infoType === 'সম্পূর্ণ তথ্য'
+                        hasReceivedFullInfo
                       }
-                      className={`${
-                        !hasFeedback ||
+                      className={`${!hasFeedback ||
                         application.hasAppealed ||
-                        feedback?.infoType === 'সম্পূর্ণ তথ্য'
-                          ? 'bg-red-300 cursor-not-allowed'
-                          : 'bg-gray-700 hover:bg-gray-900'
-                      } text-white font-bold px-6 py-2 rounded shadow`}
+                        hasReceivedFullInfo
+                        ? 'bg-red-300 cursor-not-allowed'
+                        : 'bg-gray-700 hover:bg-gray-900 cursor-pointer'
+                        } text-white font-bold px-6 py-2 rounded shadow`}
                     >
                       {application.hasAppealed ? 'আপিল সম্ভব নয়' : 'আপিল করুন'}
                     </button>
@@ -173,7 +154,7 @@ const UserDashboard = () => {
 
       <div className="text-center mt-8">
         <Link href="/apply">
-          <button className="bg-[#008037] text-white px-6 py-3 rounded-md hover:bg-[#006f2f] transition">
+          <button className="bg-[#008037] text-white px-6 py-3 rounded-md hover:bg-[#006f2f] transition hover:cursor-pointer hover:shadow-lg">
             নতুন আবেদন করুন
           </button>
         </Link>

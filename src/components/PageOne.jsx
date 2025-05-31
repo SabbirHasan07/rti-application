@@ -15,8 +15,8 @@ export default function PageOne({ data, onNext, showButton = true }) {
         <div className="my-9">
           <p className="font-bold text-base">বরাবর</p>
           <p className='font-bold mt-2'>{data?.officerInfo?.name}</p>
-          <p>{data?.officerInfo?.designation} <br /> <span>{data?.officerInfo?.officeType}, </span>{data?.officerInfo?.district}</p>
-          <p>{data?.officerInfo?.addres}</p>
+          <p className="max-w-[200px]">{data?.officerInfo?.designation}</p>
+          <p className="max-w-[200px]">{data?.officerInfo?.addres}</p>
 
         </div>
 

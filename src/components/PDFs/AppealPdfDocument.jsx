@@ -26,8 +26,8 @@ Font.register({
 Font.registerHyphenationCallback(word => [word]);
 const styles = StyleSheet.create({
     page: {
-        padding: 50,
-        fontSize: 12,
+        padding: 72,
+        fontSize: 13,
         fontFamily: 'SolaimanLipi',
     },
     section: {
@@ -59,46 +59,57 @@ const AppealPdfDocument = ({ data }) => {
 
         return `${dayBangla} ${month}, ${year}`;
     };
+
+    const getResponseOrInfoType = () => {
+    if (feedbackData?.response === 'না') {
+      return 'উত্তর দেওয়া হয়নি';
+    }
+    if (feedbackData?.response === 'আবেদন গৃহীত হয়নি') {
+      return feedbackData?.response;
+    }
+    return feedbackData?.infoType
+  }
     return <Document>
         <Page size="A4" style={styles.page}>
             <Text style={{
                 marginBottom: 20,
                 textAlign: 'center',
             }}>-রেজিষ্ট্রিকৃত ডাকযোগে প্রেরিত- </Text>
-            <View style={{ display: 'flex', flexDirection: 'column', lineHeight: 0.8, }}>
-                <Text style={{ lineHeight: 0.8, }}>বরাবর </Text>
+            <View style={{ display: 'flex', flexDirection: 'column', lineHeight: 1, }}>
+                <Text style={{ lineHeight: 0.8, }}>বরাবর, </Text>
             </View>
             <View
                 style={{
                     display: 'flex',
                     flexDirection: 'column',
-                    lineHeight: 0.8,
+                    lineHeight:1,
                 }}
             >
-                {appealData?.appealOfficer?.split(',')?.map((item, index) => (
+                {appealData?.appealOfficer?.split(', ')?.map((item, index) => (
                     <Text
                         key={index}
                         style={{
-                            lineHeight: 0.8,
+                            lineHeight: 1,
                             fontWeight: index === 0 ? 'bold' : 'normal',
                             maxWidth: 200,
                         }}
                     >
-                        {item.trim()}
+                        {item.trim()} {index === 0 ? ' ': ', '}
                     </Text>
                 ))}
+                <Text style={{ maxWidth: 200 }}>{appealData?.apealOfficerAddress}</Text>
 
             </View>
             <View style={{ display: 'flex', flexDirection: 'column', lineHeight: 0.8, alignItems: 'flex-end', marginBottom: 20 }}>
                 <Text style={{ lineHeight: 0.8 }}>তারিখ: {new Date().toLocaleDateString('bn-BD')} </Text>
             </View>
             <Text style={{ textAlign: 'center', fontWeight: 'bold' }}>বিষয়ঃ তথ্য অধিকার আইন, ২০০৯-এর ধারা-২৪ অনুযায়ী আপীল। </Text>
-            <View style={{ display: 'flex', flexDirection: 'column', flexWrap: 'wrap', gap: 10, marginBottom: 30 }}>
+            <View style={{ display: 'flex', flexDirection: 'column', flexWrap: 'wrap', gap: 15, marginBottom: 30 }}>
                 <Text>জনাব,</Text>
                 <Text>শুভেচ্ছা জানবেন।</Text>
                 <Text style={{}}>
-                    নিম্নেস্বাক্ষরকারী গত, <Text>{formatBanglaDateFromISO(appealData?.application?.createdAt)}</Text> তারিখে  দায়িত্ব প্রাপ্ত তথ্য কর্মকর্তা, <Text>{appealData?.informationGivenOfficer}</Text> - বরাবর তথ্য অধিকার আইন, ২০০৯-এর ধারা ৮(৩) অনুযায়ী নির্ধারিত ফরমেটে <Text>{appealData?.application?.data?.infoType}</Text> তথ্য চেয়ে আবেদন জানায় (সংযুক্ত)।
-                    {/* {`নিম্নেস্বাক্ষরকারী গত, ${formatBanglaDateFromISO(appealData?.application?.createdAt)} তারিখে  দায়িত্ব প্রাপ্ত তথ্য কর্মকর্তা, ${appealData?.informationGivenOfficer} - বরাবর তথ্য অধিকার আইন, ২০০৯-এর ধারা ৮(৩) অনুযায়ী নির্ধারিত ফরমেটে ${appealData?.application?.data?.infoType} তথ্য চেয়ে আবেদন জানায় (সংযুক্ত)।`.split(' ').map((item, index) => <Text key={index}>{item}{' '}</Text>)} */}
+                    নিম্নেস্বাক্ষরকারী গত, <Text>{formatBanglaDateFromISO(appealData?.application?.createdAt)}</Text> তারিখে  দায়িত্ব প্রাপ্ত তথ্য কর্মকর্তা, <Text style={{fontWeight: 'bold'}}>{appealData?.informationGivenOfficer}</Text> - বরাবর তথ্য অধিকার আইন, ২০০৯-এর ধারা ৮(৩) অনুযায়ী নির্ধারিত ফরমেটে <Text>{appealData?.application?.data?.infoType}</Text> তথ্য চেয়ে আবেদন জানায় (সংযুক্ত)।
+                    {/* {`নিম্নেস্বাক্ষরকারী গত, ${formatBanglaDateFromISO(appealData?.application?.createdAt)} তারিখে  দায়িত্ব প্রাপ্ত তথ্য কর্মকর্তা, ${appealData?.informationGivenOfficer} - বরাবর তথ্য অধিকার আইন, ২০০৯-এর ধারা ৮(৩) অনুযায়ী নির্ধারিত ফরমেটে ${appealData?.application?.data?.infoType} তথ্য চেয়ে আবেদন জানায় (সংযুক্ত)। |`.split(' ').map((item, index) => <Text key={index}>{item}{' '}</Text>)} */}
                 </Text>
                 <Text style={{}}>
                     {getSection({ response: feedbackData?.response, infoType: feedbackData?.infoType })}
@@ -131,15 +142,15 @@ const AppealPdfDocument = ({ data }) => {
                 </View>
                 <View style={{ display: 'flex', flexDirection: 'row' }}>
                     <Text style={{ width: '50%' }}>৩) যে আদেশের বিরুদ্ধে আপীল করা হইয়াছে </Text>
-                    <Text style={{ width: '50%' }}>: {feedbackData?.infoType} </Text>
+                    <Text style={{ width: '50%' }}>: সংযুক্ত </Text>
                 </View>
                 <View style={{ display: 'flex', flexDirection: 'row' }}>
                     <Text style={{ width: '50%' }}>৪) যাহার আদেশের বিরুদ্ধে আপীল করা হইয়াছে </Text>
-                    <Text style={{ width: '50%' }}>: প্রযোজ্য নয়   </Text>
+                    <Text style={{ width: '50%' }}>: {appealData?.informationGivenOfficer}   </Text>
                 </View>
                 <View style={{ display: 'flex', flexDirection: 'row' }}>
                     <Text style={{ width: '50%' }}>৫) আপীলের সংক্ষিপ্ত বিবরণ </Text>
-                    <Text style={{ width: '50%' }}>: {feedbackData?.infoType} </Text>
+                    <Text style={{ width: '50%' }}>: {appealData?.details} </Text>
                 </View>
                 <View style={{ display: 'flex', flexDirection: 'row' }}>
                     <Text style={{ width: '50%' }}>৬) আদেশের বিরুদ্ধে সংক্ষুব্ধ হইবার কারণ </Text>
@@ -147,7 +158,7 @@ const AppealPdfDocument = ({ data }) => {
                 </View>
                 <View style={{ display: 'flex', flexDirection: 'row' }}>
                     <Text style={{ width: '50%' }}>৭) প্রার্থিত প্রতিকারের যুক্তি </Text>
-                    <Text style={{ width: '50%' }}>: {feedbackData?.infoType} </Text>
+                    <Text style={{ width: '50%' }}>: {getResponseOrInfoType()} </Text>
                 </View>
                 <View style={{ display: 'flex', flexDirection: 'row' }}>
                     <Text style={{ width: '50%' }}>৮) আপীলকারী কর্তৃক প্রত্যয়ন </Text>

@@ -45,7 +45,7 @@ export const ApplicationList = ({
 
         <button
           onClick={handleDownload}
-          disabled={loading}
+          disabled={loading || allApplications?.length < 1}
           className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow"
         >
           {loading ? "PDF ডাউনলোড হচ্ছে" : "PDF ডাউনলোড করুন"}
@@ -93,7 +93,7 @@ export const ApplicationList = ({
                 )}
               </td>
               <td className="px-4 py-2">
-                {item?.data?.hasAppealed ? "হ্যাঁ" : "না"}
+                {item?.hasAppealed ? "হ্যাঁ" : "না"}
               </td>
 
 

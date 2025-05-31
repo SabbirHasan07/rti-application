@@ -41,36 +41,35 @@ export default function AppealReview() {
       setLoading(false);
     }
   }, []);
-  // function handleDownloadPDF() {
-  //   if (!contentRef.current) return;
-  //   const opt = {
-  //     margin: 0.5,
-  //     filename: 'appeal_review.pdf',
-  //     image: { type: 'jpeg', quality: 0.98 },
-  //     html2canvas: { scale: 2 },
-  //     jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-  //   };
-  //   html2pdf().from(contentRef.current).set(opt).save();
-  // }
+
+  const getResponseOrInfoType = () => {
+    if (feedbackData?.response === 'না') {
+      return 'উত্তর দেওয়া হয়নি';
+    }
+    if (feedbackData?.response === 'আবেদন গৃহীত হয়নি') {
+      return feedbackData?.response;
+    }
+    return feedbackData?.infoType
+  }
 
   const handleDownload = async () => {
-      if (!appealData || !feedbackData) {
-        alert('ডেটা লোড হয়নি');
-        return;
+    if (!appealData || !feedbackData) {
+      alert('ডেটা লোড হয়নি');
+      return;
     }
-        try{
-          const blob = await pdf(<AppealPdfDocument data={{appealData,feedbackData}} />).toBlob();
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'RTI_Appeal_Application.pdf';
-        a.click();
-        URL.revokeObjectURL(url);
-        } catch (err) {
-          console.error(err);
-        }
-         router.push('/userDashboard')
-    };
+    try {
+      const blob = await pdf(<AppealPdfDocument data={{ appealData, feedbackData }} />).toBlob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'RTI_Appeal_Application.pdf';
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error(err);
+    }
+    router.push('/userDashboard')
+  };
 
   if (loading) {
     return (
@@ -99,7 +98,9 @@ export default function AppealReview() {
     return `${day} ${monthName}, ${year}`;
   }
 
-  
+  // console.log({ feedbackData })
+
+
   return (
     <div className="max-w-5xl mx-auto p-18 bg-white shadow rounded text-[17px] leading-[2.3rem] font-[Kalpurush]" ref={contentRef}>
       <div className="flex justify-center mb-11">
@@ -125,6 +126,7 @@ export default function AppealReview() {
             </p>
           ))}
       </div>
+      <p>{appealData?.apealOfficerAddress}</p>
 
 
       <p className="mt-4 text-right">তারিখ: {new Date().toLocaleDateString('bn-BD')}</p>
@@ -135,7 +137,7 @@ export default function AppealReview() {
       <p>শুভেচ্ছা জানবেন।</p>
       <p>নিম্নেস্বাক্ষরকারী গত, {formatBanglaDateFromISO(appealData?.application?.createdAt)} তারিখে  দায়িত্ব প্রাপ্ত তথ্য কর্মকর্তা <span className='font-bold'>{appealData?.informationGivenOfficer}</span> - বরাবর তথ্য অধিকার আইন, ২০০৯-এর ধারা ৮(৩) অনুযায়ী নির্ধারিত ফরমেটে {appealData?.application?.data?.infoType} তথ্য চেয়ে আবেদন জানায় (সংযুক্ত)।</p>
       <p>{getSection({ response: feedbackData?.response, infoType: feedbackData?.infoType, appealData })}</p>
-      <p>এমতাবস্থায় নিম্নস্বাক্ষরকারীতথ্য অধিকার আইন, ২০০৯-এর ধারা ২৪ অনুযায়ী <span className='font-bold'>{appealData?.appealOfficer}</span> - এর আপীল কর্মকর্তা হিসেবে আপনার বরাবরে নির্ধারিত ফরমেটে আপীল আবেদন প্রেরণ করছে এবং ধারা ২৪ (৩) অনুযায়ী তথ্য সরবরাহের জন্য সংশ্লিষ্ট দায়িত্বপ্রাপ্ত কর্মকর্তাকে চাহিদা মাফিক তথ্যগুলি ১৫ দিনের মধ্যে নিম্নস্বাক্ষরকারী বরাবর প্রেরণের নির্দেশ প্রদানের জন্য আপনাকে অনুরোধ জানাচ্ছে।</p>
+      <p>এমতাবস্থায় নিম্নস্বাক্ষরকারীতথ্য অধিকার আইন, ২০০৯-এর ধারা ২৪ অনুযায়ী <span className='font-bold'>{appealData?.appealOfficer},{appealData?.apealOfficerAddress}</span> - এর আপীল কর্মকর্তা হিসেবে আপনার বরাবরে নির্ধারিত ফরমেটে আপীল আবেদন প্রেরণ করছে এবং ধারা ২৪ (৩) অনুযায়ী তথ্য সরবরাহের জন্য সংশ্লিষ্ট দায়িত্বপ্রাপ্ত কর্মকর্তাকে চাহিদা মাফিক তথ্যগুলি ১৫ দিনের মধ্যে নিম্নস্বাক্ষরকারী বরাবর প্রেরণের নির্দেশ প্রদানের জন্য আপনাকে অনুরোধ জানাচ্ছে।</p>
       <p></p>
 
 
@@ -166,11 +168,11 @@ export default function AppealReview() {
           </div>
           <div className="flex gap-2">
             <p className="w-[300px] ">৩) যে আদেশের বিরুদ্ধে আপীল করা হইয়াছে:</p>
-            <p>: {feedbackData?.infoType}</p>
+            <p>: সংযুক্ত </p>
           </div>
           <div className="flex gap-2">
             <p className="w-[300px]  ">৪) যাহার আদেশের বিরুদ্ধে আপীল করা হইয়াছে</p>
-            <p>: প্রযোজ্য নয়</p>
+            <p>: {appealData?.informationGivenOfficer}</p>
           </div>
           <div>
             <p className="">৫) আপীলের সংক্ষিপ্ত বিবরণ:</p>
@@ -184,7 +186,7 @@ export default function AppealReview() {
           </div>
           <div className="flex gap-2">
             <p className="w-[300px]  ">৭) প্রার্থিত প্রতিকারের যুক্তি</p>
-            <p>: {feedbackData?.infoType}</p>
+            <p>: {getResponseOrInfoType()} </p>
           </div>
           <div className="flex gap-2">
             <p className="w-[300px] ">৮) আপীলকারী কর্তৃক প্রত্যয়ন</p>
@@ -202,6 +204,6 @@ export default function AppealReview() {
         আবেদনকারীর স্বাক্ষর <br />
         আবেদন তারিখঃ {new Date().toLocaleDateString('bn-BD')}</p>
     </div>
-    
+
   );
 }

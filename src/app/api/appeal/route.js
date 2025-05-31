@@ -14,6 +14,7 @@ export async function POST(req) {
       phone,
       referenceNo,
       appealOfficer,
+      apealOfficerAddress,
       responseDate,
       subject, // ✅ নতুন ফিল্ড
       details,
@@ -51,6 +52,7 @@ export async function POST(req) {
         phone,
         referenceNo,
         appealOfficer,
+        apealOfficerAddress,
         responseDate:  responseDate ? new Date(responseDate) : null,
         subject, // ✅ সেট করলাম
         details,

@@ -16,6 +16,7 @@ export default function AppealForm() {
     phone: '',
     referenceNo: '',
     officerName: '',
+    apealOfficerAddress: '',
     appealOfficer: '',
     responseDate: '',
     subject: '',
@@ -56,6 +57,7 @@ export default function AppealForm() {
           referenceNo: '',
           officerName: '',
           appealOfficer: '',
+          apealOfficerAddress:'',
           responseDate: '',
           subject: '',
           details: '',
@@ -150,7 +152,16 @@ export default function AppealForm() {
         <Input disabled={true} label="ঠিকানা" name="address" value={formData.address} onChange={handleChange} placeholder={placeholders.address} />
         <Input disabled={true} label="মোবাইল নম্বর" name="phone" type="tel" value={formData.phone} onChange={handleChange} placeholder={placeholders.phone} />
         <Input label="স্মারক নং" name="referenceNo" value={formData.referenceNo} onChange={handleChange} placeholder={placeholders.referenceNo} />
-        <Input label="আপিল কর্মকর্তার নাম (সাব্বির হাসান,চেয়ারম্যান,বাংলাদেশ কেমিক্যাল ইন্ডাস্ট্রিজ কর্পোরেশন (বিসিআইসি),টাঙ্গাইল-১৯০০)" name="appealOfficer" value={formData.appealOfficer} onChange={handleChange} placeholder={placeholders.appealOfficer} />
+        <Input label=" আপিল কর্মকর্তার  নাম ও পদবী *"
+        
+        name="appealOfficer" value={formData.appealOfficer} onChange={handleChange} placeholder={placeholders.appealOfficer}
+        required
+        />
+        <Input label=" আপিল কর্মকর্তার ঠিকানা *"
+        
+        name="apealOfficerAddress" value={formData.apealOfficerAddress} onChange={handleChange} placeholder={placeholders.apealOfficerAddress}
+        required
+        />
         <Input disabled={true} label="তথ্য প্রদানকারী কর্মকর্তা" name="informationGivenOfficer" value={formData.informationGivenOfficer} onChange={handleChange} placeholder={placeholders.informationGivenOfficer} />
         <Input
           disabled={true}
@@ -218,13 +229,12 @@ export default function AppealForm() {
 function Input({ label, name, type = 'text', value, onChange, placeholder, disabled }) {
   return (
     <div className="flex flex-col">
-      <label className="mb-1 font-medium text-gray-700">{label} *</label>
+      <label className="mb-1 font-medium text-gray-700">{label} </label>
       <input
         type={type}
         name={name}
         value={value}
         onChange={onChange}
-        required
         inputMode={type === 'tel' ? 'numeric' : 'text'}
         placeholder={placeholder || ''}
         className="p-2 border border-blue-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -237,13 +247,12 @@ function Input({ label, name, type = 'text', value, onChange, placeholder, disab
 function Textarea({ label, name, value, onChange, placeholder }) {
   return (
     <div className="flex flex-col md:col-span-2">
-      <label className="mb-1 font-medium text-gray-700">{label} *</label>
+      <label className="mb-1 font-medium text-gray-700">{label} </label>
       <textarea
         name={name}
         rows="3"
         value={value}
         onChange={onChange}
-        required
         placeholder={placeholder || ''}
         className="p-2 border border-blue-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
       />

@@ -13,7 +13,7 @@ export async function POST(req) {
         isNotified: false,
         hasGivenFeedback: false,
       },
-      select:{
+      select: {
         id: true
       }
     });
@@ -35,8 +35,8 @@ export async function GET(req) {
 
 
     const applications = await prisma.application.findMany({
-      where: userId ? { userId } : applicationId ? {id: applicationId} : {}, // If userId exists, filter
-      select:{
+      where: userId ? { userId } : applicationId ? { id: applicationId } : {}, // If userId exists, filter
+      select: {
         id: true,
         createdAt: true,
         data: true,
@@ -45,10 +45,24 @@ export async function GET(req) {
         userId: true,
         hasGivenFeedback: true,
         hasAppealed: true,
+        ...(userId && {
+          feedbacks: {
+            select: {
+              infoType: true
+            },
+            where: {
+              application: {
+                user: {
+                  id: userId
+                }
+              }
+            }
+          }
+        })
       },
-      orderBy:{
+      orderBy: {
         createdAt: 'desc'
-      }
+      },
     });
 
     return new Response(JSON.stringify(applications), { status: 200 });

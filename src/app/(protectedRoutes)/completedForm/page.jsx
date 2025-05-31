@@ -112,15 +112,15 @@ export default function CompletedForm() {
 
       <div ref={contentRef} className="space-y-4 font-[Kalpurush]">
         <div className="pdf-page w-[794px] space-y-4 mx-auto bg-white p-[40px] text-[16px] leading-relaxed">
-          <div className=" bg-white text-[18px] leading-relaxed">
+          <div className=" bg-white text-base leading-relaxed">
             <PageOne data={applicationData} showButton={false} />
           </div>
         </div>
         <div className="pdf-page w-[794px] space-y-4 mx-auto bg-white p-[40px] text-[16px] leading-relaxed">
-          <div className=" bg-white text-[18px] leading-relaxed">
+          <div className=" bg-white text-base leading-relaxed">
             <PageTwo data={applicationData} showButton={false} />
           </div>
-          <div className=" bg-white text-[18px] leading-relaxed">
+          <div className=" bg-white text-base leading-relaxed">
             <PageThree data={applicationData} showButton={false} />
           </div>
         </div>
