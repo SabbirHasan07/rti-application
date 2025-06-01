@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Link from 'next/link';
 import axios from 'axios';
 import { useAuth } from '@/context/AuthContext';
+import { isOlderThan30Days } from '@/utils/isOlderThan30Days';
 
 const UserDashboard = () => {
   const [localUser, setLocalUser] = useState(null);
@@ -86,6 +87,8 @@ const UserDashboard = () => {
               const hasFeedback = application.hasGivenFeedback;
               const hasReceivedFullInfo = application?.feedbacks?.[0]?.infoType === 'সম্পূর্ণ তথ্য'
 
+              const isOlderThanThirtyDays = isOlderThan30Days(application?.createdAt);
+
               return (
                 <div
                   key={application.id}
@@ -94,11 +97,11 @@ const UserDashboard = () => {
                   <div className="flex justify-end mb-4 gap-2">
                     <button
                       onClick={() => router.push(`/update?applicationId=${application.id}`)}
-                      className={`px-4 py-2 rounded-md text-sm font-medium transition ${hasFeedback
+                      className={`px-4 py-2 rounded-md text-sm font-medium transition ${hasFeedback || isOlderThanThirtyDays
                         ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
                         : 'bg-[#008037] text-white hover:bg-[#006f2f] cursor-pointer'
                         }`}
-                      disabled={hasFeedback}
+                      disabled={hasFeedback || isOlderThanThirtyDays}
                     >
                       {hasFeedback ? 'ফিডব্যাক সম্ভব নয়' : 'ফিডব্যাক'}
                     </button>
@@ -111,11 +114,11 @@ const UserDashboard = () => {
                       disabled={
                         !hasFeedback ||
                         application.hasAppealed ||
-                        hasReceivedFullInfo
+                        hasReceivedFullInfo || isOlderThanThirtyDays
                       }
                       className={`${!hasFeedback ||
                         application.hasAppealed ||
-                        hasReceivedFullInfo
+                        hasReceivedFullInfo || isOlderThanThirtyDays
                         ? 'bg-red-300 cursor-not-allowed'
                         : 'bg-gray-700 hover:bg-gray-900 cursor-pointer'
                         } text-white font-bold px-6 py-2 rounded shadow`}

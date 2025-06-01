@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import { isOlderThan30Days } from "@/utils/isOlderThan30Days";
 
 const prisma = new PrismaClient();
 
@@ -24,10 +25,18 @@ export async function POST(req) {
     } = body;
 
     const application = await prisma.application.findUnique({ where: { id: applicationId } })
+    const isOlderThanThirtyDays = isOlderThan30Days(application?.createdAt);
     if (!application) {
       return NextResponse.json(
         { success: false, message: "Application not found." },
         { status: 404 }
+      );
+    }
+
+    if (isOlderThanThirtyDays) {
+      return NextResponse.json(
+        { success: false, message: "This application is no longer available." },
+        { status: 410 }
       );
     }
 
@@ -53,7 +62,7 @@ export async function POST(req) {
         referenceNo,
         appealOfficer,
         apealOfficerAddress,
-        responseDate:  responseDate ? new Date(responseDate) : null,
+        responseDate: responseDate ? new Date(responseDate) : null,
         subject, // ✅ সেট করলাম
         details,
         reason,

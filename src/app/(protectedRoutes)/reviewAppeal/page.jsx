@@ -71,6 +71,13 @@ export default function AppealReview() {
     router.push('/userDashboard')
   };
 
+  const getArgument = () => {
+    if (feedbackData.infoType === "কোন তথ্য প্রদান করেনি") {
+      return appealData?.reason
+    }
+    return appealData?.details
+  }
+
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center h-64">
@@ -110,6 +117,9 @@ export default function AppealReview() {
         >
           PDF ডাউনলোড করুন
         </button>
+      </div>
+      <div className="flex justify-center border-2 py-11 px-6 text-center text-2xl my-11 ">
+        <p className="text-red-500">" আবেদন ফর্মটি প্রিন্ট করে তথ্য প্রদানকারী কর্মকর্তা বরাবর ডাকযোগে প্রেরণ করুন " <br /> " আপনার তথ্য চেয়ে করা আবেদনটি এবং তার প্রেক্ষিতে পাওয়া চিঠি/উত্তর (পেয়ে থাকলে) সংযুক্ত করে ডাকযোগে প্রেরণ করুন " </p>
       </div>
       <h2 className="text-center text-xl  mb-11">-  রেজিষ্ট্রিকৃত ডাকযোগে প্রেরিত -</h2>
 
@@ -177,7 +187,7 @@ export default function AppealReview() {
           <div>
             <p className="">৫) আপীলের সংক্ষিপ্ত বিবরণ:</p>
             <p className="whitespace-pre-line leading-relaxed ml-6">
-              {appealData?.details}
+              {appealData?.application?.data?.description}
             </p>
           </div>
           <div className="flex gap-2">
@@ -186,7 +196,7 @@ export default function AppealReview() {
           </div>
           <div className="flex gap-2">
             <p className="w-[300px]  ">৭) প্রার্থিত প্রতিকারের যুক্তি</p>
-            <p>: {appealData?.details} </p>
+            <p>: {getArgument()} </p>
           </div>
           <div className="flex gap-2">
             <p className="w-[300px] ">৮) আপীলকারী কর্তৃক প্রত্যয়ন</p>

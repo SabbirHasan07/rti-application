@@ -5,11 +5,11 @@ import { sendSMS } from '@/lib/sendSMS';
 const prisma = new PrismaClient();
 
 export async function GET() {
-    // const twentyDaysAgo = new Date();
-    // twentyDaysAgo.setDate(twentyDaysAgo.getDate() - 20);
+    const twentyDaysAgo = new Date();
+    twentyDaysAgo.setDate(twentyDaysAgo.getDate() - 20);
     
     // 10 minutes for test
-    const twentyDaysAgo = new Date(Date.now() - 1 * 60 * 1000); 
+    // const twentyDaysAgo = new Date(Date.now() - 1 * 60 * 1000); 
 
     const apps = await prisma.application.findMany({
         where: {

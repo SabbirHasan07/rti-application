@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/cron/check-apps",
-      "schedule": "58 17 * * *"
+      "schedule": "0 4 * * *"
     }
   ]
 }

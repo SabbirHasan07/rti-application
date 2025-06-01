@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import ApplicationPdfDocument from "../PDFs/ApplicationPdfDocument";
 import { pdf } from "@react-pdf/renderer";
+import { isOlderThan30Days } from "@/utils/isOlderThan30Days";
 
 export const ApplicationList = ({
   allApplications,
@@ -102,12 +103,12 @@ export const ApplicationList = ({
               </td>
               <td className="px-4 py-2 text-center">
                 <button
-                  disabled={item?.hasGivenFeedback}
+                  disabled={item?.hasGivenFeedback || isOlderThan30Days(item?.createdAt)}
                   onClick={() =>
                     router.push(`/update?applicationId=${item?.id}`)
                   }
                   className={
-                    item?.hasGivenFeedback
+                    item?.hasGivenFeedback || isOlderThan30Days(item?.createdAt)
                       ? "bg-gray-300 text-gray-600 cursor-not-allowed py-1 rounded w-full"
                       : "bg-[#008037] text-white px-3 py-1 rounded hover:bg-[#006f2f] w-full"
                   }
