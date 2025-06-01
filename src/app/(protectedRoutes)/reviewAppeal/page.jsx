@@ -194,9 +194,13 @@ export default function AppealReview() {
             <p className="w-[300px]  ">৬) আদেশের বিরুদ্ধে সংক্ষুব্ধ হইবার কারণ:</p>
             <p>: {getResponseOrInfoType()}</p>
           </div>
-          <div className="flex gap-2">
-            <p className="w-[300px]  ">৭) প্রার্থিত প্রতিকারের যুক্তি</p>
-            <p>: {getArgument()} </p>
+          <div className="">
+            <p className="">৭) প্রার্থিত প্রতিকারের যুক্তি: </p>
+            <p
+            className="whitespace-pre-line leading-relaxed ml-6"
+            
+            >
+               {getArgument()} </p>
           </div>
           <div className="flex gap-2">
             <p className="w-[300px] ">৮) আপীলকারী কর্তৃক প্রত্যয়ন</p>

@@ -158,18 +158,23 @@ const AppealPdfDocument = ({ data }) => {
                     <Text style={{ width: '50%', textAlign: 'justify' }}>৪) যাহার আদেশের বিরুদ্ধে আপীল করা হইয়াছে </Text>
                     <Text style={{ width: '50%', textAlign: 'justify' }}>: {appealData?.informationGivenOfficer}   </Text>
                 </View>
-                <View style={{ display: 'flex', flexDirection: 'row' }}>
-                    <Text style={{ width: '50%', textAlign: 'justify' }}>৫) আপীলের সংক্ষিপ্ত বিবরণ </Text>
-                    <Text style={{ width: '50%', textAlign: 'justify' }}>: {appealData?.application?.data?.description
-                    } </Text>
+                <View style={{ display: 'flex', flexDirection: 'row', marginBottom: 5 }}>
+                    <Text style={{ width: '50%', textAlign: 'justify' }}>৫) আপীলের সংক্ষিপ্ত বিবরণ: </Text>
+                    <Text style={{ width: '50%', textAlign: 'justify' }}></Text>
+                </View>
+                <View style={{ display: 'flex', flexDirection: 'row', marginBottom:10 }}>
+                    <Text style={{ textAlign: 'justify' }}>{appealData?.application?.data?.description} </Text>
                 </View>
                 <View style={{ display: 'flex', flexDirection: 'row' }}>
                     <Text style={{ width: '50%', textAlign: 'justify' }}>৬) আদেশের বিরুদ্ধে সংক্ষুব্ধ হইবার কারণ </Text>
                     <Text style={{ width: '50%', textAlign: 'justify' }}>: {getResponseOrInfoType()} </Text>
                 </View>
-                <View style={{ display: 'flex', flexDirection: 'row' }}>
-                    <Text style={{ width: '50%', textAlign: 'justify' }}>৭) প্রার্থিত প্রতিকারের যুক্তি </Text>
-                    <Text style={{ width: '50%', textAlign: 'justify' }}>: {getArgument()} </Text>
+                <View style={{ display: 'flex', flexDirection: 'row', marginBottom: 5 }}>
+                    <Text style={{ width: '50%', textAlign: 'justify' }}>৭) প্রার্থিত প্রতিকারের যুক্তি: </Text>
+                    <Text style={{ width: '50%', textAlign: 'justify' }}> </Text>
+                </View>
+                <View style={{ display: 'flex', flexDirection: 'row', marginBottom: 10 }}>
+                    <Text style={{ textAlign: 'justify' }}>{getArgument()}  </Text>
                 </View>
                 <View style={{ display: 'flex', flexDirection: 'row' }}>
                     <Text style={{ width: '50%', textAlign: 'justify' }}>৮) আপীলকারী কর্তৃক প্রত্যয়ন </Text>

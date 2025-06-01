@@ -110,7 +110,6 @@ const RTIPdfDocument = ({ data }) => {
             <Text style={{ marginBottom: 10, textAlign: 'justify' }}>২। কি ধরনের তথ্য </Text>
             <View style={{ display: 'flex', flexDirection: 'column', marginLeft: 10, marginRight: 20, marginBottom: 15, gap: 5 }}>
                 <View style={{ display: 'flex', flexDirection: 'row' }}>
-                    <Text style={{textAlign: 'justify'}}>১. </Text>
                     <Text style={{textAlign: 'justify'}}>
                         {`${data?.description}`.split(' ').map((item, index) => <Text key={index}>{item}{' '}</Text>)}
                     </Text>
