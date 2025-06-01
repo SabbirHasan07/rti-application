@@ -20,10 +20,7 @@ export default function CompletedForm() {
   const [loadingData, setLoadingData] = useState(true);
 
 
-  const printForm = async () => {
-    window.print();
-    router.push("/userDashboard");
-  };
+  
 
   const handleDownload = async () => {
     if (!applicationData) {
@@ -65,7 +62,7 @@ export default function CompletedForm() {
   if (!applicationData && !loadingData) return <p className="text-center">এখন অ্যাপ্লিকেশন ডেটা লোড করা যাচ্ছে না। দয়া করে পরে আবার চেষ্টা করুন।</p>;
 
   return (
-    <div className="max-w-4xl mx-auto py-10 space-y-6 font-[Kalpurush]">
+    <div className="max-w-4xl text-justify mx-auto py-10 space-y-6 font-[Kalpurush]">
       <Toaster />
       <h1 className="text-2xl font-bold text-center mb-6 print:hidden">
         আপনার পূর্ণাঙ্গ আবেদন ফর্ম
@@ -102,17 +99,12 @@ export default function CompletedForm() {
           {isGenerating ? "PDF তৈরি হচ্ছে..." : "ডাউনলোড PDF"}
         </button>
 
-        <button
-          onClick={printForm}
-          className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
-        >
-          প্রিন্ট করুন
-        </button>
+        
       </div>
       <div className="flex justify-center border-2 py-4 text-center text-2xl mt-11 ">
         <p className="text-red-500">" আবেদন ফর্মটি প্রিন্ট করে তথ্য প্রদানকারী কর্মকর্তা বরাবর ডাকযোগে প্রেরণ করুন। "</p>
       </div>
-      <div ref={contentRef} className="space-y-4 font-[Kalpurush]">
+      <div ref={contentRef} className="space-y-4">
         <div className="pdf-page w-[794px] space-y-4 mx-auto bg-white p-[40px] text-[16px] leading-relaxed">
           <div className=" bg-white text-base leading-relaxed">
             <PageOne data={applicationData} showButton={false} />

@@ -49,7 +49,7 @@ export default function AppealForm() {
       const data = await res.json();
       // console.log(data)
       if (res.ok) {
-        alert('আপীল সফলভাবে জমা হয়েছে!');
+        alert('আপনার আপীল আবেদনটি তৈরি হয়েছে !');
         setFormData({
           applicantName: '',
           address: '',
