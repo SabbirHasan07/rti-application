@@ -85,7 +85,7 @@ const AppealPdfDocument = ({ data }) => {
                     lineHeight:1,
                 }}
             >
-                {appealData?.appealOfficer?.split(', ')?.map((item, index) => (
+                {appealData?.appealOfficer?.split(',')?.map((item, index) => (
                     <Text
                         key={index}
                         style={{
