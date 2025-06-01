@@ -50,7 +50,7 @@ export default function PageThree({ data: formData, showButton = true }) {
 
   return (
     <div>
-      <div className="mb-4 text-sm space-y-4 p-6">
+      <div className="mb-4 text-sm space-y-4 p-6 text-justify">
         {/* ৫ */}
         <div className="grid grid-cols-2 gap-4 items-start">
           <span className="text-base">৫। প্রযোজ্য ক্ষেত্রে সহায়তাকারীর নাম ও ঠিকানা</span>

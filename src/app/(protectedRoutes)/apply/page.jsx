@@ -269,7 +269,7 @@ export default function RtiForm() {
               }}
               className="mr-2"
             />
-            <label htmlFor="sameAsPresent">স্থায়ী ঠিকানা বর্তমান ঠিকানার মত</label>
+            <label htmlFor="sameAsPresent">স্থায়ী ঠিকানা ও বর্তমান ঠিকানা একই</label>
           </div>
           
           <div className="flex items-center border p-2 rounded text-green-700">
@@ -355,7 +355,6 @@ export default function RtiForm() {
               {methodOptions.map((method) => (
                 <label key={method} className="text-green-700 flex items-center">
                   <input type="checkbox" checked={form.method.includes(method)} onChange={() => handleMethodCheckbox(method)} className="mr-1" />
-                  <FiCheckCircle className="mr-1" />
                   {method}
                 </label>
               ))}
@@ -363,7 +362,7 @@ export default function RtiForm() {
           </div>
 
           <div className="md:col-span-2">
-            <textarea name="description" value={form.description} onChange={handleChange} className="w-full p-3 border rounded text-green-700" placeholder="তথ্যের বিস্তারিত বর্ণনা লিখুন" required />
+            <textarea name="description" value={form.description} onChange={handleChange} className="w-full p-3 border rounded text-green-700" placeholder="কি কি তথ্য চান তার বিস্তারিত বিবরণ লিখুন" required />
           </div>
 
           
@@ -372,7 +371,7 @@ export default function RtiForm() {
 
           <div className="md:col-span-2">
             <button type="submit" disabled={submitting} className="w-full bg-[#008037] hover:bg-green-700 text-white py-3 rounded text-lg font-semibold">
-              {submitting ? 'জমা দেওয়া হচ্ছে...' : 'আবেদন জমা দিন'}
+              {submitting ? 'আবেদন তৈরি করা হচ্ছে...' : 'আবেদন তৈরি করুন'}
             </button>
           </div>
         </form>

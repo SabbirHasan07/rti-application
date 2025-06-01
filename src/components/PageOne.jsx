@@ -9,7 +9,7 @@ export default function PageOne({ data, onNext, showButton = true }) {
 
   return (
     <div>
-      <div className="pt-11 mx-auto  p-6">
+      <div className="pt-11 mx-auto  p-6 text-justify">
         <h1 className="text-center text-base">--রেজিষ্ট্রিকৃত ডাকযোগে প্রেরিত--</h1>
 
         <div className="my-9">
@@ -28,12 +28,12 @@ export default function PageOne({ data, onNext, showButton = true }) {
           <p className="text-center text-base">বিষয় : তথ্য প্রদান প্রসঙ্গে।</p>
         </div>
 
-        <div>
+        <div className="">
           <p className="my-3 text-base">জনাব,</p>
           <p className="text-base">
             শুভেচ্ছা ! তথ্য অধিকার আইন, ২০০৯-এর ধারা ৮(৩) অনুযায়ী নিম্ন স্বাক্ষরকারী
             <span className="font-bold"> {data?.infoType} </span>
-            নিযুক্ত নির্ধারিত ফরমেটে (সংযুক্ত) তথ্য চেয়ে আবেদন জানাচ্ছে।
+            নির্ধারিত ফরমেটে (সংযুক্ত) তথ্য চেয়ে আবেদন জানাচ্ছে।
           </p>
         </div>
 

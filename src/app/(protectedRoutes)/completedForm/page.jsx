@@ -109,7 +109,9 @@ export default function CompletedForm() {
           প্রিন্ট করুন
         </button>
       </div>
-
+      <div className="flex justify-center border-2 py-4 text-center text-2xl mt-11 ">
+        <p className="text-red-500">" আবেদন ফর্মটি প্রিন্ট করে তথ্য প্রদানকারী কর্মকর্তা বরাবর ডাকযোগে প্রেরণ করুন। "</p>
+      </div>
       <div ref={contentRef} className="space-y-4 font-[Kalpurush]">
         <div className="pdf-page w-[794px] space-y-4 mx-auto bg-white p-[40px] text-[16px] leading-relaxed">
           <div className=" bg-white text-base leading-relaxed">

@@ -6,7 +6,7 @@ export default function PageTwo({ data : formData, onNext, showButton = true }) 
 
     return (
         <div>
-            <div className="bg-white pb-6 py-4  p-6">
+            <div className="bg-white pb-6 py-4  p-6 text-justify">
                 <div className="max-w-4xl mx-auto bg-white">
                     <h2 className="text-center text-base font-bold mb-2">ফরম‘ক’</h2>
                     <h3 className="text-center text-base font-semibold mb-6">
