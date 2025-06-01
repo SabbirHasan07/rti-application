@@ -151,7 +151,7 @@ export default function AppealForm() {
         <Input label="আপীলকারীর নাম" name="applicantName" value={formData.applicantName} onChange={handleChange} placeholder={placeholders.applicantName} disabled={true} />
         <Input disabled={true} label="ঠিকানা" name="address" value={formData.address} onChange={handleChange} placeholder={placeholders.address} />
         <Input disabled={true} label="মোবাইল নম্বর" name="phone" type="tel" value={formData.phone} onChange={handleChange} placeholder={placeholders.phone} />
-        <Input label="তথ্য প্রদানকারী কর্মকর্তার দপ্তর থেকে প্রেরিত প্রত্যেক পত্রের স্মারক নম্বর" name="referenceNo" value={formData.referenceNo} onChange={handleChange} placeholder={placeholders.referenceNo} />
+        <Input label="তথ্য প্রদানকারী কর্মকর্তার দপ্তর থেকে প্রেরিত পত্রের স্মারক নং" name="referenceNo" value={formData.referenceNo} onChange={handleChange} placeholder={placeholders.referenceNo} />
         <Input label=" আপিল কর্মকর্তার  নাম ও পদবী *"
         
         name="appealOfficer" value={formData.appealOfficer} onChange={handleChange} placeholder="নাম ,পদবী"
