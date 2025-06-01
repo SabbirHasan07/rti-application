@@ -398,14 +398,14 @@ export default function RtiForm() {
                 </div>
               </div>
               <div className="">
-                <label className="text-green-700 block">অফিসের নাম: </label>
+                <label className="text-green-700 block">দপ্তর: </label>
                 <div className="flex items-center border p-2 rounded text-green-700">
                   <input value={customOfficeName} onChange={(e) => setCustomOfficeName(e.target.value)} className="flex-1 focus:outline-none" placeholder="অফিসের নাম" />
                 </div>
               </div>
 
               <div className="">
-                <label className="text-green-700 block">অফিসের ঠিকানা: </label>
+                <label className="text-green-700 block">ঠিকানা: </label>
                 <div className="flex items-center border p-2 rounded text-green-700">
                   <input value={customAddress} onChange={(e) => setCustomAddress(e.target.value)} className="flex-1 focus:outline-none" placeholder="অফিসের ঠিকানা" />
                 </div>

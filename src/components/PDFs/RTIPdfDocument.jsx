@@ -62,7 +62,7 @@ const RTIPdfDocument = ({ data }) => {
             <View style={{ marginBottom: 30 }}>
                 <Text style={{ fontWeight: 'bold', marginBottom: 20, textAlign: 'justify' }}>জনাব,</Text>
                 <Text style={{ marginBottom: 20, textAlign: 'justify' }}>
-                    শুভেচ্ছা ! তথ্য অধিকার আইন, ২০০৯-এর ধারা ৮(৩) অনুযায়ী নিম্ন স্বাক্ষরকারী <Text style={{ fontWeight: 'bold' }}>{data?.infoType}</Text> নির্ধারিত ফরমেটে (সংযুক্ত) তথ্য চেয়ে আবেদন জানাচ্ছে।।
+                    শুভেচ্ছা ! তথ্য অধিকার আইন, ২০০৯-এর ধারা ৮(৩) অনুযায়ী নিম্ন স্বাক্ষরকারী <Text style={{ fontWeight: 'bold' }}>{data?.infoType}</Text> নির্ধারিত ফরমেটে (সংযুক্ত) তথ্য চেয়ে আবেদন জানাচ্ছে। 
                 </Text>
                 <Text style={{textAlign: 'justify'}}>
                     {'উল্লেখ্য যে, তথ্য অধিকার আইন, ২০০৯-এর ধারা ৯(২) অনুযায়ী অনুরোধকৃত তথ্যের সাথে একাধিক তথ্য প্রদানকারী ইউনিট বা কর্তৃপক্ষের সংশ্লিষ্টতা থাকলে উক্ত অনুরোধকৃত তথ্য অনধিক ৩০ (ত্রিশ) কার্যদিবসের মধ্যে প্রদানের বিধান রয়েছে। '.split(' ').map((item, index) => <Text key={index}>{item}{' '}</Text>)}  

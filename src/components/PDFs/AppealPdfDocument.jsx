@@ -163,11 +163,11 @@ const AppealPdfDocument = ({ data }) => {
                     <Text style={{ width: '50%', textAlign: 'justify' }}></Text>
                 </View>
                 <View style={{ display: 'flex', flexDirection: 'row', marginBottom:10 }}>
-                    <Text style={{ textAlign: 'justify' }}>{appealData?.application?.data?.description} </Text>
+                    <Text style={{ textAlign: 'justify' }}>{appealData?.application?.data?.description}  </Text>
                 </View>
                 <View style={{ display: 'flex', flexDirection: 'row' }}>
                     <Text style={{ width: '50%', textAlign: 'justify' }}>৬) আদেশের বিরুদ্ধে সংক্ষুব্ধ হইবার কারণ </Text>
-                    <Text style={{ width: '50%', textAlign: 'justify' }}>: {getResponseOrInfoType()} </Text>
+                    <Text style={{ width: '50%', textAlign: 'justify' }}>: {getResponseOrInfoType()}  </Text>
                 </View>
                 <View style={{ display: 'flex', flexDirection: 'row', marginBottom: 5 }}>
                     <Text style={{ width: '50%', textAlign: 'justify' }}>৭) প্রার্থিত প্রতিকারের যুক্তি: </Text>

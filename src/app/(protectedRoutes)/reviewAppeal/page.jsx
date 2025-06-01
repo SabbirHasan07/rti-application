@@ -177,7 +177,7 @@ export default function AppealReview() {
             <p>: {new Date().toLocaleDateString('bn-BD')}</p>
           </div>
           <div className="flex gap-2">
-            <p className="w-[300px] ">৩) যে আদেশের বিরুদ্ধে আপীল করা হইয়াছে:</p>
+            <p className="w-[300px] ">৩) যে আদেশের বিরুদ্ধে আপীল করা হইয়াছে  </p>
             <p>: সংযুক্ত </p>
           </div>
           <div className="flex gap-2">
@@ -185,17 +185,17 @@ export default function AppealReview() {
             <p>: {appealData?.informationGivenOfficer}</p>
           </div>
           <div>
-            <p className="">৫) আপীলের সংক্ষিপ্ত বিবরণ:</p>
+            <p className="">৫) আপীলের সংক্ষিপ্ত বিবরণ :</p>
             <p className="whitespace-pre-line leading-relaxed ml-6">
               {appealData?.application?.data?.description}
             </p>
           </div>
           <div className="flex gap-2">
-            <p className="w-[300px]  ">৬) আদেশের বিরুদ্ধে সংক্ষুব্ধ হইবার কারণ:</p>
+            <p className="w-[300px]  ">৬) আদেশের বিরুদ্ধে সংক্ষুব্ধ হইবার কারণ</p>
             <p>: {getResponseOrInfoType()}</p>
           </div>
           <div className="">
-            <p className="">৭) প্রার্থিত প্রতিকারের যুক্তি: </p>
+            <p className="">৭) প্রার্থিত প্রতিকারের যুক্তি : </p>
             <p
             className="whitespace-pre-line leading-relaxed ml-6"
             
