@@ -112,7 +112,7 @@ const AppealPdfDocument = ({ data }) => {
                     {/* {`নিম্নেস্বাক্ষরকারী গত, ${formatBanglaDateFromISO(appealData?.application?.createdAt)} তারিখে  দায়িত্ব প্রাপ্ত তথ্য কর্মকর্তা, ${appealData?.informationGivenOfficer} - বরাবর তথ্য অধিকার আইন, ২০০৯-এর ধারা ৮(৩) অনুযায়ী নির্ধারিত ফরমেটে ${appealData?.application?.data?.infoType} তথ্য চেয়ে আবেদন জানায় (সংযুক্ত)। |`.split(' ').map((item, index) => <Text key={index}>{item}{' '}</Text>)} */}
                 </Text>
                 <Text style={{}}>
-                    {getSection({ response: feedbackData?.response, infoType: feedbackData?.infoType })}   
+                    {getSection({ response: feedbackData?.response, infoType: feedbackData?.infoType, appealData: appealData })}   
                 </Text>
                 <Text style={{}}>
                     এমতাবস্থায় নিম্নস্বাক্ষরকারীতথ্য অধিকার আইন, ২০০৯-এর ধারা ২৪ অনুযায়ী <Text>{appealData?.appealOfficer}</Text> - এর আপীল কর্মকর্তা হিসেবে আপনার বরাবরে নির্ধারিত ফরমেটে আপীল আবেদন প্রেরণ করছে এবং ধারা ২৪ (৩) অনুযায়ী তথ্য সরবরাহের জন্য সংশ্লিষ্ট দায়িত্বপ্রাপ্ত কর্মকর্তাকে চাহিদা মাফিক তথ্যগুলি ১৫ দিনের মধ্যে নিম্নস্বাক্ষরকারী বরাবর প্রেরণের নির্দেশ প্রদানের জন্য আপনাকে অনুরোধ জানাচ্ছে।।
