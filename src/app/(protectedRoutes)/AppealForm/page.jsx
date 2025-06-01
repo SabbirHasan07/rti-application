@@ -154,7 +154,7 @@ export default function AppealForm() {
         <Input label="তথ্য প্রদানকারী কর্মকর্তার দপ্তর থেকে প্রেরিত পত্রের স্মারক নং" name="referenceNo" value={formData.referenceNo} onChange={handleChange} placeholder={placeholders.referenceNo} />
         <Input label=" আপিল কর্মকর্তার  নাম ও পদবী *"
         
-        name="appealOfficer" value={formData.appealOfficer} onChange={handleChange} placeholder="নাম ,পদবী"
+        name="appealOfficer" value={formData.appealOfficer} onChange={handleChange} placeholder="নাম,পদবী"
         required
         />
         <Input label=" আপিল কর্মকর্তার ঠিকানা *"
