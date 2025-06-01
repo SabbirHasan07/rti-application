@@ -105,17 +105,17 @@ const AppealPdfDocument = ({ data }) => {
             </View>
             <Text style={{ textAlign: 'center', fontWeight: 'bold' }}>বিষয়ঃ তথ্য অধিকার আইন, ২০০৯-এর ধারা-২৪ অনুযায়ী আপীল। </Text>
             <View style={{ display: 'flex', flexDirection: 'column', flexWrap: 'wrap', gap: 15, marginBottom: 30 }}>
-                <Text>জনাব,</Text>
-                <Text>শুভেচ্ছা জানবেন।</Text>
+                <Text>জনাব,  </Text>
+                <Text>শুভেচ্ছা জানবেন।  </Text>
                 <Text style={{}}>
                     নিম্নেস্বাক্ষরকারী গত, <Text>{formatBanglaDateFromISO(appealData?.application?.createdAt)}</Text> তারিখে  দায়িত্ব প্রাপ্ত তথ্য কর্মকর্তা, <Text style={{fontWeight: 'bold'}}>{appealData?.informationGivenOfficer}</Text> - বরাবর তথ্য অধিকার আইন, ২০০৯-এর ধারা ৮(৩) অনুযায়ী নির্ধারিত ফরমেটে <Text>{appealData?.application?.data?.infoType}</Text> তথ্য চেয়ে আবেদন জানায় (সংযুক্ত)।
                     {/* {`নিম্নেস্বাক্ষরকারী গত, ${formatBanglaDateFromISO(appealData?.application?.createdAt)} তারিখে  দায়িত্ব প্রাপ্ত তথ্য কর্মকর্তা, ${appealData?.informationGivenOfficer} - বরাবর তথ্য অধিকার আইন, ২০০৯-এর ধারা ৮(৩) অনুযায়ী নির্ধারিত ফরমেটে ${appealData?.application?.data?.infoType} তথ্য চেয়ে আবেদন জানায় (সংযুক্ত)। |`.split(' ').map((item, index) => <Text key={index}>{item}{' '}</Text>)} */}
                 </Text>
                 <Text style={{}}>
-                    {getSection({ response: feedbackData?.response, infoType: feedbackData?.infoType })}
+                    {getSection({ response: feedbackData?.response, infoType: feedbackData?.infoType })}   
                 </Text>
                 <Text style={{}}>
-                    এমতাবস্থায় নিম্নস্বাক্ষরকারীতথ্য অধিকার আইন, ২০০৯-এর ধারা ২৪ অনুযায়ী <Text>{appealData?.appealOfficer}</Text> - এর আপীল কর্মকর্তা হিসেবে আপনার বরাবরে নির্ধারিত ফরমেটে আপীল আবেদন প্রেরণ করছে এবং ধারা ২৪ (৩) অনুযায়ী তথ্য সরবরাহের জন্য সংশ্লিষ্ট দায়িত্বপ্রাপ্ত কর্মকর্তাকে চাহিদা মাফিক তথ্যগুলি ১৫ দিনের মধ্যে নিম্নস্বাক্ষরকারী বরাবর প্রেরণের নির্দেশ প্রদানের জন্য আপনাকে অনুরোধ জানাচ্ছে।
+                    এমতাবস্থায় নিম্নস্বাক্ষরকারীতথ্য অধিকার আইন, ২০০৯-এর ধারা ২৪ অনুযায়ী <Text>{appealData?.appealOfficer}</Text> - এর আপীল কর্মকর্তা হিসেবে আপনার বরাবরে নির্ধারিত ফরমেটে আপীল আবেদন প্রেরণ করছে এবং ধারা ২৪ (৩) অনুযায়ী তথ্য সরবরাহের জন্য সংশ্লিষ্ট দায়িত্বপ্রাপ্ত কর্মকর্তাকে চাহিদা মাফিক তথ্যগুলি ১৫ দিনের মধ্যে নিম্নস্বাক্ষরকারী বরাবর প্রেরণের নির্দেশ প্রদানের জন্য আপনাকে অনুরোধ জানাচ্ছে।।
                     {/* {`এমতাবস্থায় নিম্নস্বাক্ষরকারীতথ্য অধিকার আইন, ২০০৯-এর ধারা ২৪ অনুযায়ী ${appealData?.appealOfficer
                         } - এর আপীল কর্মকর্তা হিসেবে আপনার বরাবরে নির্ধারিত ফরমেটে আপীল আবেদন প্রেরণ করছে এবং ধারা ২৪ (৩) অনুযায়ী তথ্য সরবরাহের জন্য সংশ্লিষ্ট দায়িত্বপ্রাপ্ত কর্মকর্তাকে চাহিদা মাফিক তথ্যগুলি ১৫ দিনের মধ্যে নিম্নস্বাক্ষরকারী বরাবর প্রেরণের নির্দেশ প্রদানের জন্য আপনাকে অনুরোধ জানাচ্ছে।`.split(' ').map((item, index) => <Text key={index}>{item}{' '}</Text>)} */}
                 </Text>
@@ -123,7 +123,7 @@ const AppealPdfDocument = ({ data }) => {
             <Text>বিনীত </Text>
             <Text>{appealData?.applicantName}</Text>
             <Text>সংযুক্তি: বর্ণনামতে </Text>
-            <Text>অনুলিপি: সদয় অবগতি ও প্রয়োজনীয় ব্যবস্থা গ্রহণের জন্য প্রেরিত হলো </Text>
+            <Text>অনুলিপি: সদয় অবগতি ও প্রয়োজনীয় ব্যবস্থা গ্রহণের জন্য প্রেরিত হলো  </Text>
             <Text>১। {appealData?.informationGivenOfficer} </Text>
         </Page>
         <Page size="A4" style={styles.page}>
