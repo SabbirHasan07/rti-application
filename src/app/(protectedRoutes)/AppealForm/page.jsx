@@ -202,7 +202,7 @@ export default function AppealForm() {
 
         {formData.subject === "কোন তথ্য প্রদান করেনি" && (
           <Textarea
-            label="তথ্য প্রদানে অস্বীকৃতি জানিয়ে থাকলে তার কারণ"
+            label="প্রার্থিত প্রতিকারের যুক্তি"
             name="reason"
             value={formData.reason}
             onChange={handleChange}
