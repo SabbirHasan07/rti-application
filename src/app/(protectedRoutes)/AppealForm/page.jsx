@@ -192,7 +192,7 @@ export default function AppealForm() {
 
         {formData.subject !== "কোন তথ্য প্রদান করেনি" && (
           <Textarea
-            label="আপীলের সংক্ষিপ্ত বিবরণ"
+            label="প্রার্থিত প্রতিকারের যুক্তি"
             name="details"
             value={formData.details}
             onChange={handleChange}
