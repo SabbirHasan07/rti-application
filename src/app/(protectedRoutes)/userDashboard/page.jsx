@@ -158,7 +158,7 @@ const UserDashboard = () => {
       <div className="text-center mt-8">
         <Link href="/apply">
           <button className="bg-[#008037] text-white px-6 py-3 rounded-md hover:bg-[#006f2f] transition hover:cursor-pointer hover:shadow-lg">
-            নতুন আবেদন করুন
+            নতুন আবেদন তৈরি করুন
           </button>
         </Link>
       </div>
