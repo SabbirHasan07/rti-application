@@ -231,15 +231,10 @@ const AppealPdfDocument = ({ data }) => {
             [তথ্য অধিকার (তথ্য প্রাপ্তি সংক্রান্ত) বিধিমালার বিধি ৩ দ্রষ্টব্য]{" "}
           </Text>
         </View>
-        <View
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            marginBottom: 15,
-            gap: 5,
-          }}
-        >
-          <View style={{ display: "flex", flexDirection: "row" }}>
+        <View>
+          <View
+            style={{ display: "flex", flexDirection: "row", marginBottom: 5 }}
+          >
             <Text style={{ width: "50%", textAlign: "justify" }}>
               ১) আপীলকারীর নাম ও ঠিকানা{" "}
             </Text>
@@ -247,7 +242,9 @@ const AppealPdfDocument = ({ data }) => {
               : {appealData?.applicantName}{" "}
             </Text>
           </View>
-          <View style={{ display: "flex", flexDirection: "row" }}>
+          <View
+            style={{ display: "flex", flexDirection: "row", marginBottom: 5 }}
+          >
             <Text style={{ width: "50%", textAlign: "justify" }}>
               ২) আপীলের তারিখ{" "}
             </Text>
@@ -255,7 +252,9 @@ const AppealPdfDocument = ({ data }) => {
               : {new Date().toLocaleDateString("bn-BD")}{" "}
             </Text>
           </View>
-          <View style={{ display: "flex", flexDirection: "row" }}>
+          <View
+            style={{ display: "flex", flexDirection: "row", marginBottom: 5 }}
+          >
             <Text style={{ width: "50%", textAlign: "justify" }}>
               ৩) যে আদেশের বিরুদ্ধে আপীল করা হইয়াছে{" "}
             </Text>
@@ -263,7 +262,9 @@ const AppealPdfDocument = ({ data }) => {
               : সংযুক্ত{" "}
             </Text>
           </View>
-          <View style={{ display: "flex", flexDirection: "row" }}>
+          <View
+            style={{ display: "flex", flexDirection: "row", marginBottom: 5 }}
+          >
             <Text style={{ width: "50%", textAlign: "justify" }}>
               ৪) যাহার আদেশের বিরুদ্ধে আপীল করা হইয়াছে{" "}
             </Text>
@@ -272,7 +273,7 @@ const AppealPdfDocument = ({ data }) => {
             </Text>
           </View>
           <View
-            style={{ display: "flex", flexDirection: "row", marginBottom: 5 }}
+            style={{ display: "flex", flexDirection: "row", marginBottom: 10 }}
           >
             <Text style={{ width: "50%", textAlign: "justify" }}>
               ৫) আপীলের সংক্ষিপ্ত বিবরণ:{" "}
@@ -283,7 +284,7 @@ const AppealPdfDocument = ({ data }) => {
             style={{
               display: "flex",
               flexDirection: "column",
-              marginBottom: 10,
+              marginBottom: 15,
             }}
           >
             {appealData?.application?.data?.description
@@ -294,7 +295,9 @@ const AppealPdfDocument = ({ data }) => {
                 </Text>
               ))}
           </View>
-          <View style={{ display: "flex", flexDirection: "row" }}>
+          <View
+            style={{ display: "flex", flexDirection: "row", marginBottom: 5 }}
+          >
             <Text style={{ width: "50%", textAlign: "justify" }}>
               ৬) আদেশের বিরুদ্ধে সংক্ষুব্ধ হইবার কারণ{" "}
             </Text>
@@ -303,7 +306,7 @@ const AppealPdfDocument = ({ data }) => {
             </Text>
           </View>
           <View
-            style={{ display: "flex", flexDirection: "row", marginBottom: 5 }}
+            style={{ display: "flex", flexDirection: "row", marginBottom: 10 }}
           >
             <Text style={{ width: "50%", textAlign: "justify" }}>
               ৭) প্রার্থিত প্রতিকারের যুক্তি:{" "}
@@ -314,7 +317,7 @@ const AppealPdfDocument = ({ data }) => {
             style={{
               display: "flex",
               flexDirection: "column",
-              marginBottom: 10,
+              marginBottom: 15,
             }}
           >
             {getArgument()
@@ -325,7 +328,9 @@ const AppealPdfDocument = ({ data }) => {
                 </Text>
               ))}
           </View>
-          <View style={{ display: "flex", flexDirection: "row" }}>
+          <View
+            style={{ display: "flex", flexDirection: "row", marginBottom: 5 }}
+          >
             <Text style={{ width: "50%", textAlign: "justify" }}>
               ৮) আপীলকারী কর্তৃক প্রত্যয়ন{" "}
             </Text>
@@ -334,7 +339,9 @@ const AppealPdfDocument = ({ data }) => {
               বিদ্বেষ প্রসূত নয়{" "}
             </Text>
           </View>
-          <View style={{ display: "flex", flexDirection: "row" }}>
+          <View
+            style={{ display: "flex", flexDirection: "row", marginBottom: 25 }}
+          >
             <Text style={{ width: "50%", textAlign: "justify" }}>
               ৯) অন্য কোন তথ্য{" "}
             </Text>
